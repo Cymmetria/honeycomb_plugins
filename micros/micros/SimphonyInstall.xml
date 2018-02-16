@@ -1,0 +1,74 @@
+A ANZo7	l<xml>
+ <data tag="status" name="Status"></data></xml>
+f	<textFile>
+
+<IsUpgrade>True</IsUpgrade>
+<UpgradeType>UpgradeExisting</UpgradeType>
+
+<InstallLocation>D:\MICROS</InstallLocation>
+  <Component>Simphony2\DataTransferService</Component>
+  <Component>Simphony2\DirectPostingService</Component>
+  <Component>Simphony2\EmcClient</Component>
+  <Component>Simphony2\OpenSource</Component>
+  <Component>Simphony2\Tools</Component>
+  <Component>Simphony\EgatewayService</Component>
+  <Component>Simphony2\EgatewayService</Component>
+  <Component_Skipped>Simphony2\ClassicCalSrv</Component_Skipped>
+  <Component_Skipped>Simphony\DataTransferService</Component_Skipped>
+  <Component_Skipped>Simphony\DirectPostingService</Component_Skipped>
+  <Component_Skipped>Simphony2\MyMicros</Component_Skipped>
+  <Component_Skipped>Simphony2\SequencerService</Component_Skipped>
+
+  <OrganizationInfo>
+    <HierStrucId>0</HierStrucId>
+    <Name></Name>
+    <OrganizationId>0</OrganizationId>
+    <SvcHostName>%%HOST%%</SvcHostName>
+    <SvcHostPort>%%PORT%%</SvcHostPort>
+    <LegacySvcHostName>%%HOST%%</LegacySvcHostName>
+    <LegacySvcHostPort>8010</LegacySvcHostPort>
+    <GatewayIP></GatewayIP>
+    <GatewaySubnet></GatewaySubnet>
+  </OrganizationInfo>
+
+<Dbs>
+  <LocationOfExistingDbSettingsFile>D:\MICROS\Simphony2\EgatewayService\DbSettings.xml</LocationOfExistingDbSettingsFile>
+  <DatabasePlatform>Oracle</DatabasePlatform>
+
+  <Db type="Transaction">
+    <DbSource>PointToExisting</DbSource>
+    <ServerName>scan-swsdbs</ServerName>
+    <ServiceName>mcrspswsdbs</ServiceName>
+    <UserName>microsdb</UserName>
+    <Password>DUc77c020b000000001800000042e5e8f0adc57875967a7f44adaf38ce709fd1b43b584bed</Password>
+    <DbName></DbName>
+    <DbLocation></DbLocation>
+    <Port>1521</Port>
+  </Db>
+
+  <Db type="Reporting">
+    <DbSource>PointToExisting</DbSource>
+    <ServerName>scan-swsdbs</ServerName>
+    <ServiceName>mcrspswsdbs</ServiceName>
+    <UserName>SA</UserName>
+    <Password>QAc77c020b0000000018000000add98b9f5e5ada401d6865e254056d5ae30cb4bf14f931b5</Password>
+    <DbName></DbName>
+    <DbLocation></DbLocation>
+    <Port>0</Port>
+  </Db>
+
+  <Db type="Cache">
+    <DbSource>PointToExisting</DbSource>
+    <ServerName>scan-swsdbs</ServerName>
+    <ServiceName>mcrspswsdbs</ServiceName>
+    <UserName>mcrscache</UserName>
+    <Password>MGc77c020b000000001800000081b22b482dacc72bdd7998d88a2a6adc51defb6d160afd4a</Password>
+    <DbName></DbName>
+    <DbLocation></DbLocation>
+    <Port>1521</Port>
+  </Db>
+
+</Dbs>
+
+</textFile>
+NAa

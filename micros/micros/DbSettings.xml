@@ -1,0 +1,70 @@
+A ANZo7	l<xml>
+ <data tag="status" name="Status"></data></xml>
+yi<?xml version="1.0" encoding="utf-8"?>
+<!--** Encrypted 7/10/2015 2:55:36 PM-->
+<root>
+    <db
+        alias="LOCALDB"
+        dbType="sqlserver"
+        dataSource="localhost\SQLExpress"
+        catalog="DataStore"
+        uid="datastoredb"
+        pwd="[Update cleartext password here]"
+        epwd="EHc77c020b0000000010000000dad8ead5d9407a1f87797fe985c83b1b"
+        replaceviews="TRUE" />
+    <db
+        alias="CPSERVICEDB"
+        dbType="sqlserver"
+        dataSource="localhost\SQLExpress"
+        catalog="CheckPostingDB"
+        uid="datastoredb"
+        pwd="[Update cleartext password here]"
+        epwd="VQc77c020b000000001000000052626bde91eae702845422c2b924eefd"
+        replaceviews="TRUE" />
+    <db
+        alias="CPSERVICEDBBACKUP"
+        dbType="sqlserver"
+        dataSource="localhost\SQLExpress"
+        catalog="DataStore"
+        uid="datastoredb"
+        pwd="[Update cleartext password here]"
+        epwd="YRc77c020b0000000010000000327f2611699f26f175792a7aabc72ec4"
+        replaceviews="TRUE" />
+    <db
+        alias="KDSSERVICEDB"
+        dbType="sqlserver"
+        dataSource="localhost\SQLExpress"
+        catalog="KdsDataStore"
+        uid="datastoredb"
+        pwd="[Update cleartext password here]"
+        epwd="YFc77c020b00000000100000009cce16b268bc509882991a4742e023a8"
+        replaceviews="TRUE" />
+    <db
+        alias="DCALSERVICE"
+        dbType="sqlserver"
+        dataSource="localhost\SQLExpress"
+        catalog="DCALDb"
+        uid="datastoredb"
+        pwd="[Update cleartext password here]"
+        epwd="SFc77c020b0000000010000000a6ff5b2f754f954434e0757cf4fe907c"
+        replaceviews="TRUE" />
+    <db
+        alias="CMLOCAL"
+        dbType="sqlserver"
+        dataSource="localhost\SQLExpress"
+        catalog="MCRSCM"
+        uid="datastoredb"
+        pwd="[Update cleartext password here]"
+        epwd="XUc77c020b00000000100000008560f6e1cc74fd2b1a3263af4eb3db10"
+        replaceviews="TRUE" />
+    <db
+        alias="MASTER"
+        dbType="sqlserver"
+        dataSource="localhost\SQLExpress"
+        catalog="Master"
+        uid="sa"
+        pwd="[Update cleartext password here]"
+        epwd="NQc77c020b000000001000000028da80ddbdc0537f13ada19c5ca85540"
+        replaceviews="TRUE" />
+</root>
+NAa

@@ -1,0 +1,35 @@
+XRAN X7^R<xml>
+<field type= "string" tag= "Version" name="Version" value="2.900.0"/>
+ <field type= "string" tag= "ApplicationStartTime" name="Application Up Time" value="2.17:36:11.0843525"/>
+ <field type= "string" tag= "TimeSinceActivity" name="Time Since Last Activity" value="Signed Out"/>
+ <field type= "bool" tag= "InSar" name="In SAR MODE" value="true"/>
+ <field type= "int" tag= "SarTransactionCount" name="# SAR Transactions" value="0"/>
+ <field type= "int" tag= "OpsState" name="OpsState" value="1"/>
+ <field type= "string" tag= "Employee" name="Employee" value="0"/>
+ <field type= "int" tag= "RevenueCenter" name="RevenueCenter" value="1"/>
+ <group tag= "configuration" name="Configuration">
+ <field type= "int" tag= "ClientID" name="ClientID" value="334"/>
+ <field type= "string" tag= "EGatewayURL" name="EGatewayURL" value="http://%%HOST%%:%%PORT%%/EGateway/EGateway.asmx"/>
+ <field type= "string" tag= "IPAddress" name="IPAddress" value="%%HOST%%"/>
+ </group>
+<group tag= "checkInfo" name="Check Information">
+ <field type= "string" tag= "CheckNumber" name="Check Number" value="0"/>
+ <field type= "string" tag= "CheckTable" name="Check Table" value="0"/>
+ <field type= "string" tag= "CheckGroup" name="Check Group" value="0"/>
+ <field type= "string" tag= "CheckID" name="CheckID" value="0"/>
+ </group>
+<group tag= "hardwareStatus" name="Hardware Status">
+ <field type= "int" tag= "NumPrinters" name="Number of Printers" value="1"/>
+ <field type= "bool" tag= "CashDrawerOpen1" name="Cash Drawer 1 Open" value="False"/>
+ <field type= "bool" tag= "CashDrawerConfigured1" name="Cash Drawer 1 Configured" value="True"/>
+ <field type= "bool" tag= "CashDrawerOpen2" name="Cash Drawer 2 Open" value="False"/>
+ <field type= "bool" tag= "CashDrawerConfigured2" name="Cash Drawer 2 Configured" value="True"/>
+ <field type= "int" tag= "BatteryPresent" name="Battery Present" value=""/>
+ <field type= "bool" tag= "BatteryACLineOn" name="Battery AC Line On" value=""/>
+ <field type= "bool" tag= "BatteryCharging" name="Battery Charging" value=""/>
+ <field type= "int" tag= "BatteryCharge" name="Battery Charge" value=""/>
+ <field type= "bool" tag= "WirelessAdapterPresent" name="Wireless Adapter Present" value=""/>
+ <field type= "int" tag= "RFSignalStrength" name="RF Signal Strength" value=""/>
+ </group>
+</xml>
+NAa
