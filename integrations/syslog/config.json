@@ -4,9 +4,6 @@
     "integration_type": "event_output",
     "supported_event_types": [],
     "required_fields": [
-        "id",
-        "status",
-        "timestamp"
     ],
     "max_send_retries": 5,
     "polling_enabled": false,

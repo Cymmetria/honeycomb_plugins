@@ -1,0 +1,31 @@
+{
+    "event_types": [
+        {
+            "name": "intel_amt_auth",
+            "default_policy": "alert",
+            "label": "Intel AMT authentication attempt",
+            "fields": ["event_description", "originating_ip", "originating_port", "username", "additional_fields"],
+            "policy": "Alert"
+        },
+        {
+            "name": "intel_amt_bypass",
+            "default_policy": "alert",
+            "label": "Intel AMT exploited",
+            "fields": ["event_description", "originating_ip", "originating_port", "username", "additional_fields"],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "All",
+        "ports": [
+            {
+                "protocol": "TCP",
+                "port": 16992
+            }
+        ],
+        "name": "intel_amt",
+        "label": "Intel AMT - low interaction",
+        "conflicts_with": []
+    }
+}

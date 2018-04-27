@@ -1,11 +1,11 @@
 sudo: false
 
 install: skip
-script: skip
+script: ./mkpkg.sh
 
 deploy:
   provider: pages
-  script: bash mkpkg.sh
+  script: skip
   skip_cleanup: true
   keep-history: true
   github-token: $GITHUB_TOKEN

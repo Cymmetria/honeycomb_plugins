@@ -1,0 +1,35 @@
+{
+    "event_types": [
+        {
+            "name": "busybox_telnet_execution",
+            "label": "Busybox Telnet command execution",
+            "fields": ["originating_ip", "originating_port", "username", "password", "cmd"],
+            "policy": "Alert"
+        },
+        {
+            "name": "busybox_telnet_authentication",
+            "label": "Busybox Telnet authentication",
+            "fields": ["originating_ip", "originating_port", "username", "password", "event_description"],
+            "policy": "Mute"
+        },
+        {
+            "name": "mirai_detection",
+            "label": "Mirai worm detected",
+            "fields": ["originating_ip", "originating_port", "username", "password"],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "Linux",
+        "ports": [
+            {
+                "protocol": "TCP",
+                "port": 23
+            }
+        ],
+        "name": "mirai_worm_monitor",
+        "label": "Mirai worm monitor",
+        "conflicts_with": []
+    }
+}

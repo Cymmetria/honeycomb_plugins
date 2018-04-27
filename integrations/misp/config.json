@@ -1,0 +1,37 @@
+{
+    "display_name": "MISP",
+    "description": "Forward alerts to MISP (Malware Information Sharing Platform and Threat Sharing)",
+    "integration_type": "event_output",
+    "supported_event_types": [],
+    "required_fields": [],
+    "max_send_retries": 5,
+    "polling_enabled": false,
+    "test_connection_enabled": true,
+    "parameters": [
+        {
+            "value": "url",
+            "label": "MISP URL",
+            "type": "string",
+            "required": true
+        },
+        {
+            "value": "key",
+            "label": "MISP API Key",
+            "type": "string",
+            "required": true
+        },
+        {
+            "value": "verify_ssl",
+            "label": "Verify servier SSL Certificate",
+            "type": "boolean",
+            "default": true
+        },
+        {
+            "value": "ssl_ca_path",
+            "label": "Path to CA certifiate",
+            "type": "string",
+            "required": false,
+            "help_text": "Filesystem path to a file with trusted CA cert (to verify self signed certs)"
+        }
+    ]
+}

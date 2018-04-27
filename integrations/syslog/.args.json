@@ -1,0 +1,1 @@
+{"syslog_ssl_enabled": false, "cef_output_format": false, "protocol": "udp", "port": 5514, "address": "127.0.0.1"}

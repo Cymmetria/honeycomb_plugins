@@ -1,0 +1,166 @@
+body {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size:9pt;
+	color:black;
+	background:white;
+	MARGIN-TOP:0;
+	MARGIN-LEFT:0; 
+	MARGIN-RIGHT:0
+}
+
+a:visited {
+	text-decoration:none;
+	color:#0044ff
+}
+
+a:link {
+	text-decoration:none;
+	color:#0044ff
+}
+
+a:hover {
+	color:#aa3322
+}
+
+h1 {
+	font-size:11pt;
+	font-weight:bold;
+	color:#1044f0;
+	MARGIN-Left:5px;
+	MARGIN-TOP:10px;
+	MARGIN-BOTTOM:6px;
+}
+
+h2 {
+	font-size:9pt;
+	font-weight:bold;
+	color:#1044f0;
+	MARGIN-Left:6px;
+	MARGIN-TOP:6px;
+	MARGIN-BOTTOM:0;
+}
+p {
+	MARGIN-Left:6px;
+	MARGIN-TOP:4px;
+	MARGIN-BOTTOM:0;
+	MARGIN-RIGHT:2px
+}
+
+td {
+	font-size:9pt
+}
+
+.header {
+	height: 69px;
+	width: 100%;
+	background-color: blue;
+	background-image: url('run.gif');
+	background-repeat: repeat-x;
+}
+
+.in{
+	MARGIN-Left:40px;
+}
+
+.log {
+	background:#a810a8
+}
+
+.maincell {
+	padding:8px;
+	vertical-align: top;
+}
+
+.navbar {
+	background:#e8eefe;
+	padding:8px;
+	width: 140px;
+	border-right: 2px solid #a800a8;
+	vertical-align: top;
+}
+
+.nav1 {
+	MARGIN-TOP:0;
+	MARGIN-Left:-2px;
+	font-weight:bold;
+	color:#0031FF;
+	white-space:nowrap;
+}
+
+
+.nav2 {
+	MARGIN-Left:32px;
+	MARGIN-TOP:0;
+	color:#0031FF;
+}
+
+
+.ne {
+	background-image: url('ne.gif');
+	background-repeat: no-repeat;
+	background-position: top right;
+}
+
+.nw {
+	background-image: url('nw.gif');
+	background-repeat: no-repeat;
+	background-position: top left;
+	height: 8px;
+}
+
+.r {
+	font-size: 11pt;
+}
+
+.r0 {
+	background:white
+}
+
+.r1 {
+	background:#abcae1
+}
+
+.se {
+	background-image: url('se.gif');
+	background-repeat: no-repeat;
+	background-position: bottom right;
+}
+
+.spread {
+	height: 100%;
+	width: 100%;
+	background-color: white;
+}
+
+.sw {
+	background-image: url('sw.gif');
+	background-repeat: no-repeat;
+	background-position: bottom left;
+	height: 8px;
+}
+
+.timer {
+	border: 1px solid #abcae1;
+	background-color:#abcae1
+}
+
+
+.tm {
+	font-size: 7pt
+}
+
+.top1 {
+	font-size:14pt;
+	font-weight:bold;
+	color:white;
+	MARGIN-TOP:8px
+}
+
+.top2 {
+	color:white
+}
+
+.warn {
+	font-weight:bold;
+	color:#c00000
+}

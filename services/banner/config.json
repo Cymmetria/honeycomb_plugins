@@ -1,0 +1,33 @@
+{
+    "event_types": [
+        {
+            "name": "banner_port_access",
+            "label": "Port Access on Banner Service",
+            "fields": ["event_description", "originating_ip", "originating_port"],
+            "policy": "Mute"
+        }
+    ],
+    "service": {
+        "allow_many": true,
+        "supported_os_families": "All",
+        "ports": [
+        ],
+        "name": "banner",
+        "label": "Banner",
+        "conflicts_with": []
+    },
+    "parameters": [
+        {
+            "type": "integer",
+            "value": "listening_port",
+            "label": "Listening Port",
+            "required": true
+        },
+        {
+            "type": "text",
+            "value": "banner",
+            "label": "Banner",
+            "required": false
+        }
+    ]
+}

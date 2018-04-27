@@ -1,0 +1,43 @@
+{
+    "display_name": "S3",
+    "description": "Upload executed image files to Amazon S3",
+    "integration_type": "event_output",
+    "supported_event_types": ["code", "unsigned_code"],
+    "required_fields": ["timestamp", "decoy", "image_file", "image_sha256", "image_md5", "image_path", "cmd"],
+    "max_send_retries": 5,
+    "polling_enabled": false,
+    "test_connection_enabled": true,
+    "parameters": [
+        {
+            "value": "access_key",
+            "label": "AWS Access Key",
+            "type": "string",
+            "required": true
+        },
+        {
+            "value": "secret_key",
+            "label": "AWS Secret Key",
+            "type": "string",
+            "required": true
+        },
+        {
+            "value": "region",
+            "label": "AWS Region",
+            "type": "string",
+            "required": true
+        },
+        {
+            "value": "bucket",
+            "label": "S3 Bucket",
+            "type": "string",
+            "required": true
+        },
+        {
+            "value": "base_path",
+            "label": "Base path for upload",
+            "type": "string",
+            "required": false,
+            "default": "/"
+        }
+    ]
+}

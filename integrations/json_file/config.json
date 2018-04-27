@@ -1,0 +1,19 @@
+{
+    "display_name": "JSON File",
+    "description": "Write service alerts to a json file.",
+    "integration_type": "event_output",
+    "supported_event_types": [],
+    "required_fields": [],
+    "max_send_retries": 5,
+    "polling_enabled": false,
+    "test_connection_enabled": false,
+    "parameters": [
+        {
+            "value": "filepath",
+            "label": "File path",
+            "type": "string",
+            "required": true,
+            "help_text": "Must be absolute filesystem path."
+        }
+    ]
+}

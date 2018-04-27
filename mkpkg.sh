@@ -11,7 +11,7 @@ for type in `ls -d */`; do
         pushd ${plugin}
 
         zip -9vr ../../dist/${type}/${plugin}.zip *
-        echo ${plugin} >> ../../dist/${type}.txt
+        echo ${plugin} >> ../../dist/${type}/${type}.txt
         popd
     done
     popd

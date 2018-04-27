@@ -1,32 +1,76 @@
 # -*- coding: utf-8 -*-
 """Honeycomb Syslog integration."""
-from __future__ import unicode_literals
+from __future__ import unicode_literals, absolute_import
 
 import ssl
 import socket
 import logging.handlers
 
-from cefevent import CEFEvent
+import six
 import certifi
+from cefevent import CEFEvent
+from attr import attrs, attrib
 
 from honeycomb import __version__
-from honeycomb.utils.defs import AlertFields, CEFCustomString
-from honeycomb.models import Alert
+from decoymanager.models import Alert
 from integrationmanager.exceptions import IntegrationSendEventError
 from integrationmanager.integration_utils import BaseIntegration
 
 
+@attrs
+class CEFField(object):
+    """Generic CEF Field."""
+
+    field_name = attrib(type=str)
+
+
+@attrs
+class CEFCustomString(CEFField):
+    """Custom CEF Field."""
+
+    field_label = attrib(type=str)
+    field_label_text = attrib(type=str)
+
+
+cef_dict = {
+    "id": CEFField("externalId"),
+    "timestamp": CEFField("start"),
+    "event_type": CEFField("act"),
+    "alert_type": CEFField("app"),
+    "event_description": CEFField("msg"),
+
+    "request": CEFField("request"),
+    "dest_ip": CEFField("dst"),
+    "dest_port": CEFField("dpt"),
+    "originating_ip": CEFField("src"),
+    "originating_port": CEFField("spt"),
+    "transport_protocol": CEFField("proto"),
+    "originating_hostname": CEFField("shost"),
+    "originating_mac_address": CEFField("smac"),
+
+    "manufacturer": CEFField("sourceServiceName"),
+
+    "domain": CEFField("deviceDnsDomain"),
+    "username": CEFField("duser"),
+    "password": CEFField("dpassword"),
+
+    "image_path": CEFField("filePath"),
+    "image_sha256": CEFField("fileHash"),
+    "file_accessed": CEFField("filePath"),
+
+    "cmd": CEFField("destinationServiceName"),
+    "pid": CEFField("spid"),
+    "uid": CEFField("duid"),
+    "MD5": CEFCustomString("cs1", "cs1Label", "MD5"),
+    "ppid": CEFCustomString("cs2", "cs2Label", "PPID"),
+
+    # Extra fields:
+    "additional_fields": CEFCustomString("cs4", "cs4Label", "Additional Fields"),
+}
+
+
 class SyslogIntegration(BaseIntegration):
     """Honeycomb Syslog integration."""
-
-    @staticmethod
-    def add_syslog_escaping(syslog_field):
-        """Escape syslog fields so they don't break."""
-        if not isinstance(syslog_field, unicode):
-            field = unicode(bytes(syslog_field), encoding='utf-8', errors='ignore')
-        else:
-            field = syslog_field
-        return field.replace('\n', ' ').replace('\\', '\\\\').replace('=', '\\=').replace('"', '\\"')
 
     def get_formatted_alert_as_cef(self, result_fields):
         """Format message as CEFEvent."""
@@ -34,24 +78,25 @@ class SyslogIntegration(BaseIntegration):
         timestamp = result_fields['timestamp'].isoformat() if result_fields['timestamp'] else None
         hostname = socket.getfqdn()
         for field_name, field_value in [("deviceVendor", "Cymmetria"),
-                                        ("deviceProduct", "MazeRunner"),
-                                        ("deviceVersion", unicode(__version__))]:
+                                        ("deviceProduct", "Honeycomb"),
+                                        ("deviceVersion", six.text_type(__version__))]:
             cef_event.set_field(field_name, field_value)
 
-        alert = Alert.objects.get(id=result_fields['id'])
-        fields_dict = alert.get_fields_for_external()
         result = None
 
-        for field_name, field_value in fields_dict.iteritems():
-            cef_field_name = AlertFields.get_value_by_other_value("name", field_name, "cef_field_name")
+        for field_name, field_value in six.iteritems(result_fields):
+            if field_name not in cef_dict:
+                continue
+
+            cef_field_name = cef_dict[field_name].field_name
             if isinstance(cef_field_name, CEFCustomString):
                 result = cef_event.set_field(
-                    unicode(cef_field_name.field_name), unicode(field_value))
+                    six.text_type(cef_field_name.field_name), six.text_type(field_value))
                 cef_event.set_field(
-                    unicode(cef_field_name.field_label), unicode(cef_field_name.field_label_text))
+                    six.text_type(cef_field_name.field_label), six.text_type(cef_field_name.field_label_text))
             else:
                 result = cef_event.set_field(
-                    unicode(cef_field_name), unicode(field_value))
+                    six.text_type(cef_field_name), six.text_type(field_value))
 
             if not result:
                 self.logger.warning("cef field {} didn't defined well to cef to alert_id {}".format(
@@ -66,14 +111,11 @@ class SyslogIntegration(BaseIntegration):
 
     def get_formatted_alert_as_syslog(self, result_fields):
         """Convert alert to syslog record."""
-        alert = Alert.objects.get(id=result_fields['id'])
-        fields_dict = alert.get_fields_for_external()
-        fields_dict.pop(AlertFields.FILE_LIST.name, None)
         timestamp = result_fields['timestamp'].isoformat() if result_fields['timestamp'] else None
-        application = "MazeRunner"
+        application = "Honeycomb"
         hostname = socket.getfqdn()
-        data = ' '.join(['{}="{}"'.format(x, self.add_syslog_escaping(fields_dict[x]))
-                         for x in fields_dict.iterkeys()])
+        data = ' '.join(['{}="{}"'.format(x, result_fields[x])
+                         for x in six.iterkeys(result_fields)])
 
         syslog_entry = "{timestamp} {host} {application}: {data}".format(
             timestamp=timestamp,
@@ -88,6 +130,7 @@ class SyslogIntegration(BaseIntegration):
         """Send syslog event."""
         logger_to_external = logging.getLogger("syslog")
         logger_to_external.setLevel(logging.DEBUG)
+        logger_to_external.propagate = False
 
         for handler in logger_to_external.handlers[:]:
             logger_to_external.removeHandler(handler)
@@ -119,7 +162,7 @@ class SyslogIntegration(BaseIntegration):
             return {}, None
 
         except Exception as e:
-            raise IntegrationSendEventError(e.message)
+            raise IntegrationSendEventError(e)
 
     def format_output_data(self, output_data):
         """No special formatting required."""
@@ -176,10 +219,10 @@ class MySysLogHandler(logging.handlers.SysLogHandler):
         # We need to convert record level to lowercase, maybe this will
         # change in the future.
 
-        prio = '<%d>' % self.encodePriority(self.facility,
-                                            self.mapPriority(record.levelname))
+        prio = b'<%d>' % self.encodePriority(self.facility,
+                                             self.mapPriority(record.levelname))
         # Message is a string. Convert to bytes as required by RFC 5424
-        if type(msg) is unicode:
+        if type(msg) is six.text_type:
             msg = msg.encode('utf-8')
         msg = prio + msg
         try:
