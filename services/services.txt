@@ -1,0 +1,7 @@
+asa
+banner
+intel_amt
+micros
+mirai_worm_monitor
+simple_http
+weblogic
