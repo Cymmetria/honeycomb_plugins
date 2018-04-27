@@ -1,0 +1,14 @@
+sudo: false
+
+install: skip
+script: skip
+
+deploy:
+  provider: pages
+  script: bash mkpkg.sh
+  skip_cleanup: true
+  keep-history: true
+  github-token: $GITHUB_TOKEN
+  local-dir: dist/
+  on:
+    branch: master
