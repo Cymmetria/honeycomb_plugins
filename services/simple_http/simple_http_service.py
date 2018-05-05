@@ -86,7 +86,7 @@ class SimpleHTTPService(ServerCustomService):
             self.httpd = None
 
     def test(self):
-        """trigger service alerts and return a list of triggered event types"""
+        """Test service alerts and return a list of triggered event types."""
         event_types = list()
         self.logger.debug('executing service test')
         requests.get('http://localhost:{}/'.format(self.service_args.get('port', DEFAULT_PORT)))

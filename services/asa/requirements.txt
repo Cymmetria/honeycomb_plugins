@@ -1,2 +1,0 @@
-click
-git+git://github.com/Cymmetria/ike
