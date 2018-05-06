@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from SocketServer import ThreadingMixIn
 
 import weblogic_server
 from base_service import ServerCustomService
 
+from six.moves.socketserver import ThreadingMixIn
 from six.moves.BaseHTTPServer import HTTPServer
 
 

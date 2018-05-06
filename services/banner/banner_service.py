@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 
 import socket
 import logging
-from socketserver import ThreadingTCPServer, StreamRequestHandler
+
+from six.moves.socketserver import ThreadingTCPServer, StreamRequestHandler
 
 from base_service import ServerCustomService
 

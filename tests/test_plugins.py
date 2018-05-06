@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import os
+import sys
 import json
 import signal
 import subprocess
@@ -18,39 +19,75 @@ from honeycomb.utils.wait import wait_until, search_json_log
 from utils.defs import commands, args
 from utils.test_utils import sanity_check
 
-TEST_ARGS = "test.args.json"
-RUN_HONEYCOMB = "coverage run --parallel-mode --module --source=services,integrations honeycomb".split(" ")
+TEST_ARGS_FILE = "test.args.json"
+RUN_HONEYCOMB = "coverage run --parallel-mode --module " \
+                "--source={} honeycomb".format(",".join([defs.SERVICES, defs.INTEGRATIONS])).split(" ")
 
-services = next(os.walk('services'))[1]
-integrations = next(os.walk('integrations'))[1]
+services = next(os.walk(defs.SERVICES))[1]
+integrations = next(os.walk(defs.INTEGRATIONS))[1]
 
 
 @pytest.fixture
-def running_daemon(tmpdir, service):
-    """Provide a running daemon with :func:`service_installed`."""
-    # home = service_installed(service=service)
+def running_daemon(tmpdir, service_name):
+    """Provide a daemoninzed service."""
+
+    def install_service():
+        """Install a service (and its dependencies)."""
+        result = CliRunner().invoke(cli, args=args.COMMON_ARGS + [home, defs.SERVICE,
+                                    commands.INSTALL, service_path])
+        sanity_check(result, home)
+        assert os.path.exists(os.path.join(home, defs.SERVICES, service_name, "{}_service.py".format(service_name)))
+
+    def uninstall_service():
+        """Uninstall a service."""
+        result = CliRunner().invoke(cli, args=args.COMMON_ARGS + [home, defs.SERVICE, commands.UNINSTALL,
+                                                                  args.YES, service_name])
+        sanity_check(result, home)
+        assert os.path.exists(os.path.join(home, defs.SERVICES))
+        assert not os.path.exists(os.path.join(home, defs.SERVICES, service_name))
+
+    def get_test_args():
+        """Resolve test args from file."""
+        service_args = []
+        test_args_path = os.path.join(service_path, TEST_ARGS_FILE)
+        if os.path.exists(test_args_path):
+            with open(test_args_path) as test_args_fh:
+                test_args = json.loads(test_args_fh.read())
+            for (k, v) in six.iteritems(test_args):
+                service_args.append("{}={}".format(k, v))
+
+        return service_args
+
+    def start_service():
+        """Launch service in daemon mode."""
+        # Import the installed service venv to path for any installed dependencies
+        installed_venv = os.path.realpath(os.path.join(home, defs.SERVICES, service_name, defs.DEPS_DIR))
+        print("Adding {} to path".format(installed_venv))
+        os.environ['PATH'] += ":{}".format(installed_venv)
+
+        cmdargs = args.COMMON_ARGS + [home, defs.SERVICE, commands.RUN, args.EDITABLE, service_path] + service_args
+        p = subprocess.Popen(RUN_HONEYCOMB + cmdargs, env=os.environ)
+
+        assert wait_until(search_json_log, filepath=os.path.join(home, defs.DEBUG_LOG_FILE), total_timeout=3,
+                          key="message", value="service is ready")
+        return p
+
+    def stop_service():
+        result = CliRunner().invoke(cli, args=args.COMMON_ARGS + [home, defs.SERVICE, commands.STOP, service_name])
+        sanity_check(result, home)
+
+
     home = str(tmpdir)
-    service = os.path.join(defs.SERVICES, service)
+    service_path = os.path.join(defs.SERVICES, service_name)
 
-    service_args = []
-    test_args_path = os.path.join(service, TEST_ARGS)
-    if os.path.exists(test_args_path):
-        with open(test_args_path) as test_args_fh:
-            test_args = json.loads(test_args_fh.read())
-        for (k, v) in six.iteritems(test_args):
-            service_args.append("{}={}".format(k, v))
+    install_service()
+    service_args = get_test_args()
+    p = start_service()
 
-    cmdargs = args.COMMON_ARGS + [home, defs.SERVICE, commands.RUN, args.EDITABLE, service] + service_args
-    cmd = RUN_HONEYCOMB + cmdargs
-    p = subprocess.Popen(cmd, env=os.environ)
+    yield home, service_path
 
-    assert wait_until(search_json_log, filepath=os.path.join(home, defs.DEBUG_LOG_FILE), total_timeout=3,
-                      key="message", value="service is ready")
-
-    yield home, service
-
-    p.send_signal(signal.SIGINT)
-    p.wait()
+    stop_service(home)
+    uninstall_service(home, service_name)
 
 
 # @pytest.fixture
@@ -79,7 +116,7 @@ def running_daemon(tmpdir, service):
 #     assert not os.path.exists(os.path.join(home, defs.INTEGRATIONS, integration))
 #
 
-@pytest.mark.parametrize('service', services)
+@pytest.mark.parametrize('service_name', services)
 def test_service(running_daemon, service):
     """Test all existing services."""
     home, service = running_daemon
