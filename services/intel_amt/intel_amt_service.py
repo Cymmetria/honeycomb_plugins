@@ -2,27 +2,26 @@
 from __future__ import unicode_literals
 
 import os
+import re
 import posixpath
-import urllib
-import urlparse
+
 import BaseHTTPServer
 import SimpleHTTPServer
-import re
+import urllib
+import urlparse
 
-from utils import defs
 from base_service import ServerCustomService
 
 AMT_PORT = 16992
-
 AMT_AUTH_ATTEMPT_ALERT_TYPE = "intel_amt_auth"
 AMT_AUTH_BYPASS_ALERT_TYPE = "intel_amt_bypass"
 
-ALERT_TYPE = defs.AlertFields.EVENT_TYPE.name
-DESCRIPTION = defs.AlertFields.EVENT_DESC.name
-ORIGINATING_IP = defs.AlertFields.ORIGINATING_IP.name
-ORIGINATING_PORT = defs.AlertFields.ORIGINATING_PORT.name
-ADDITIONAL_FIELDS = defs.AlertFields.ADDITIONAL_FIELDS.name
-USERNAME = defs.AlertFields.USERNAME.name
+ALERT_TYPE = "event_type"
+DESCRIPTION = "event_description"
+ORIGINATING_IP = "originating_ip"
+ORIGINATING_PORT = "originating_port"
+ADDITIONAL_FIELDS = "additional_fields"
+USERNAME = "username"
 
 
 class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
@@ -38,13 +37,15 @@ class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         """
         Copy of translate_path but instead of start from current directory, change to the dir of the file
         """
-        # abandon query parameters
-        path = path.split('?', 1)[0]
-        path = path.split('#', 1)[0]
-        # Don't forget explicit trailing slash when normalizing. Issue17324
-        trailing_slash = path.rstrip().endswith('/')
+
+        # Abandon query parameters
+        path = path.split("?", 1)[0]
+        path = path.split("#", 1)[0]
+        # Don't forget explicit trailing slash when normalizing. Issue 17324 of
+        # SimpleHTTPServer - https://bugs.python.org/issue17324
+        trailing_slash = path.rstrip().endswith("/")
         path = posixpath.normpath(urllib.unquote(path))
-        words = path.split('/')
+        words = path.split("/")
         words = filter(None, words)
         path = os.path.dirname(__file__)
         for word in words:
@@ -54,22 +55,22 @@ class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 continue
             path = os.path.join(path, word)
         if trailing_slash:
-            path += '/'
+            path += "/"
         return path
 
     def do_GET(self):
         parsed_path = urlparse.urlparse(self.path)
         path = parsed_path.path
-        if path == '' or path == '/':
+        if path == "" or path == "/":
             self.send_response(303)
-            self.send_header('Location', '/logon.htm')
+            self.send_header("Location", "/logon.htm")
             self.end_headers()
             return
-        if path in ['/index.htm', '/hw-sys.htm']:
-            authorization = self.headers.get('Authorization')
+        if path in ["/index.htm", "/hw-sys.htm"]:
+            authorization = self.headers.get("Authorization")
             if authorization is None:
                 self.send_response(401)
-                self.send_header('WWW-Authenticate', 'Digest realm="Intel(R) AMT (ID:FE2DAD21-AA72-E211-9722-9134FDA321A2)", nonce="5911b8f9de20f6f1e7c71309a8af03c2", qop="auth"')
+                self.send_header("WWW-Authenticate", 'Digest realm="Intel(R) AMT (ID:FE2DAD21-AA72-E211-9722-9134FDA321A2)", nonce="5911b8f9de20f6f1e7c71309a8af03c2", qop="auth"')
                 self.end_headers()
                 return
 
@@ -91,7 +92,7 @@ class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 )
             else:
                 self.send_response(401)
-                self.send_header('WWW-Authenticate', 'Digest realm="Intel(R) AMT (ID:FE2DAD21-AA72-E211-9722-9134FDA321A2)", nonce="5911b8f9de20f6f1e7c71309a8af03c2", qop="auth"')
+                self.send_header("WWW-Authenticate", 'Digest realm="Intel(R) AMT (ID:FE2DAD21-AA72-E211-9722-9134FDA321A2)", nonce="5911b8f9de20f6f1e7c71309a8af03c2", qop="auth"')
                 self.end_headers()
                 self.emit(
                     {

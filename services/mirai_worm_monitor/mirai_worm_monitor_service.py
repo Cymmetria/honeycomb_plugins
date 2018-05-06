@@ -9,45 +9,44 @@ import gevent
 import gevent.server
 from telnetsrv.green import TelnetHandler, command
 
-from utils import defs
 from base_service import ServerCustomService
 from custom_pool import CustomPool
 
 
 DEFAULT_TIMEOUT = 60  # Use to timeout the connection
 POOL = 10
-PORT = 23
+PORT = 2223
 IP_ADDRESS = "0.0.0.0"
 
-EVENT_TYPE = defs.AlertFields.EVENT_TYPE.name
 MIRAI_DETECTED_EVENT_TYPE = "mirai_detection"
 BUSYBOX_TELNET_INTERACTION_EVENT_TYPE = "busybox_telnet_execution"
 BUSYBOX_TELNET_AUTHENTICATION = "busybox_telnet_authentication"
 BUSYBOX_COMMAND_DESCRIPTION = "Command executed"
 
 # Fields
-CMD = defs.AlertFields.CMD.name
-USERNAME = defs.AlertFields.USERNAME.name
-PASSWORD = defs.AlertFields.PASSWORD.name
-DESCRIPTION = defs.AlertFields.EVENT_DESC.name
-ORIGINATING_IP = defs.AlertFields.ORIGINATING_IP.name
-ORIGINATING_PORT = defs.AlertFields.ORIGINATING_PORT.name
+EVENT_TYPE = "event_type"
+CMD = "cmd"
+USERNAME = "username"
+PASSWORD = "password"
+DESCRIPTION = "event_description"
+ORIGINATING_IP = "originating_ip"
+ORIGINATING_PORT = "originating_port"
 
 DDOS_NAME = "Mirai"
 COMMANDS = {
-        "ECCHI": "ECCHI: applet not found",
-        "ps": "1 pts/21   00:00:00 init",
-        "cat /proc/mounts": "tmpfs /run tmpfs rw,nosuid,noexec,relatime,size=1635616k,mode=755 0 0",
-        b"echo -e \\x6b\\x61\\x6d\\x69/dev > /dev/.nippon": "",
-        "cat /dev/.nippon": "kami/dev",
-        "rm /dev/.nippon": "",
-        b"echo -e \\x6b\\x61\\x6d\\x69/run > /run/.nippon": "",
-        "cat /run/.nippon": "kami/run",
-        "rm /run/.nippon": "",
-        "cat /bin/echo": b"\\x7fELF\\x01\\x01\\x01\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x00\\x08\\x00\\x00\\x00\\x00\\x00"
+    "ECCHI": "ECCHI: applet not found",
+    "ps": "1 pts/21   00:00:00 init",
+    "cat /proc/mounts": "tmpfs /run tmpfs rw,nosuid,noexec,relatime,size=1635616k,mode=755 0 0",
+    b"echo -e \\x6b\\x61\\x6d\\x69/dev > /dev/.nippon": "",
+    "cat /dev/.nippon": "kami/dev",
+    "rm /dev/.nippon": "",
+    b"echo -e \\x6b\\x61\\x6d\\x69/run > /run/.nippon": "",
+    "cat /run/.nippon": "kami/run",
+    "rm /run/.nippon": "",
+    "cat /bin/echo": b"\\x7fELF\\x01\\x01\\x01\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x00\\x08\\x00\\x00\\x00\\x00\\x00"
 }
 
-OVERWRITE_COMMANDS = {}  # Use to overwrite default telnet command behavior crahsing the handler (e.g. 'help')
+OVERWRITE_COMMANDS = {}  # Use to overwrite default telnet command behavior crashing the handler (e.g. 'help')
 OVERWRITE_COMMANDS_LIST = ["help"]  # Don't forget to update the list when adding new commands
 
 BUSY_BOX = "/bin/busybox"
@@ -55,7 +54,7 @@ MIRAI_SCANNER_COMMANDS = ["shell", "sh", "enable"]
 
 
 class MyTelnetHandler(TelnetHandler, object):
-    WELCOME = 'welcome'
+    WELCOME = "welcome"
     PROMPT = ">"
     authNeedUser = True
     authNeedPass = True
@@ -96,7 +95,7 @@ class MyTelnetHandler(TelnetHandler, object):
         full_command = " ".join(params)
         for cmd in full_command.split(";"):
             cmd = cmd.strip()
-            # Check for busy box executable
+            # Check for busybox executable
             if cmd.startswith(BUSY_BOX):
                 cmd = cmd.replace(BUSY_BOX, "")
                 cmd = cmd.strip()
@@ -107,8 +106,8 @@ class MyTelnetHandler(TelnetHandler, object):
 
     def _send_alert(self, **kwargs):
         kwargs.update({
-                ORIGINATING_IP: self.client_address[0],
-                ORIGINATING_PORT: self.client_address[1],
+            ORIGINATING_IP: self.client_address[0],
+            ORIGINATING_PORT: self.client_address[1],
             })
         kwargs.update(self.active_users.get(self.client_address, {}))
         self.emit(kwargs)
@@ -120,7 +119,7 @@ class MyTelnetHandler(TelnetHandler, object):
             self._send_alert(**{EVENT_TYPE: MIRAI_DETECTED_EVENT_TYPE})
             self.ips_command_executed.pop(self.client_address[0], None)
         else:
-            self.logger.debug("no fingerprinted for ip %s with with executed commands %s",
+            self.logger.debug("no fingerprinted for ip %s with executed commands %s",
                               self.client_address, self.ips_command_executed[self.client_address[0]])
 
     def _store_command(self, cmd):
@@ -178,6 +177,25 @@ class MiraiWormMonitorService(ServerCustomService):
 
         self.signal_ready()
         self.server.serve_forever()
+
+    def test(self):
+        """trigger service alerts and return a list of triggered event types"""
+
+        event_types = [BUSYBOX_TELNET_AUTHENTICATION]
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.settimeout(2)
+        client_socket.connect(("127.0.0.1", PORT))
+        client_socket.send("my_username\r\n")
+        client_socket.send("mypass\r\n")
+        for command in COMMANDS:
+            event_types.append(BUSYBOX_TELNET_INTERACTION_EVENT_TYPE)
+            client_socket.send("{shell} {command}\r\n".format(shell=BUSY_BOX, command=command))
+
+        event_types.append(MIRAI_DETECTED_EVENT_TYPE)
+        client_socket.send("bye\r\n")
+        event_types.append(BUSYBOX_TELNET_AUTHENTICATION)
+
+        return event_types
 
 
 service_class = MiraiWormMonitorService

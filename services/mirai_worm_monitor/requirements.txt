@@ -1,1 +1,2 @@
+telnetsrv==0.4
 gevent==1.2.2
