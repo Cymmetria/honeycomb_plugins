@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../common_xog.css" type="text/css">
+<title>Internet Services</title>
+<base  target="main">
+</head>
+<body><div id=frameR>
+<br><table border=0 cellspacing=0 cellpadding=0><tr><td></td><td nowrap><font class=s5>Email Settings</font><br>
+</td></tr></table><br><form method="post" action="http://%IPADDRESSPLACEHOLDER%/setting/setemail.htm"><span class=tblcap>Email Server Setup (Required to send Email)</span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Enter the &quot;From:&quot; Email Address:</td><td class=std_2><input  class=s2 name=104001 type=text value="contact@dauphinblanc.fr" size=40 maxlength=63 ></td></tr>
+<tr><td class=std_nobold_1>SMTP Server (IP Address or DNS Name):</td><td class=std_2><input  class=s2 name=104002 type=text value="smtp.dauphinblanc.fr" size=40 maxlength=63 ></td></tr>
+<tr><td class=std_nobold_1></td><td class=std_2><a href="setemailmx.html">Auto Detect SMTP Server</a></td></tr>
+<tr><td class=std_nobold_1>SMTP Port:</td><td class=std_2><input  class=s2 name=104006 type=text value="587" size=7 maxlength=5 > (1 ~ 65535) </td></tr>
+<tr><td nowrap></td><td nowrap><a href="http://www.office.xerox.com/cgi-bin/printer.pl?APP=CWIS&amp;Page=Color&amp;Model=WorkCentre+WC6605&amp;PgName=knowledgebase&amp;Language=french" target="_blank">How to find SMTP Server and port</a></td></tr></table>
+<br><span class=tblcap>Email Send Authentication </span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Authentication Type:</td><td class=std_2><select  class=s2 name=104007 ><option  class=s2 value="0"> No Authentication<option  class=s2 value="7" selected>*SMTP AUTH (AUTO)</select></td></tr>
+<tr><td nowrap></td><td nowrap><a href="http://www.office.xerox.com/cgi-bin/printer.pl?APP=CWIS&amp;Page=Color&amp;Model=WorkCentre+WC6605&amp;PgName=knowledgebase&amp;Language=french" target="_blank">How to determine Authentication Type</a></td></tr><tr><td class=std_nobold_1>SMTP Login Name:</td><td class=std_2><input  class=s2 name=104008 type=text value="contact@dauphinblanc.fr" size=40 maxlength=63 ></td></tr>
+<tr><td class=std_nobold_1>SMTP Password:</td><td class=std_2><input  class=s2 name=104009 type=password value="" size=38 maxlength=31 ></td></tr>
+<tr><td class=std_nobold_1>Re-enter SMTP Password:</td><td class=std_2><input  class=s2 name=10400a type=password value="" size=38 maxlength=31 ></td></tr>
+<tr><td class=std_nobold_1>SMTP Server Connection Status:</td><td class=std_2><table border=0 class=glib_local>
+<tr><td class=status_1>Ready</td><td class=status_2>
+<script language="JavaScript">
+<!--
+document.write("<input type='button' onClick=window.location='setemail.htm' value='Refresh Status' class=xeroxbutton>")
+//-->
+</script>
+
+<noscript>
+<font class=s2><a href="setemail.html" target="_self">Refresh Status</a></font>
+</noscript>
+</td></tr>
+</table>
+</td></tr>
+</table>
+<br><table border=0 align=center class=btn>
+<tr><td class=btn_oside_1><input type="submit" value="Save Changes" class=xeroxbutton></td><td class=btn_oside_1><input type="reset"  value="Discard Changes" class=xeroxbutton></td></tr>
+</table>
+</form></div></body>
+</html>

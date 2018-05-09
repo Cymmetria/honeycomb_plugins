@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../common_xog.css" type="text/css">
+<title>Internet Services</title>
+<base  target="main">
+</head>
+<body><div id=frameR>
+<br><table border=0 cellspacing=0 cellpadding=0><tr><td></td><td nowrap><font class=s5>TCP/IP - Dual Stack</font><br>
+</td></tr></table><br><form method="post" action="http://%IPADDRESSPLACEHOLDER%/setting/setipdual.htm"><table class=std_3>
+<tr><td width=50%>IP Mode</td><td width=50%><table border="0" cellpadding="0" cellspacing="0" width="100%" class=s3 ><tr><td align="center" nowrap><font class=s3><a href="setipv4.html"><img src="../images/optunpressed.gif"  width=19 height=18 border=0 align="bottom" alt=""> IPv4</a></font></td><td align="center" nowrap><font class=s3><a href="setipv6.html"><img src="../images/optunpressed.gif"  width=19 height=18 border=0 align="bottom" alt=""> IPv6</a></font></td><td align="center" nowrap><font class=s3><a href="setipdual.html"><img src="../images/optpressed.gif"  width=19 height=18 border=0 align="bottom" alt=""> Dual Stack</a></font></td><input  class=s2 name=10200f type=hidden value="10" ></tr></table></td></tr>
+</table>
+<br><table class=std_3>
+<tr><td class=std_nobold_1>Host Name:</td><td class=std_2><input  class=s2 name=102001 type=text value="%HOSTNAMETOKEN%" size=40 maxlength=47 ></td></tr>
+<tr><td colspan=2 class=bdr_1><span class=text_bdr1>IPv4</span></td></tr>
+<tr><td class=std_nobold_1>Get IP Address:</td><td class=std_2><select  class=s2 name=102002 ><option  class=s2 value="0" selected>*Manual<option  class=s2 value="1"> DHCP<option  class=s2 value="2"> BOOTP<option  class=s2 value="3"> RARP<option  class=s2 value="4"> DHCP / AutoIP</select></td></tr>
+<tr><td class=std_nobold_1>IP Address:</td><td class=std_2><input  class=s2 name=102006 type=text value="192" size=3 maxlength=3 >.<input  class=s2 name=102005 type=text value="168" size=3 maxlength=3 >.<input  class=s2 name=102004 type=text value="1" size=3 maxlength=3 >.<input  class=s2 name=102003 type=text value="215" size=3 maxlength=3 ></td></tr>
+<tr><td class=std_nobold_1>Network Mask:</td><td class=std_2><input  class=s2 name=10200a type=text value="255" size=3 maxlength=3 >.<input  class=s2 name=102009 type=text value="255" size=3 maxlength=3 >.<input  class=s2 name=102008 type=text value="255" size=3 maxlength=3 >.<input  class=s2 name=102007 type=text value="0" size=3 maxlength=3 ></td></tr>
+<tr><td class=std_nobold_1>Router / Gateway Address:</td><td class=std_2><input  class=s2 name=10200e type=text value="192" size=3 maxlength=3 >.<input  class=s2 name=10200d type=text value="168" size=3 maxlength=3 >.<input  class=s2 name=10200c type=text value="1" size=3 maxlength=3 >.<input  class=s2 name=10200b type=text value="1" size=3 maxlength=3 ></td></tr>
+<tr><td colspan=2 class=bdr_1><span class=text_bdr1>IPv6</span></td></tr>
+<tr><td class=std_nobold_1>Enable Manual Address:</td><td class=std_2><input  class=s2 name=102010 type=checkbox value="1" >Enabled
+</td></tr>
+<tr><td class=std_nobold_1>Get IP Address from DHCP:</td><td class=std_2><input  class=s2 name=102015 type=checkbox value="1" >Enabled
+</td></tr>
+<tr><td class=tcpiptbox_1_nobold>IP Address:</td><td class=tcpiptbox_2><input  class=s2 name=102011 type=text value="::" size=40 maxlength=39 > / <input  class=s2 name=102012 type=text value="0" size=4 maxlength=3 ></td></tr>
+<tr><td class=std_nobold_1>Stateless Address 1:</td><td class=std_2>::/0</td></tr>
+<tr><td class=std_nobold_1>Stateless Address 2:</td><td class=std_2>::/0</td></tr>
+<tr><td class=std_nobold_1>Stateless Address 3:</td><td class=std_2>::/0</td></tr>
+<tr><td class=std_nobold_1>Link-Local Address:</td><td class=std_2>%IPV6ADDRESS%</td></tr>
+<tr><td class=std_nobold_1>Gateway Address:</td><td class=std_2><input  class=s2 name=102013 type=text value="::" size=40 maxlength=39 ></td></tr>
+<tr><td class=std_nobold_1>Automatically Configured Gateway Address:</td><td class=std_2>::</td></tr>
+</table>
+<br><span class=tblcap>DNS</span>
+<table class=std_3>
+<tr><td class=std_nobold_1>DNS Domain Name:</td><td class=std_2><input  class=s2 name=102207 type=text value="orange.fr" size=40 maxlength=255 ></td></tr>
+<tr><td colspan=2 class=bdr_1><span class=text_bdr1>IPv4</span></td></tr>
+<tr><td class=std_nobold_1>Obtain DNS Server Address Automatically:</td><td class=std_2><input  class=s2 name=102205 type=hidden value="0" ><input  class=s2 name=102205 type=checkbox value="1" checked >Enabled
+</td></tr>
+<tr><td class=std_nobold_1>DNS Server Address:</td><td class=std_2><input  class=s2 name=102204 type=text value="192" size=3 maxlength=3 >.<input  class=s2 name=102203 type=text value="168" size=3 maxlength=3 >.<input  class=s2 name=102202 type=text value="1" size=3 maxlength=3 >.<input  class=s2 name=102201 type=text value="1" size=3 maxlength=3 ></td></tr>
+<tr><td colspan=2 class=bdr_1><span class=text_bdr1>IPv6</span></td></tr>
+<tr><td class=std_nobold_1>Obtain IPv6 DNS Server Address Automatically:</td><td class=std_2><input  class=s2 name=10220a type=hidden value="0" ><input  class=s2 name=10220a type=checkbox value="2" checked >Enabled
+</td></tr>
+<tr><td class=std_nobold_1>DNS Server Address:</td><td class=std_2><input  class=s2 name=102209 type=text value="::" size=40 maxlength=39 ></td></tr>
+<tr><td colspan=2 align=center class=bdr_2></td></tr>
+<tr><td class=std_nobold_1>Dynamic DNS Registration (IPv4):</td><td class=std_2><input  class=s2 name=102208 type=hidden value="0" ><input  class=s2 name=102208 type=checkbox value="1" checked >Enabled
+</td></tr>
+<tr><td class=std_nobold_1>Dynamic DNS Registration (IPv6):</td><td class=std_2><input  class=s2 name=10220b type=checkbox value="1" >Enabled
+</td></tr>
+<tr><td class=std_nobold_1>Auto Generation of Search List:</td><td class=std_2><input  class=s2 name=10220d type=hidden value="0" ><input  class=s2 name=10220d type=checkbox value="1" checked >Enabled
+</td></tr>
+<tr><td class=std_nobold_1>Search Domain Name:</td><td class=std_2><input  class=s2 name=10220e type=text value="" size=40 maxlength=255 ></td></tr>
+<tr><td class=std_nobold_1>Connection Timeout:</td><td class=std_2><input  class=s2 name=10220f type=text value="1" size=4 maxlength=2 > seconds (1 ~ 60) </td></tr>
+<tr><td class=std_nobold_1>DNS Resolution via IPv6 First:</td><td class=std_2><input  class=s2 name=10220c type=checkbox value="1" >Enabled
+</td></tr>
+</table>
+<br><span class=tblcap>WINS Server</span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Get WINS Server Address:</td><td class=std_2><input  class=s2 name=102302 type=hidden value="0" ><input  class=s2 name=102302 type=checkbox value="1" checked >DHCP
+</td></tr>
+<tr><td class=std_nobold_1>Primary WINS Server Address:</td><td class=std_2><input  class=s2 name=102306 type=text value="0" size=3 maxlength=3 >.<input  class=s2 name=102305 type=text value="0" size=3 maxlength=3 >.<input  class=s2 name=102304 type=text value="0" size=3 maxlength=3 >.<input  class=s2 name=102303 type=text value="0" size=3 maxlength=3 ></td></tr>
+<tr><td class=std_nobold_1>Secondary WINS Server Address:</td><td class=std_2><input  class=s2 name=10230a type=text value="0" size=3 maxlength=3 >.<input  class=s2 name=102309 type=text value="0" size=3 maxlength=3 >.<input  class=s2 name=102308 type=text value="0" size=3 maxlength=3 >.<input  class=s2 name=102307 type=text value="0" size=3 maxlength=3 ></td></tr>
+</table>
+<br><table border=0 align=center class=btn>
+<tr><td class=btn_oside_1><input type="submit" value="Save Changes" class=xeroxbutton></td><td class=btn_oside_1><input type="reset"  value="Discard Changes" class=xeroxbutton></td></tr>
+</table>
+</form></div></body>
+</html>

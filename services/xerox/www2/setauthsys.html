@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../common_xog.css" type="text/css">
+<title>Internet Services</title>
+<base  target="main">
+</head>
+<body><div id=frameR>
+<br><table border=0 cellspacing=0 cellpadding=0><tr><td></td><td nowrap><font class=s5>Authentication System</font><br>
+</td></tr></table><br><form method="post" action="http://%IPADDRESSPLACEHOLDER%/setting/setauthsys.htm"><span class=tblcap>Authentication Type (for User Authentication)</span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Authentication System Settings:</td><td class=std_2><select  class=s2 name=102a03 ><option  class=s2 value="0"> Kerberos (Windows)<option  class=s2 value="3" selected>*LDAP<option  class=s2 value="6"> Xerox Secure Access</select></td></tr>
+<tr><td class=std_nobold_1>Kerberos Server:</td><td class=std_2><a href="setkrb5.html">Kerberos Server</a></td></tr>
+<tr><td class=std_nobold_1>LDAP Server:</td><td class=std_2><a href="setldapsvr.html">LDAP Server</a></td></tr>
+<tr><td class=std_nobold_1>Xerox Secure Access Settings:</td><td class=std_2><a href="setcasetup.html">Xerox Secure Access Settings</a></td></tr>
+</table>
+<br><span class=tblcap>Authentication Type (for Server Address/Phone Book)</span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Authentication System Settings:</td><td class=std_2><select  class=s2 name=102a02 ><option  class=s2 value="0"> Kerberos (Windows)<option  class=s2 value="3" selected>*LDAP</select></td></tr>
+<tr><td class=std_nobold_1>Kerberos Server:</td><td class=std_2><a href="setkrb5.html">Kerberos Server</a></td></tr>
+<tr><td class=std_nobold_1>LDAP Server:</td><td class=std_2><a href="setldapsvr.html">LDAP Server</a></td></tr>
+</table>
+<br><span class=tblcap>Optional Information</span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Server Response Timeout:</td><td class=std_2><input  class=s2 name=102a04 type=text value="5" size=4 maxlength=2 > seconds (1 ~ 75) </td></tr>
+<tr><td class=std_nobold_1>Search Timeout:</td><td class=std_2><input  class=s2 name=102a05 type=text value="30" size=5 maxlength=3 > seconds (5 ~ 120) </td></tr>
+</table>
+<br><table border=0 align=center class=btn>
+<tr><td class=btn_oside_1><input type="submit" value="Save Changes" class=xeroxbutton></td><td class=btn_oside_1><input type="reset"  value="Discard Changes" class=xeroxbutton></td></tr>
+</table>
+</form></div></body>
+</html>

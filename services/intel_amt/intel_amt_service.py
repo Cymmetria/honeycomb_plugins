@@ -9,12 +9,15 @@ import BaseHTTPServer
 import SimpleHTTPServer
 import urllib
 import urlparse
+import requests
 
 from base_service import ServerCustomService
 
 AMT_PORT = 16992
 AMT_AUTH_ATTEMPT_ALERT_TYPE = "intel_amt_auth"
 AMT_AUTH_BYPASS_ALERT_TYPE = "intel_amt_bypass"
+AUTHORIZATION_HEADER = "WWW-Authenticate"
+AUTHORIZATION_RESPONSE = 'Digest realm="Intel(R) AMT (ID:FE2DAD21-AA72-E211-9722-9134FDA321A2)", nonce="5911b8f9de20f6f1e7c71309a8af03c2", qop="auth"'
 
 ALERT_TYPE = "event_type"
 DESCRIPTION = "event_description"
@@ -70,7 +73,8 @@ class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             authorization = self.headers.get("Authorization")
             if authorization is None:
                 self.send_response(401)
-                self.send_header("WWW-Authenticate", 'Digest realm="Intel(R) AMT (ID:FE2DAD21-AA72-E211-9722-9134FDA321A2)", nonce="5911b8f9de20f6f1e7c71309a8af03c2", qop="auth"')
+                self.send_header(AUTHORIZATION_HEADER,
+                                 AUTHORIZATION_RESPONSE)
                 self.end_headers()
                 return
 
@@ -92,7 +96,7 @@ class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 )
             else:
                 self.send_response(401)
-                self.send_header("WWW-Authenticate", 'Digest realm="Intel(R) AMT (ID:FE2DAD21-AA72-E211-9722-9134FDA321A2)", nonce="5911b8f9de20f6f1e7c71309a8af03c2", qop="auth"')
+                self.send_header(AUTHORIZATION_HEADER, AUTHORIZATION_RESPONSE)
                 self.end_headers()
                 self.emit(
                     {
@@ -124,6 +128,18 @@ class AMTService(ServerCustomService):
         self.server = BaseHTTPServer.HTTPServer(("0.0.0.0", AMT_PORT), handler)
         self.signal_ready()
         self.server.serve_forever()
+
+    def test(self):
+        """trigger service alerts and return a list of triggered event types"""
+
+        event_types = [BUSYBOX_TELNET_AUTHENTICATION]
+        url = 'http://127.0.0.1:{}/index.htm'.format(AMT_PORT)
+        requests.get(url, headers={'Authorization': 'username="test"'})
+        event_types.append(AMT_AUTH_ATTEMPT_ALERT_TYPE)
+        requests.get(url, headers={'Authorization': 'response=""'})
+        event_types.append(AMT_AUTH_BYPASS_ALERT_TYPE)
+
+        return event_types
 
     def __str__(self):
         return "AMT"

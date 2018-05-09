@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../common_xog.css" type="text/css">
+<title>Internet Services</title>
+<base  target="main">
+</head>
+<body><div id=frameR>
+<br><table border=0 cellspacing=0 cellpadding=0><tr><td></td><td nowrap><font class=s5>SMB</font><br>
+</td></tr></table><br><form method="post" action="http://%IPADDRESSPLACEHOLDER%/setting/setsmb.htm"><table class=std_3>
+<tr><td class=std_nobold_1>Enable SMB:</td><td class=std_2><input  class=s2 name=103008 type=hidden value="0" ><input  class=s2 name=103008 type=checkbox value="1" checked >
+</td></tr>
+<tr><td class=std_nobold_1>Host Name:</td><td class=std_2><input  class=s2 name=103a01 type=text value="%HOSTNAMETOKEN%" size=40 maxlength=15 ></td></tr>
+<tr><td class=std_nobold_1>Workgroup:</td><td class=std_2><input  class=s2 name=103a02 type=text value="WORKGROUP" size=16 maxlength=15 ></td></tr>
+<tr><td class=std_nobold_1>Maximum number of sessions:</td><td class=std_2>5</td></tr>
+<tr><td class=std_nobold_1>Unicode Support:</td><td class=std_2><select  class=s2 name=103a05 ><option  class=s2 value="1"> Enabled<option  class=s2 value="0" selected>*Disabled</select></td></tr>
+<tr><td class=std_nobold_1>Auto Master Mode:</td><td class=std_2><select  class=s2 name=103a07 ><option  class=s2 value="1" selected>*Enabled<option  class=s2 value="0"> Disabled</select></td></tr>
+<tr><td class=std_nobold_1>Password Encryption:</td><td class=std_2><select  class=s2 name=103a06 ><option  class=s2 value="1" selected>*Enabled<option  class=s2 value="0"> Disabled</select></td></tr>
+<tr><td class=std_nobold_1>Print Timeout:</td><td class=std_2><input  class=s2 name=103a09 type=text value="600" size=6 maxlength=4 > seconds (60 ~ 3600) </td></tr>
+<tr><td class=std_nobold_1>Non-Print Timeout:</td><td class=std_2><input  class=s2 name=103a08 type=text value="180" size=6 maxlength=4 > seconds (60 ~ 3600) </td></tr>
+</table>
+<br><table border=0 align=center class=btn>
+<tr><td class=btn_oside_1><input type="submit" value="Save Changes" class=xeroxbutton></td><td class=btn_oside_1><input type="reset"  value="Discard Changes" class=xeroxbutton></td></tr>
+</table>
+</form></div></body>
+</html>

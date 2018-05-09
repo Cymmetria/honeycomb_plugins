@@ -1,0 +1,31 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../common_xog.css" type="text/css">
+<title>Internet Services</title>
+<base  target="main">
+</head>
+<body><div id=frameR>
+<br><table border=0 cellspacing=0 cellpadding=0><tr><td></td><td nowrap><font class=s5>IPsec</font><br>
+</td></tr></table><br><form method="post" action="http://%IPADDRESSPLACEHOLDER%/setting/setipsec.htm"><span class=tblcap>Configure IPsec</span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Protocol:</td><td class=std_2><input  class=s2 name=102601 type=checkbox value="1" >Enabled
+</td></tr>
+<tr><td class=std_nobold_1>IKE Authentication Method:</td><td class=std_2>Preshared Key</td></tr>
+<tr><td class=std_nobold_1>Shared Key:</td><td class=std_2><input  class=s2 name=102603 type=password value="" size=50 maxlength=255 ></td></tr>
+<tr><td class=std_nobold_1>Verify Shared Key:</td><td class=std_2><input  class=s2 name=102603 type=password value="" size=50 maxlength=255 ></td></tr>
+<tr><td class=std_nobold_1>IKE SA Lifetime:</td><td class=std_2><input  class=s2 name=102605 type=text value="480" size=7 maxlength=5 > minutes (5 ~ 28800) </td></tr>
+<tr><td class=std_nobold_1>IPsec SA Lifetime:</td><td class=std_2><input  class=s2 name=102606 type=text value="60" size=6 maxlength=4 > minutes (5 ~ 2880) </td></tr>
+<tr><td class=std_nobold_1>DH Group:</td><td class=std_2><select  class=s2 name=102608 ><option  class=s2 value="0"> G1<option  class=s2 value="1" selected>*G2</select></td></tr>
+<tr><td class=std_nobold_1>PFS:</td><td class=std_2><input  class=s2 name=102607 type=checkbox value="1" >Enabled
+</td></tr>
+<tr><td class=std_nobold_1>Specify Destination IPv4 Address:</td><td class=std_2><input  class=s2 name=10260a type=text value="0.0.0.0/0" size=31 maxlength=31 ></td></tr>
+<tr><td class=std_nobold_1>Specify Destination IPv6 Address:</td><td class=std_2><input  class=s2 name=10260c type=text value="::/0" size=79 maxlength=79 ></td></tr>
+<tr><td class=std_nobold_1>Communicate with Non-IPsec Device:</td><td class=std_2><select  class=s2 name=102609 ><option  class=s2 value="0" selected>*Bypass<option  class=s2 value="1"> Discard</select></td></tr>
+</table>
+<br><table border=0 align=center class=btn>
+<tr><td class=btn_oside_1><input type="submit" value="Save Changes" class=xeroxbutton></td><td class=btn_oside_1><input type="reset"  value="Discard Changes" class=xeroxbutton></td></tr>
+</table>
+</form></div></body>
+</html>

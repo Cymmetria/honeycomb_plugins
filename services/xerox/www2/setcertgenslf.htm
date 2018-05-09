@@ -1,0 +1,32 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../common_xog.css" type="text/css">
+<title>Internet Services</title>
+<base  target="main">
+</head>
+<body><div id=frameR>
+<br><table border=0 cellspacing=0 cellpadding=0><tr><td></td><td nowrap><font class=s5>Create New Certificate</font><br>
+</td></tr></table><br><form method="post" action="http://%IPADDRESSPLACEHOLDER%/setting/setcertgenslf.htm"><span class=tblcap> </span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Public Key Method:</td><td class=std_2><select  class=s2 name=102509 ><option  class=s2 value="1"> RSA/SHA-1<option  class=s2 value="0" selected>*RSA/SHA-256</select></td></tr>
+<tr><td class=std_nobold_1>Public Key Size:</td><td class=std_2><select  class=s2 name=10250a ><option  class=s2 value="512"> 512 bits<option  class=s2 value="1024"> 1024 bits<option  class=s2 value="2048" selected>*2048 bits</select></td></tr>
+<tr><td class=std_nobold_1>Issuer:</td><td class=std_2>%HOSTNAMETOKEN%</td></tr>
+<tr><td class=std_nobold_1>Validity:</td><td class=std_2><input  class=s2 name=10250c type=text value="365" size=6 maxlength=4 > day(s) (1 ~ 9999) </td></tr>
+</table>
+<br><table border=0 align=center class=btn>
+<tr><td class=btn_oside_1><input type="submit" value="Generate Signed Certificate" name="10250e" class=xeroxbutton></td><td class=btn_oside_1>
+<script language="JavaScript">
+<!--
+document.write("<input type='button' onClick=window.location='setssltlscomm.htm' value='Back' class=xeroxbutton>")
+//-->
+</script>
+
+<noscript>
+<font class=s2><a href="setssltlscomm.html" target="_self">Back</a></font>
+</noscript>
+</td></tr>
+</table>
+</form></div></body>
+</html>

@@ -15,7 +15,7 @@ from custom_pool import CustomPool
 
 DEFAULT_TIMEOUT = 60  # Use to timeout the connection
 POOL = 10
-PORT = 2223
+PORT = 23
 IP_ADDRESS = "0.0.0.0"
 
 MIRAI_DETECTED_EVENT_TYPE = "mirai_detection"
