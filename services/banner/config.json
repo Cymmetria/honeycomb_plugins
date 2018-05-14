@@ -19,7 +19,7 @@
     "parameters": [
         {
             "type": "integer",
-            "value": "listening_port",
+            "value": "port",
             "label": "Listening Port",
             "required": true
         },

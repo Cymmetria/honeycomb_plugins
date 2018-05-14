@@ -11,7 +11,7 @@ from base_service import ServerCustomService
 logger = logging.getLogger(__name__)
 
 BANNER = "banner"
-LISTENING_PORT = "listening_port"
+PORT = "port"
 BANNER_ALERT_TYPE_NAME = "banner_port_access"
 
 
@@ -24,7 +24,7 @@ class BannerRequestHandler(StreamRequestHandler):
     def handle(self):
         """Handle all requests by sending out our banner."""
         self.alert(self.client_address[0], self.client_address[1])
-        self.wfile.write(bytes(self.banner, "utf-8"))
+        self.wfile.write(bytes(self.banner))
         self.wfile.flush()
 
 
@@ -50,7 +50,7 @@ class BannerService(ServerCustomService):
         requestHandler.banner = self.service_args.get(BANNER)
         requestHandler.alert = self._send_alert
 
-        port = int(self.service_args.get(LISTENING_PORT))
+        port = int(self.service_args.get(PORT))
         self.server = ThreadingTCPServer(('', port), requestHandler)
 
         self.signal_ready()
@@ -61,7 +61,7 @@ class BannerService(ServerCustomService):
         """Stop banner service."""
         if self.server:
             self.server.shutdown()
-            self.logger.info("Simple HTTP service stopped")
+            self.logger.info("Banner service stopped")
             self.server = None
 
     def test(self):
@@ -71,7 +71,7 @@ class BannerService(ServerCustomService):
         self.logger.debug('executing service test')
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(3)
-        s.connect(('127.0.0.1', self.service_args.get(LISTENING_PORT)))
+        s.connect(('127.0.0.1', int(self.service_args.get(PORT))))
         s.close()
         event_types.append(BANNER_ALERT_TYPE_NAME)
 

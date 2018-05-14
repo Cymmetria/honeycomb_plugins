@@ -28,9 +28,8 @@ integrations = next(os.walk(defs.INTEGRATIONS))[1]
 
 
 @pytest.fixture
-def running_daemon(tmpdir, service_name):
+def running_daemon(tmpdir, request):
     """Provide a daemoninzed service."""
-
     def install_service():
         """Install a service (and its dependencies)."""
         result = CliRunner().invoke(cli, args=args.COMMON_ARGS + [home, defs.SERVICE,
@@ -73,11 +72,13 @@ def running_daemon(tmpdir, service_name):
         return p
 
     def stop_service():
-        result = CliRunner().invoke(cli, args=args.COMMON_ARGS + [home, defs.SERVICE, commands.STOP, service_name])
-        sanity_check(result, home)
-
+        p.send_signal(signal.SIGINT)
+        p.wait()
+        assert wait_until(search_json_log, filepath=os.path.join(home, defs.DEBUG_LOG_FILE), total_timeout=3,
+                          key="message", value="Caught KeyboardInterrupt, shutting service down gracefully")
 
     home = str(tmpdir)
+    service_name = request.param
     service_path = os.path.join(defs.SERVICES, service_name)
 
     install_service()
@@ -86,8 +87,8 @@ def running_daemon(tmpdir, service_name):
 
     yield home, service_path
 
-    stop_service(home)
-    uninstall_service(home, service_name)
+    stop_service()
+    uninstall_service()
 
 
 # @pytest.fixture
@@ -116,8 +117,8 @@ def running_daemon(tmpdir, service_name):
 #     assert not os.path.exists(os.path.join(home, defs.INTEGRATIONS, integration))
 #
 
-@pytest.mark.parametrize('service_name', services)
-def test_service(running_daemon, service):
+@pytest.mark.parametrize('running_daemon', services, indirect=True)
+def test_service(running_daemon):
     """Test all existing services."""
     home, service = running_daemon
     result = CliRunner().invoke(cli, args=args.COMMON_ARGS + [home, defs.SERVICE, commands.TEST,

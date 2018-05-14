@@ -26,6 +26,3 @@ Follow instructions to init pyenv and add it to your bashrc/zshrc file
     $ tox
 
 This will run all the existing tests, do not start coding before you solve any local configuration issues
-
-
-## Writing your first plugin

@@ -5,11 +5,10 @@ import os
 import re
 import posixpath
 
-import BaseHTTPServer
-import SimpleHTTPServer
-import urllib
-import urlparse
 import requests
+from six.moves import BaseHTTPServer
+from six.moves import SimpleHTTPServer
+from six.moves import urllib
 
 from base_service import ServerCustomService
 
@@ -17,7 +16,8 @@ AMT_PORT = 16992
 AMT_AUTH_ATTEMPT_ALERT_TYPE = "intel_amt_auth"
 AMT_AUTH_BYPASS_ALERT_TYPE = "intel_amt_bypass"
 AUTHORIZATION_HEADER = "WWW-Authenticate"
-AUTHORIZATION_RESPONSE = 'Digest realm="Intel(R) AMT (ID:FE2DAD21-AA72-E211-9722-9134FDA321A2)", nonce="5911b8f9de20f6f1e7c71309a8af03c2", qop="auth"'
+AUTHORIZATION_RESPONSE = 'Digest realm="Intel(R) AMT (ID:FE2DAD21-AA72-E211-9722-9134FDA321A2)", ' \
+                         'nonce="5911b8f9de20f6f1e7c71309a8af03c2", qop="auth"'
 
 ALERT_TYPE = "event_type"
 DESCRIPTION = "event_description"
@@ -47,7 +47,7 @@ class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         # Don't forget explicit trailing slash when normalizing. Issue 17324 of
         # SimpleHTTPServer - https://bugs.python.org/issue17324
         trailing_slash = path.rstrip().endswith("/")
-        path = posixpath.normpath(urllib.unquote(path))
+        path = posixpath.normpath(urllib.parse.unquote(path))
         words = path.split("/")
         words = filter(None, words)
         path = os.path.dirname(__file__)
@@ -62,7 +62,7 @@ class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         return path
 
     def do_GET(self):
-        parsed_path = urlparse.urlparse(self.path)
+        parsed_path = urllib.parse.urlparse(self.path)
         path = parsed_path.path
         if path == "" or path == "/":
             self.send_response(303)
@@ -143,5 +143,6 @@ class AMTService(ServerCustomService):
 
     def __str__(self):
         return "AMT"
+
 
 service_class = AMTService
