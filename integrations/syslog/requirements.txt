@@ -1,2 +1,2 @@
-certifi
-cefevent
+certifi==2018.4.16
+cefevent==0.4.8
