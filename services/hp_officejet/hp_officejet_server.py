@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
+"""HP OfficeJet Server Module."""
 from __future__ import unicode_literals
 
-try:
-    import SocketServer  # Python 2 exclusive
-except ModuleNotFoundError:
-    import socketserver as SocketServer  # Python 3 exclusive
-
+from six.moves import socketserver
 PJL_PORT = 9100
 LOCALHOST_ADDRESS = "0.0.0.0"
 
@@ -18,17 +15,15 @@ SERVER_NAME = "OfficeJet Pro 8210"
 ERROR = "error parsing stuff"
 
 
-class PJLCommandHandler(SocketServer.BaseRequestHandler):
+class PJLCommandHandler(socketserver.BaseRequestHandler):
+    """PJL Command Requesrt Handler."""
+
     def alert(self, *args, **kwargs):
+        """Raise alert."""
         self.alert_callback(*args, **kwargs)
 
-    def debug(self, debug_string):
-        self.debug_callback(debug_string)
-
-    def info(self, info_string):
-        self.info_callback(info_string)
-
     def handle(self):
+        """Handle a PJL request."""
         # self.request is the client connection
         request = ""
 
@@ -63,6 +58,7 @@ class PJLCommandHandler(SocketServer.BaseRequestHandler):
         self.request.close()
 
     def handle_command(self, command, address):
+        """Handle PJL Command."""
         response = ""
         argv = command.split(" ")[1:]
 
@@ -111,27 +107,21 @@ class PJLCommandHandler(SocketServer.BaseRequestHandler):
         return response
 
 
-class PJLServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
-    def __init__(self, alert_callback=None, debug_callback=None, info_callback=None):
-        self.info = info_callback
-        self.debug = debug_callback
+class PJLServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    """PJL Server class."""
+
+    def __init__(self, alert_callback, logger):
+        self.info = logger.info
+        self.debug = logger.debug
 
         alerting_client_handler = PJLCommandHandler
-        alerting_client_handler.debug_callback = debug_callback or self.default_info
-        alerting_client_handler.info_callback = info_callback or self.default_debug
-        alerting_client_handler.alert_callback = alert_callback or self.default_alert
-        SocketServer.TCPServer.__init__(self, ((LOCALHOST_ADDRESS, PJL_PORT)), alerting_client_handler)
-
-    def default_alert(self):
-        pass
-
-    def default_info(self):
-        pass
-
-    def default_debug(self):
-        pass
+        alerting_client_handler.debug = logger.debug
+        alerting_client_handler.info = logger.info
+        alerting_client_handler.alert_callback = alert_callback
+        socketserver.TCPServer.__init__(self, ((LOCALHOST_ADDRESS, PJL_PORT)), alerting_client_handler)
 
     def start(self):
+        """Start PJL Server."""
         self.info("Starting PJL server on port {port}".format(port=PJL_PORT))
         try:
             self.serve_forever()
@@ -139,6 +129,7 @@ class PJLServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
             self.debug("Error: {error}".format(error=err))
 
     def stop(self):
+        """Stop PJL Server."""
         self.server_close()
         self.info("PJL server stopped")
 

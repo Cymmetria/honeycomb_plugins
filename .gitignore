@@ -1,6 +1,8 @@
 # honeycomb
 .args.json
 logs/
+*.zip
+.idea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
