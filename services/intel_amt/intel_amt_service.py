@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Intel AMT Honeycomb Service."""
 from __future__ import unicode_literals
 
 import os
@@ -28,19 +29,16 @@ USERNAME = "username"
 
 
 class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+    """Intel AMT Request Handler."""
+
     server_version = "Intel(R) Active Management Technology 2.6.3"
 
-    def emit(self, alert_dict):
-        raise NotImplementedError
-
     def version_string(self):
+        """HTTP Server version header."""
         return self.server_version
 
     def translate_path(self, path):
-        """
-        Copy of translate_path but instead of start from current directory, change to the dir of the file
-        """
-
+        """Copy of translate_path but instead of start from current directory, change to the dir of the file."""
         # Abandon query parameters
         path = path.split("?", 1)[0]
         path = path.split("#", 1)[0]
@@ -62,6 +60,7 @@ class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         return path
 
     def do_GET(self):
+        """Handle a GET Request."""
         parsed_path = urllib.parse.urlparse(self.path)
         path = parsed_path.path
         if path == "" or path == "/":
@@ -113,16 +112,20 @@ class AMTServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
 class AMTService(ServerCustomService):
+    """Intel AMT Honeycomb Service."""
+
     def __init__(self, *args, **kwargs):
         super(AMTService, self).__init__(*args, **kwargs)
         self.server = None
 
     def on_server_shutdown(self):
+        """Shut down gracefully."""
         if not self.server:
             return
         self.server.shutdown()
 
     def on_server_start(self):
+        """Initialize service."""
         handler = AMTServerHandler
         handler.emit = self.add_alert_to_queue
         self.server = BaseHTTPServer.HTTPServer(("0.0.0.0", AMT_PORT), handler)
@@ -130,13 +133,12 @@ class AMTService(ServerCustomService):
         self.server.serve_forever()
 
     def test(self):
-        """trigger service alerts and return a list of triggered event types"""
-
-        event_types = [BUSYBOX_TELNET_AUTHENTICATION]
-        url = 'http://127.0.0.1:{}/index.htm'.format(AMT_PORT)
-        requests.get(url, headers={'Authorization': 'username="test"'})
+        """Trigger service alerts and return a list of triggered event types."""
+        event_types = []
+        url = "http://127.0.0.1:{}/index.htm".format(AMT_PORT)
+        requests.get(url, headers={"Authorization": 'username="test"'})
         event_types.append(AMT_AUTH_ATTEMPT_ALERT_TYPE)
-        requests.get(url, headers={'Authorization': 'response=""'})
+        requests.get(url, headers={"Authorization": 'response=""'})
         event_types.append(AMT_AUTH_BYPASS_ALERT_TYPE)
 
         return event_types

@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
+"""PJL Server Module."""
 from __future__ import unicode_literals
 
+import socket  # For socket.timeout exception
 import threading
 
-import socket  # For socket.timeout exception
-try:
-    import SocketServer  # Python 2 exclusive
-except ModuleNotFoundError:
-    import socketserver as SocketServer  # Python 3 exclusive
+from six.moves import socketserver
 
 from common_strings import STARTUP_MSG, SHUTDOWN_MSG, ERROR_MSG
 
@@ -16,8 +14,8 @@ PJL_PORT = 9100
 
 INTERACTION_ALERT_NAME = "xerox_pjl_interaction"
 PATH_TRAVERSAL_ALERT_NAME = "xerox_path_traversal"
-INFO_STATUS_RESPONSE = '@PJL INFO STATUS\r\nCODE=35078\r\nDISPLAY=""\r\nONLINE=TRUE\r\n\x0c'
-INFO_ID_RESPONSE = '@PJL INFO ID\r\n"Xerox WorkCentre 6605DN"\r\n\x0c'
+INFO_STATUS_RESPONSE = """@PJL INFO STATUS\r\nCODE=35078\r\nDISPLAY=""\r\nONLINE=TRUE\r\n\x0c"""
+INFO_ID_RESPONSE = """@PJL INFO ID\r\n"Xerox WorkCentre 6605DN"\r\n\x0c"""
 FSQUERY_RESPONSE_TRAILER = " TYPE=FILE SIZE=4096\r\n\x0c"
 SERVER_NAME = "Xerox WorkCentre 6605DN PJL Server"
 ERROR = "error parsing stuff"
@@ -25,21 +23,19 @@ XEROX_6605DN_CLIENT_TIMEOUT = 120
 ALERTS = [INTERACTION_ALERT_NAME, PATH_TRAVERSAL_ALERT_NAME]
 
 
-class ThreadingPJLServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
-    pass
+class ThreadingPJLServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    """Threading SocketServer stub class."""
 
 
-class PJLCommandHandler(SocketServer.BaseRequestHandler):
+class PJLCommandHandler(socketserver.BaseRequestHandler):
+    """PJL Command Request Handler."""
+
     def alert(self, *args, **kwargs):
+        """Raise alert."""
         self.alert_callback(*args, **kwargs)
 
-    def debug(self, debug_string):
-        self.debug_callback(debug_string)
-
-    def info(self, info_string):
-        self.info_callback(info_string)
-
     def handle(self):
+        """Handle a request."""
         # self.request is the client connection
         self.request.settimeout(XEROX_6605DN_CLIENT_TIMEOUT)
         pjl_request = ""
@@ -80,6 +76,7 @@ class PJLCommandHandler(SocketServer.BaseRequestHandler):
         self.request.close()
 
     def handle_command(self, command, address):
+        """Handle a specific command."""
         response = ""
         argv = command.split(" ")[1:]
 
@@ -133,19 +130,22 @@ class PJLCommandHandler(SocketServer.BaseRequestHandler):
 
 
 class XeroxPJLServer(object):
-    def __init__(self, alert_callback, debug_callback, info_callback):
-        self.info = info_callback
-        self.debug = debug_callback
+    """Xerox PJL Server."""
+
+    def __init__(self, alert_callback, logger):
+        self.info = logger.info
+        self.debug = logger.debug
 
         alerting_client_handler = PJLCommandHandler
-        alerting_client_handler.debug_callback = debug_callback
-        alerting_client_handler.info_callback = info_callback
+        alerting_client_handler.debug = logger.debug
+        alerting_client_handler.info = logger.info
         alerting_client_handler.alert_callback = alert_callback
         self.pjl = ThreadingPJLServer((LOCALHOST_ADDRESS, PJL_PORT), alerting_client_handler)
         self.pjl.daemon_threads = True
         self.thread = threading.Thread(target=self.pjl.serve_forever)
 
     def start(self):
+        """Start server."""
         self.info(STARTUP_MSG.format(name=SERVER_NAME, port=PJL_PORT))
         self.thread.daemon = True
         try:
@@ -157,6 +157,7 @@ class XeroxPJLServer(object):
         return True
 
     def stop(self):
+        """Stop server."""
         self.info(SHUTDOWN_MSG.format(name=SERVER_NAME))
         if self.pjl:
             self.pjl.shutdown()

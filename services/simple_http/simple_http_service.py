@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Simple HTTP Honeycomb Service."""
 import os
 
 import requests
@@ -18,40 +19,47 @@ DEFAULT_SERVER_VERSION = 'nginx'
 
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
-    pass
+    """Threading HTTP Server stub class."""
 
 
 class HoneyHTTPRequestHandler(SimpleHTTPRequestHandler, object):
+    """Simple HTTP Request Handler."""
+
     server_version = DEFAULT_SERVER_VERSION
 
     def version_string(self):
+        """HTTP Server version header."""
         return self.server_version
 
     def send_head(self, *args, **kwargs):
+        """Handle every request by raising an alert."""
         self.alert(self)
         return super(HoneyHTTPRequestHandler, self).send_head(*args, **kwargs)
 
-    def alert(self, request):
-        pass
-
     def log_error(self, msg, *args):
+        """Log an error."""
         self.log_message('error', msg, *args)
 
     def log_request(self, code='-', size='-'):
+        """Log request."""
         self.log_message('debug', '"{:s}" {:s} {:s}'.format(self.requestline, str(code), str(size)))
 
     def log_message(self, level, msg, *args):
+        """Log request."""
         getattr(self.logger, level)("{:s} - - [{:s}] {:s}".format(self.client_address[0], self.log_date_time_string(),
                                                                   msg % args))
 
 
 class SimpleHTTPService(ServerCustomService):
+    """Simple HTTP Honeycomb Service."""
+
     httpd = None
 
     def __init__(self, *args, **kwargs):
         super(SimpleHTTPService, self).__init__(*args, **kwargs)
 
     def alert(self, request):
+        """Raise an alert."""
         params = {
             EVENT_TYPE_FIELD_NAME: SIMPLE_HTTP_ALERT_TYPE_NAME,
             ORIGINATING_IP_FIELD_NAME: request.client_address[0],
@@ -61,7 +69,7 @@ class SimpleHTTPService(ServerCustomService):
         self.add_alert_to_queue(params)
 
     def on_server_start(self):
-
+        """Initialize Service."""
         os.chdir(os.path.join(os.path.dirname(__file__), 'www'))
         requestHandler = HoneyHTTPRequestHandler
         requestHandler.alert = self.alert
@@ -80,6 +88,7 @@ class SimpleHTTPService(ServerCustomService):
         self.httpd.serve_forever()
 
     def on_server_shutdown(self):
+        """Shut down gracefully."""
         if self.httpd:
             self.httpd.shutdown()
             self.logger.info("Simple HTTP service stopped")

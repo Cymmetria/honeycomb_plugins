@@ -38,9 +38,9 @@ class BannerService(ServerCustomService):
 
     def _send_alert(self, originating_ip, originating_port):
         params = {
-            'event_type': BANNER_ALERT_TYPE_NAME,
-            'originating_ip': originating_ip,
-            'originating_port': originating_port,
+            "event_type": BANNER_ALERT_TYPE_NAME,
+            "originating_ip": originating_ip,
+            "originating_port": originating_port,
         }
         self.add_alert_to_queue(params)
 
@@ -51,7 +51,7 @@ class BannerService(ServerCustomService):
         requestHandler.alert = self._send_alert
 
         port = int(self.service_args.get(PORT))
-        self.server = ThreadingTCPServer(('', port), requestHandler)
+        self.server = ThreadingTCPServer(("", port), requestHandler)
 
         self.signal_ready()
         self.logger.info("Starting Banner service on port {}".format(port))
@@ -68,10 +68,10 @@ class BannerService(ServerCustomService):
         """Test service alerts and return a list of triggered event types."""
         event_types = list()
 
-        self.logger.debug('executing service test')
+        self.logger.debug("executing service test")
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(3)
-        s.connect(('127.0.0.1', int(self.service_args.get(PORT))))
+        s.connect(("127.0.0.1", int(self.service_args.get(PORT))))
         s.close()
         event_types.append(BANNER_ALERT_TYPE_NAME)
 

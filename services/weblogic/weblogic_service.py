@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Oracle WebLogic Honeycomb Service."""
 from __future__ import unicode_literals
 
 
@@ -18,15 +19,18 @@ CMD_FIELD_NAME = 'cmd'
 
 
 class NonBlockingHTTPServer(ThreadingMixIn, HTTPServer):
-    pass
+    """Threading HTTPService stub class."""
 
 
 class OracleWebLogicService(ServerCustomService):
+    """Oracle WebLogic Honeycomb Service."""
+
     def __init__(self, *args, **kwargs):
         super(OracleWebLogicService, self).__init__(*args, **kwargs)
         self.httpd = None
 
     def alert(self, request, payload):
+        """Raise an alert."""
         params = {
             EVENT_TYPE_FIELD_NAME: WEBLOGIC_ALERT_TYPE_NAME,
             ORIGINATING_IP_FIELD_NAME: request.client_address[0],
@@ -36,6 +40,7 @@ class OracleWebLogicService(ServerCustomService):
         self.add_alert_to_queue(params)
 
     def on_server_start(self):
+        """Initialize Service."""
         self.logger.info("Oracle Weblogic service started on port: %d", WEBLOGIC_PORT)
 
         requestHandler = weblogic_server.WebLogicHandler
@@ -48,6 +53,7 @@ class OracleWebLogicService(ServerCustomService):
         self.httpd.serve_forever()
 
     def on_server_shutdown(self):
+        """Shut down gracefully."""
         if self.httpd:
             self.logger.info("Oracle Weblogic service stopped")
             self.httpd.shutdown()

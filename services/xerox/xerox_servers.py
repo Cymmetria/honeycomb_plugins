@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Xerox Honeycomb Server Module."""
 from __future__ import unicode_literals
 
 import pjl_server
@@ -8,16 +9,19 @@ from common_strings import ERROR_MSG
 
 
 class XeroxHoneypot(object):
-    def __init__(self, alert_callback, debug_callback, info_callback, logger):
-        self.info = info_callback
-        self.debug = debug_callback
+    """Xerox Honeycomb Server."""
 
-        self.web = web_server.XeroxWebServer(alert_callback, debug_callback, info_callback)
+    def __init__(self, alert_callback, logger):
+        self.info = logger.info
+        self.debug = logger.debug
+
+        self.web = web_server.XeroxWebServer(alert_callback, logger)
         self.web.logger = logger
-        self.pjl = pjl_server.XeroxPJLServer(alert_callback, debug_callback, info_callback)
+        self.pjl = pjl_server.XeroxPJLServer(alert_callback, logger)
         self.pjl.logger = logger
 
     def start(self):
+        """Start server."""
         self.info("Starting {name}".format(name=self))
         try:
             self.web.start()
@@ -28,6 +32,7 @@ class XeroxHoneypot(object):
             self.stop()
 
     def stop(self):
+        """Stop server."""
         self.pjl.stop()
         self.web.stop()
 

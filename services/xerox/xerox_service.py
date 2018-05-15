@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Xerox Honeycomb Service."""
 from __future__ import unicode_literals
 
 import os
@@ -23,17 +24,21 @@ EVENT_TYPE_FIELD_NAME = "event_type"
 ORIGINATING_IP_FIELD_NAME = "originating_ip"
 ORIGINATING_PORT_FIELD_NAME = "originating_port"
 REQUEST_FIELD_NAME = "request"
-TEST_PJL_DOWNLOAD_COMMAND = '@PJL FSDOWNLOAD FORMAT:BINARY SIZE=1337 NAME="0:/../../rw/var/etc/profile.d/lol.sh"\r\n'
-TEST_PJL_QUERY_COMMAND = '@PJL FSQUERY NAME="0:/../../rw/var/etc/profile.d/lol.sh"\r\n'
+TEST_PJL_DOWNLOAD_COMMAND = """@PJL FSDOWNLOAD FORMAT:BINARY SIZE=1337 """ \
+                            """NAME="0:/../../rw/var/etc/profile.d/lol.sh"\r\n"""
+TEST_PJL_QUERY_COMMAND = """@PJL FSQUERY NAME="0:/../../rw/var/etc/profile.d/lol.sh"\r\n"""
 
 
 class XeroxService(ServerCustomService):
+    """Xerox Honeycomb Service."""
+
     def __init__(self, *args, **kwargs):
         super(XeroxService, self).__init__(*args, **kwargs)
         self.honeypot = None
         self.external_ip = None
 
     def alert(self, event_name, orig_ip, orig_port, request):
+        """Raise an alert."""
         params = {
             EVENT_TYPE_FIELD_NAME: event_name,
             ORIGINATING_IP_FIELD_NAME: orig_ip,
@@ -43,13 +48,8 @@ class XeroxService(ServerCustomService):
 
         self.add_alert_to_queue(params)
 
-    def debug(self, debug_string):
-        self.logger.debug(debug_string)
-
-    def info(self, info_string):
-        self.logger.info(info_string)
-
     def get_ipv6(self, host):
+        """Get local IPv6 address."""
         all_addresses = socket.getaddrinfo(host, xrx.web_server.WEB_PORT)
         ipv6 = [x for x in all_addresses if x[0] == socket.AF_INET6]
         try:
@@ -58,6 +58,7 @@ class XeroxService(ServerCustomService):
             return None
 
     def prepare_web_folder(self):
+        """Create mock web content folder."""
         old_directory = os.getcwd()
         os.chdir(os.path.join(os.path.dirname(__file__)))
 
@@ -71,6 +72,7 @@ class XeroxService(ServerCustomService):
         os.chdir(old_directory)
 
     def detokenize(self, folder):
+        """Replace tokens with dynamic content."""
         hostname = socket.gethostname()
         local_ip = socket.gethostbyname(hostname)
         local_ipv6 = self.get_ipv6(hostname) or DEFAULT_IPV6
@@ -93,8 +95,9 @@ class XeroxService(ServerCustomService):
                         pass  # This should only happen on GIFs and such. It's fine.
 
     def on_server_start(self):
+        """Initialize service."""
         self.logger.info("{name} received start".format(name=str(self)))
-        self.honeypot = xrx.XeroxHoneypot(self.alert, self.debug, self.info, self.logger)
+        self.honeypot = xrx.XeroxHoneypot(self.alert, self.logger)
         self.external_ip = self.service_args.get("ip", DEFAULT_EXTERNAL_IP)
         self.prepare_web_folder()
         self.signal_ready()
@@ -102,12 +105,13 @@ class XeroxService(ServerCustomService):
             self.logger.debug("Failed to start Xerox honeypot")
 
     def on_server_shutdown(self):
+        """Shut down gracefully."""
         self.logger.debug("{name} received stop".format(name=str(self)))
         if self.honeypot:
             self.honeypot.stop()
 
     def test(self):
-        """trigger service alerts and return a list of triggered event types"""
+        """Trigger service alerts and return a list of triggered event types."""
         event_types = list()
 
         self.logger.debug("executing service test")
