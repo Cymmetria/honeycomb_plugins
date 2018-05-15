@@ -5,7 +5,7 @@ Honeycomb Plugin API
 ====================
 
 If you're looking for the full documentation for Honeycomb_ API you can find it at
-:module:`honeycomb.servicemanager.base_service` and :module:`honeycomb.integrationmanager.integration_utils`
+:mod:`honeycomb.servicemanager.base_service` and :mod:`honeycomb.integrationmanager.integration_utils`
 
 
 =========================
