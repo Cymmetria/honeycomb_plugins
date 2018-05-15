@@ -195,7 +195,7 @@ class MiraiWormMonitorService(ServerCustomService):
         client_socket.send("mypass\r\n")
         for cmd in COMMANDS:
             event_types.append(BUSYBOX_TELNET_INTERACTION_EVENT_TYPE)
-            client_socket.send("{shell} {cmd}\r\n".format(shell=BUSY_BOX, command=cmd))
+            client_socket.send("{shell} {cmd}\r\n".format(shell=BUSY_BOX, cmd=cmd))
 
         event_types.append(MIRAI_DETECTED_EVENT_TYPE)
         client_socket.send("bye\r\n")
