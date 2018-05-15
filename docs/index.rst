@@ -12,7 +12,7 @@ If you're looking for the full documentation for Honeycomb_ API you can find it 
 Writing your first plugin
 =========================
 
-Using simple_http as an example to accompany this guide, we will describe the 3 steps necessary to write a plugin.
+Using simple_http as an example to accompany this guide, we will describe the 4 steps necessary to write a plugin.
 Feel free to use the provided config.json as a base for your own, and modify fields as required. It is recommended,
 for the sake of organization, that you create a new directory and follow this guide inside your specific plugin's directory.
 
@@ -42,19 +42,19 @@ Next, we'll look at the *service* field. It describes the service generally and 
 honeypots that run simultaneously:
 
 :allow_many: Allow multiple instances of this honeypot?
-:supported_os_families: To prevent OS-specific honeypots from being installed on the wrong system. Current valid values are "Linux", "Windows", "Darwin", and "All".
-:ports: Any ports this honeypot uses. For simple_http, you would expect port 80 here, but the service actually takes its port as a parameter.
+:supported_os_families: This prevents OS-specific honeypots from being installed on the wrong system. Current valid values are "Linux", "Windows", "Darwin", and "All".
+:ports: Any ports this honeypot uses. For simple_http, you would expect port 80, but the service actually takes its port as a parameter.
 :name: Internal service name.
 :label: Human readable name.
 :description: Full fledged description of the service.
-:conflicts_with: Specific honeypots that this one conflicts with for whatever reason. You don't have to fill this field in, but if you know of conflicts you could.
+:conflicts_with: Specific honeypots that this one conflicts with for whatever reason. You don't have to fill this field in, but if you know of conflicts you should.
 
 And finally, the *parameters* field describes optional and non-optional parameters that your service can receive. Each parameter is described as follows:
 
 :type: The json type of the parameter.
 :value: Parameter name.
 :label: Parameter description.
-:required: Set to *true* if nonoptional, or *false* if optional.
+:required: Set to *true* if parameter is mandatory, or *false* if optional.
 :default: Default value.
 
 2. Honeypot logic
@@ -86,7 +86,7 @@ It's noteworthy to mention that it contains its own logger which you can use for
 2.4. Entry and exit
 -------------------
 Your entry point will be the *on_server_start* method. If you need an exit and cleanup point, that's *on_server_shutdown*.
-Note that *on_server_start* _must_ call signal_ready() to let the framework know it has successfully initialized and started working.
+Note that *on_server_start* **must** call **signal_ready()** to let the framework know it has successfully initialized and started working.
 Looking at simple_http as an example:
 
 .. code-block:: python
@@ -95,9 +95,9 @@ Looking at simple_http as an example:
     self.logger.info("Starting {}Simple HTTP service on port: {}".format('Threading ' if threading else '', port))
     self.httpd.serve_forever()
 
-In simple_http, once we call serve_forever(), execution flows into an infinite loop and so we must signal_ready() beforehand.
+In simple_http, once we call serve_forever(), execution flows into an infinite loop and so we must call signal_ready() beforehand.
 
-*on_server_shutdown* doesn't have to contain anything.
+*on_server_shutdown* doesn't have to contain anything, it's just for cleanup.
 
 2.5. Parameters
 ---------------
@@ -110,11 +110,11 @@ For example, in simple_http:
 
 2.6. Connecting the plugin
 --------------------------
-Your _main_ should consist of only one line:
+Your *main* should consist of only one line:
 
 .. code-block:: python
 
-    service_class = (your plugin class name)
+    service_class = (your_plugin_class_name)
 
 For example, in simple_http:
 
@@ -127,8 +127,8 @@ For example, in simple_http:
 -------------------
 The last vital stage in writing a useful plugin for Honeycomb is making it actually trigger alerts in case something bad happens.
 For this, *add_alert_to_queue()* is your method of choice. Supply it with a single parameter, a dictionary containing all the fields
-described in the alert as defined in your config.json, and *event_name* should contain the alert name. For example, since simple_http defined
-one alert called __simple_http__, containing three fields: "originating_ip", "originating_port", and "request". A matching alert may look like this:
+described in the alert as defined in your config.json, and *event_name* should contain the alert name. For example, simple_http defined
+one alert called *simple_http*, containing three fields: "originating_ip", "originating_port", and "request". A matching alert may look like this:
 
 .. code-block:: python
 
@@ -143,8 +143,7 @@ one alert called __simple_http__, containing three fields: "originating_ip", "or
 
 4. Automatic tests
 ------------------
-If you wish, you can define a *test()* method in your plugin class that must return a list of alert names AND trigger them. The framework can then
-automatically execute your test method and make sure all the listed alerts have been triggered successfully.
+It is highly recommended you define a *test()* method in your plugin class that returns a list of alert names AND triggers them. The framework can then automatically execute your test method and make sure all the listed alerts have been triggered successfully.
 
 5. (optional) requirements.txt
 ------------------------------
