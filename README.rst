@@ -1,4 +1,4 @@
-|GitHub license| |PyPI| |Read the Docs| |Travis| |Updates| |Codecov|
+|GitHub license| |Read the Docs| |Travis| |Updates| |Codecov|
 
 .. |GitHub license| image:: https://img.shields.io/github/license/Cymmetria/honeycomb_plugins.svg
    :alt: GitHub license
@@ -16,29 +16,11 @@
    :alt: Codecov
    :target: https://codecov.io/gh/Cymmetria/honeycomb_plugins
 
+=================
+Honeycomb Plugins
+=================
 
-Honeycomb - An extensible honeypot framework
-============================================
-
-Honeycomb is an open-source honeypot framework created by Cymmetria_.
+This is the plugin repository for Honeycomb_, the honeypot framework by Cymmetria_.
 
 .. _Cymmetria: https://cymmetria.com
-
-Honeycomb allows running honeypots with various integrations from a public library of plugins from https://github.com/Cymmetria/honeycomb_plugins
-
-Writing new honeypot services and integrations for honeycomb is super easy!
-See the plugins repo for more info.
-
-Full CLI documentation can be found at http://honeycomb.cymmetria.com/en/latest/cli.html
-
-Usage
------
-
-Using pip::
-
-    $ pip install honeycomb-framework
-    $ honeycomb --help
-
-Using Docker::
-
-    $ docker run -v honeycomb.yml:/usr/share/honeycomb/honeycomb.yml cymmetria/honeycomb
+.. _Honeycomb: https://honeycomb.cymmetria.com
