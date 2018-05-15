@@ -5,7 +5,7 @@
    :target: https://github.com/Cymmetria/honeycomb_plugins/blob/master/LICENSE
 .. |Read the Docs| image:: https://img.shields.io/readthedocs/honeycomb_plugins.svg
    :alt: Read the Docs
-   :target: http://honeycomb_plugins.cymmetria.com
+   :target: http://honeycomb.cymmetria.com/projects/honeycomb-plugins/
 .. |Travis| image:: https://img.shields.io/travis/Cymmetria/honeycomb_plugins.svg
    :alt: Travis
    :target: https://travis-ci.org/Cymmetria/honeycomb_plugins

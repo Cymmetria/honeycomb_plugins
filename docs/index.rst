@@ -1,8 +1,16 @@
 .. include:: ../README.rst
 
-*************************
+====================
+Honeycomb Plugin API
+====================
+
+If you're looking for the full documentation for Honeycomb_ API you can find it at
+:module:`honeycomb.servicemanager.base_service` and :module:`honeycomb.integrationmanager.integration_utils`
+
+
+=========================
 Writing your first plugin
-*************************
+=========================
 
 Using simple_http as an example to accompany this guide, we will describe the 3 steps necessary to write a plugin.
 Feel free to use the provided config.json as a base for your own, and modify fields as required. It is recommended,
