@@ -173,7 +173,7 @@ should contain the alert name. For example, simple_http defined one alert called
 Test your service
 -----------------
 
-It is recommended you override the :meth:`.test()`` method in your plugin class that returns triggers your alerts and
+It is recommended you override the :meth:`.test` method in your plugin class that returns triggers your alerts and
 returns a list to verify. The framework will automatically execute your test method and make sure all the listed
 alerts have been triggered successfully.
 
