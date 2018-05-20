@@ -23,4 +23,4 @@ Honeycomb Plugins
 This is the plugin repository for Honeycomb_, the honeypot framework by Cymmetria_.
 
 .. _Cymmetria: https://cymmetria.com
-.. _Honeycomb: https://honeycomb.cymmetria.com
+.. _Honeycomb: http://honeycomb.cymmetria.com

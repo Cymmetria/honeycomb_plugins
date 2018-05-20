@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Xerox web server module."""
 from __future__ import unicode_literals
 
 import os
