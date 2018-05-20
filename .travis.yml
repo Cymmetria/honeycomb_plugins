@@ -31,4 +31,5 @@ jobs:
   include:
     - stage: lint
       python: 3.6
-      script: tox -e flake8 || true
+      script: tox -e flake8
+      deploy: skip
