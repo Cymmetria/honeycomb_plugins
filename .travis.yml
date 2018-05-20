@@ -1,14 +1,35 @@
-sudo: false
+sudo: true
+services: docker
+language: python
+python:
+  - 2.7
+  - 3.6
 
-install: skip
-script: ./mkpkg.sh
+install: |
+  shopt -s expand_aliases
+  docker pull omercnet/tox:alpine
+  alias tox='docker run --rm -it --env-file <(env | egrep "TRAVIS|CI") -v `pwd`:/app omercnet/tox:alpine tox'
+
+script: tox
 
 deploy:
+  script: ./mkpkg.sh
+  install: skip
   provider: pages
-  script: skip
   skip_cleanup: true
   keep-history: true
   github-token: $GITHUB_TOKEN
   local-dir: dist/
   on:
     branch: master
+
+stages:
+  - lint
+  - test
+
+jobs:
+  include:
+    - stage: lint
+      python: 3.6
+      script: tox -e flake8
+      deploy: skip

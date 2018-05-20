@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """Mirai Worm Honeycomb Service."""
-from __future__ import unicode_literals
-
-import socket
+import time
 import errno
+import socket
 from collections import defaultdict
 
 import gevent
@@ -38,14 +37,14 @@ COMMANDS = {
     "ECCHI": "ECCHI: applet not found",
     "ps": "1 pts/21   00:00:00 init",
     "cat /proc/mounts": "tmpfs /run tmpfs rw,nosuid,noexec,relatime,size=1635616k,mode=755 0 0",
-    b"echo -e \\x6b\\x61\\x6d\\x69/dev > /dev/.nippon": "",
+    "echo -e \\x6b\\x61\\x6d\\x69/dev > /dev/.nippon": "",
     "cat /dev/.nippon": "kami/dev",
     "rm /dev/.nippon": "",
-    b"echo -e \\x6b\\x61\\x6d\\x69/run > /run/.nippon": "",
+    "echo -e \\x6b\\x61\\x6d\\x69/run > /run/.nippon": "",
     "cat /run/.nippon": "kami/run",
     "rm /run/.nippon": "",
-    "cat /bin/echo": b"\\x7fELF\\x01\\x01\\x01\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x00\\x08\\x00"
-                     b"\\x00\\x00\\x00\\x00"
+    "cat /bin/echo": "\\x7fELF\\x01\\x01\\x01\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x00\\x08\\x00"
+                     "\\x00\\x00\\x00\\x00"
 }
 
 OVERWRITE_COMMANDS = {}  # Use to overwrite default telnet command behavior crashing the handler (e.g. 'help')
@@ -70,6 +69,7 @@ class MyTelnetHandler(TelnetHandler, object):
 
     @command(OVERWRITE_COMMANDS_LIST)
     def telnet_commands_respond(self, params):
+        """Respond to telnet command."""
         self.writeresponse(OVERWRITE_COMMANDS.get(self.input.raw, ""))
 
     @command(MIRAI_SCANNER_COMMANDS)
@@ -84,12 +84,15 @@ class MyTelnetHandler(TelnetHandler, object):
         self.writeresponse(full_response)
 
     def authCallback(self, username, password):
+        """authCallback."""
         self.active_users[self.client_address] = {USERNAME: username, PASSWORD: password}
 
     def session_start(self):
+        """session_start."""
         self._send_alert(**{DESCRIPTION: "Session started", EVENT_TYPE: BUSYBOX_TELNET_AUTHENTICATION})
 
     def session_end(self):
+        """session_end."""
         self._send_alert(**{DESCRIPTION: "Session end", EVENT_TYPE: BUSYBOX_TELNET_AUTHENTICATION})
         self._disconnect()
 
@@ -103,7 +106,7 @@ class MyTelnetHandler(TelnetHandler, object):
                 cmd = cmd.replace(BUSY_BOX, "")
                 cmd = cmd.strip()
             response += COMMANDS.get(cmd, "") + "\n"
-            self._send_alert(**{CMD: cmd.strip(), EVENT_TYPE: BUSYBOX_TELNET_INTERACTION_EVENT_TYPE})
+            self._send_alert(**{CMD: cmd, EVENT_TYPE: BUSYBOX_TELNET_INTERACTION_EVENT_TYPE})
             self._store_command(cmd)
         return response
 
@@ -117,8 +120,6 @@ class MyTelnetHandler(TelnetHandler, object):
 
     def _is_fingerprinted(self):
         if all([self.ips_command_executed[self.client_address[0]].count(cmd) > 0 for cmd in COMMANDS]):
-            self.logger.info(
-                "confirmed IP: [%s:%d]", self.client_address[0], self.client_address[1])
             self._send_alert(**{EVENT_TYPE: MIRAI_DETECTED_EVENT_TYPE})
             self.ips_command_executed.pop(self.client_address[0], None)
         else:
@@ -133,6 +134,7 @@ class MyTelnetHandler(TelnetHandler, object):
         self._is_fingerprinted()
 
     def inputcooker(self):
+        """inputcooker."""
         try:
             super(MyTelnetHandler, self).inputcooker()
         except socket.timeout:
@@ -187,20 +189,36 @@ class MiraiWormMonitorService(ServerCustomService):
 
     def test(self):
         """Trigger service alerts and return a list of triggered event types."""
+        def _send(data):
+            client_socket.send(data)
+
+        def _wait(data):
+            d = b""
+            while data not in d:
+                time.sleep(0.1)
+                d += client_socket.recv(65536)
+                # self.logger.info(d)
+
         event_types = []
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(2)
         client_socket.connect(("127.0.0.1", PORT))
-        client_socket.send("my_username\r\n")
-        client_socket.send("mypass\r\n")
+        _wait(b"Username:")
+        _send(b"my_username\r\n")
+
+        _wait(b"Password:")
+        _send(b"mypass\r\n")
+
+        _wait(b">")
+        event_types.append(BUSYBOX_TELNET_AUTHENTICATION)
         for cmd in COMMANDS:
             event_types.append(BUSYBOX_TELNET_INTERACTION_EVENT_TYPE)
-            client_socket.send("{shell} {cmd}\r\n".format(shell=BUSY_BOX, cmd=cmd))
+            _send("{} {}\r\n".format(BUSY_BOX, cmd).encode())
+            _wait(b">")
 
         event_types.append(MIRAI_DETECTED_EVENT_TYPE)
-        client_socket.send("bye\r\n")
-        event_types.append(BUSYBOX_TELNET_AUTHENTICATION)
-
+        _send(b"bye\r\n")
+        _wait(b"Goodbye")
         return event_types
 
 

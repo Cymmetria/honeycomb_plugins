@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Honeycomb S3 Integration."""
 from __future__ import unicode_literals
 
 import os
@@ -13,8 +14,10 @@ from integrationmanager.integration_utils import BaseIntegration
 
 
 class S3Integration(BaseIntegration):
+    """Honeycomb S3 Integration class."""
 
     def test_connection(self, data):
+        """Test integration by validating credentials."""
         access_key = data.get('access_key')
         secret_key = data.get('secret_key')
         region = data.get('region')
@@ -48,6 +51,7 @@ class S3Integration(BaseIntegration):
         return success, response
 
     def send_event(self, alert_dict):
+        """Upload alert to S3."""
         region = self.integration_data.get('region')
         bucket = self.integration_data.get('bucket')
         access_key = self.integration_data.get('access_key')
@@ -78,6 +82,7 @@ class S3Integration(BaseIntegration):
             raise exceptions.IntegrationSendEventError(exc)
 
     def format_output_data(self, output_data):
+        """No special formatting needed."""
         return output_data
 
 

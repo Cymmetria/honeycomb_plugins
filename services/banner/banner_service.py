@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Honeycomb Banner Service."""
 from __future__ import unicode_literals
 
 import socket
