@@ -2,8 +2,8 @@ sudo: true
 services: docker
 language: python
 python:
-  - 2.7
   - 3.6
+  - 2.7
 
 install: |
   shopt -s expand_aliases
@@ -12,24 +12,25 @@ install: |
 
 script: tox
 
-deploy:
-  script: ./mkpkg.sh
-  install: skip
-  provider: pages
-  skip_cleanup: true
-  keep-history: true
-  github-token: $GITHUB_TOKEN
-  local-dir: dist/
-  on:
-    branch: master
-
 stages:
   - lint
   - test
+  - name: deploy
+    if: branch = master
 
 jobs:
   include:
     - stage: lint
-      python: 3.6
       script: tox -e flake8
-      deploy: skip
+      deploy:
+    - stage: deploy
+      deploy:
+        provider: pages
+        script: ./mkpkg.sh
+        install: skip
+        skip_cleanup: true
+        keep-history: true
+        github-token: $GITHUB_TOKEN
+        local-dir: dist/
+        on:
+          branch: master
