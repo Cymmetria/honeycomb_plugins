@@ -15,7 +15,7 @@ from custom_pool import CustomPool
 
 DEFAULT_TIMEOUT = 60  # Use to timeout the connection
 POOL = 10
-PORT = 23
+PORT = 2223
 IP_ADDRESS = "0.0.0.0"
 
 MIRAI_DETECTED_EVENT_TYPE = "mirai_detection"
@@ -74,29 +74,32 @@ class MyTelnetHandler(TelnetHandler, object):
 
     @command(MIRAI_SCANNER_COMMANDS)
     def shell_respond(self, params):
-        """Handle Busybox Command."""
+        """Handle something trying to use a shell command."""
         self.writeresponse("")
 
     @command([BUSY_BOX])
     def handle_busybox(self, params):
-        """Handle Busybox Command."""
+        """Handle someone trying to use a Busybox command."""
         full_response = self._get_busybox_response(params)
         self.writeresponse(full_response)
 
     def authCallback(self, username, password):
-        """authCallback."""
+        """Called when someone tries to authenticate to the telnet server."""
         self.active_users[self.client_address] = {USERNAME: username, PASSWORD: password}
 
     def session_start(self):
-        """session_start."""
+        """Called when someone successfully authenticated to the telnet server."""
         self._send_alert(**{DESCRIPTION: "Session started", EVENT_TYPE: BUSYBOX_TELNET_AUTHENTICATION})
 
     def session_end(self):
-        """session_end."""
+        """Called when someone logs off the server."""
         self._send_alert(**{DESCRIPTION: "Session end", EVENT_TYPE: BUSYBOX_TELNET_AUTHENTICATION})
         self._disconnect()
 
     def _get_busybox_response(self, params):
+        """Create the reply for someone (Mirai?) trying to activate one of the busybox
+            that we have a canned reply for.
+        """
         response = ""
         full_command = " ".join(params)
         for cmd in full_command.split(";"):
@@ -111,6 +114,7 @@ class MyTelnetHandler(TelnetHandler, object):
         return response
 
     def _send_alert(self, **kwargs):
+        """Report an alert to the framework."""
         kwargs.update({
             ORIGINATING_IP: self.client_address[0],
             ORIGINATING_PORT: self.client_address[1],
@@ -119,14 +123,16 @@ class MyTelnetHandler(TelnetHandler, object):
         self.emit(kwargs)
 
     def _is_fingerprinted(self):
+        """Checks to see if we correctly identified a Mirai instance."""
         if all([self.ips_command_executed[self.client_address[0]].count(cmd) > 0 for cmd in COMMANDS]):
             self._send_alert(**{EVENT_TYPE: MIRAI_DETECTED_EVENT_TYPE})
             self.ips_command_executed.pop(self.client_address[0], None)
         else:
-            self.logger.debug("no fingerprinted for ip %s with executed commands %s",
+            self.logger.debug("No fingerprint for ip %s with executed commands %s",
                               self.client_address, self.ips_command_executed[self.client_address[0]])
 
     def _store_command(self, cmd):
+        """Called after each (Busybox) command is executed on the telnet server."""
         self.logger.debug(
             "[%s:%d] executed: %s", self.client_address[0], self.client_address[1], cmd.strip())
 
@@ -134,7 +140,7 @@ class MyTelnetHandler(TelnetHandler, object):
         self._is_fingerprinted()
 
     def inputcooker(self):
-        """inputcooker."""
+        """Custom inputcooker, calls the super inputcooker."""
         try:
             super(MyTelnetHandler, self).inputcooker()
         except socket.timeout:
@@ -149,6 +155,7 @@ class MyTelnetHandler(TelnetHandler, object):
                 pass
 
     def _disconnect(self):
+        """Handle a client disconnecting from the server."""
         self.active_users.pop(self.client_address, None)
         self.ips_command_executed.pop(self.client_address[0], None)
 
