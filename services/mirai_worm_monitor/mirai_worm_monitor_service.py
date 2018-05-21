@@ -15,7 +15,7 @@ from custom_pool import CustomPool
 
 DEFAULT_TIMEOUT = 60  # Use to timeout the connection
 POOL = 10
-PORT = 2223
+PORT = 23
 IP_ADDRESS = "0.0.0.0"
 
 MIRAI_DETECTED_EVENT_TYPE = "mirai_detection"
@@ -84,22 +84,20 @@ class MyTelnetHandler(TelnetHandler, object):
         self.writeresponse(full_response)
 
     def authCallback(self, username, password):
-        """Called when someone tries to authenticate to the telnet server."""
+        """Handle Authentication."""
         self.active_users[self.client_address] = {USERNAME: username, PASSWORD: password}
 
     def session_start(self):
-        """Called when someone successfully authenticated to the telnet server."""
+        """Start the session."""
         self._send_alert(**{DESCRIPTION: "Session started", EVENT_TYPE: BUSYBOX_TELNET_AUTHENTICATION})
 
     def session_end(self):
-        """Called when someone logs off the server."""
+        """End the session on log off."""
         self._send_alert(**{DESCRIPTION: "Session end", EVENT_TYPE: BUSYBOX_TELNET_AUTHENTICATION})
         self._disconnect()
 
     def _get_busybox_response(self, params):
-        """Create the reply for someone (Mirai?) trying to activate one of the busybox
-            that we have a canned reply for.
-        """
+        """Create the reply when an attacker tries to activate one of the busybox that we have a canned reply for."""
         response = ""
         full_command = " ".join(params)
         for cmd in full_command.split(";"):
@@ -123,7 +121,7 @@ class MyTelnetHandler(TelnetHandler, object):
         self.emit(kwargs)
 
     def _is_fingerprinted(self):
-        """Checks to see if we correctly identified a Mirai instance."""
+        """Check to see if we correctly identified a Mirai instance."""
         if all([self.ips_command_executed[self.client_address[0]].count(cmd) > 0 for cmd in COMMANDS]):
             self._send_alert(**{EVENT_TYPE: MIRAI_DETECTED_EVENT_TYPE})
             self.ips_command_executed.pop(self.client_address[0], None)
@@ -132,7 +130,6 @@ class MyTelnetHandler(TelnetHandler, object):
                               self.client_address, self.ips_command_executed[self.client_address[0]])
 
     def _store_command(self, cmd):
-        """Called after each (Busybox) command is executed on the telnet server."""
         self.logger.debug(
             "[%s:%d] executed: %s", self.client_address[0], self.client_address[1], cmd.strip())
 
@@ -140,7 +137,7 @@ class MyTelnetHandler(TelnetHandler, object):
         self._is_fingerprinted()
 
     def inputcooker(self):
-        """Custom inputcooker, calls the super inputcooker."""
+        """Cook the input."""
         try:
             super(MyTelnetHandler, self).inputcooker()
         except socket.timeout:
