@@ -1,0 +1,49 @@
+{
+    "event_types": [
+        {
+            "name": "xerox_path_traversal",
+            "label": "Remote code execution attempt",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Alert"
+        },
+        {
+            "name": "xerox_pjl_interaction",
+            "label": "Nontrivial interaction with honeypot printer protocol",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Mute"
+        },
+        {
+            "name": "xerox_web_interaction",
+            "label": "Interaction with honeypot web interface",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Mute"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "All",
+        "ports": [
+            {
+                "protocol": "TCP",
+                "port": 80
+            },
+            {
+                "protocol": "TCP",
+                "port": 9100
+            }
+        ],
+        "name": "xerox",
+        "label": "Xerox Honeypot",
+        "description": "Xerox printer (6605dn) that alerts when interacted with or when being attacked",
+        "conflicts_with": ["http"]
+    },
+    "parameters": [
+        {
+            "type": "text",
+            "value": "ip",
+            "label": "External IP Address",
+            "required": false,
+            "default": "82.122.69.29"
+        }
+    ]
+}

@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../common_xog.css" type="text/css">
+<title>Internet Services</title>
+<base  target="main">
+</head>
+<body><div id=frameR>
+<br><table border=0 cellspacing=0 cellpadding=0><tr><td></td><td nowrap><font class=s5>LDAP Directory</font><br>
+</td></tr></table><br><form method="post" action="http://%IPADDRESSPLACEHOLDER%/setting/setldapsvr.htm"><span class=tblcap>Server Information</span>
+<table class=std_3>
+<tr><td class=std5050nowrap_1>IP Address / Host Name &amp; Port:</td><td class=std5050nowrap_2><input  class=s2 name=102c0c type=text value="" size=40 maxlength=64 >:<input  class=s2 name=102c0d type=text value="389" size=7 maxlength=5 > (389, 636, 3268, 3269, 5000 ~ 65535) </td></tr>
+<tr><td class=std5050nowrap_1>LDAP Server:</td><td class=std5050nowrap_2>Microsoft Active Directory</td></tr>
+<tr><td class=std5050nowrap_1>LDAP-SSL/TLS:</td><td class=std5050nowrap_2><a href="setssltlscomm.html">SSL</a></td></tr>
+</table>
+<br><span class=tblcap>Optional Information (for Server Address/Phone Book)</span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Search Directory Root:</td><td class=std_2><input  class=s2 name=102c11 type=text value="" size=40 maxlength=255 ></td></tr>
+<tr><td class=std_nobold_1>Login Credentials to Access LDAP Server:</td><td class=std_2><input  class=s2 name=102c12 type=radio value="0" checked >None<br>
+<input  class=s2 name=102c12 type=radio value="1" >System
+</td></tr>
+<tr><td class=std_nobold_1>Login Name:</td><td class=std_2><input  class=s2 name=102c13 type=text value="" size=40 maxlength=255 ></td></tr>
+<tr><td class=std_nobold_1>Password:</td><td class=std_2><input  class=s2 name=102c14 type=password value="" size=50 maxlength=127 ></td></tr>
+<tr><td class=std_nobold_1>Re-enter Password:</td><td class=std_2><input  class=s2 name=102c15 type=password value="" size=50 maxlength=127 ></td></tr>
+<tr><td class=std_nobold_1>Search Timeout:</td><td class=std_2><input  class=s2 name=102c17 type=radio value="0" checked >Wait LDAP Server Limit 
+</td></tr>
+<tr><td class=std_nobold_1></td><td class=std_2><table border=0 class=glib_local>
+<tr><td class=localRdoVal_1><input  class=s2 name=102c17 type=radio value="1" >Wait 
+</td><td class=localRdoVal_2></td><td class=localRdoVal_3><input  class=s2 name=102c18 type=text value="30" size=5 maxlength=3 > seconds (5 ~ 120) </td></tr>
+</table>
+</td></tr>
+<tr><td class=std_nobold_1>Search Name Order:</td><td class=std_2><select  class=s2 name=102c19 ><option  class=s2 value="0" selected>*Common Name<option  class=s2 value="1"> Surname<option  class=s2 value="2"> Given Name</select></td></tr>
+<tr><td class=std_nobold_1>Server Email Address Book:</td><td class=std_2><input  class=s2 name=102c1a type=checkbox value="1" >On
+</td></tr>
+<tr><td class=std_nobold_1>Server Fax Address Book:</td><td class=std_2><input  class=s2 name=102c1b type=checkbox value="1" >On
+</td></tr>
+</table>
+<br><table border=0 align=center class=btn>
+<tr><td class=btn_oside_1><input type="submit" value="Save Changes" class=xeroxbutton></td><td class=btn_oside_1><input type="reset"  value="Discard Changes" class=xeroxbutton></td></tr>
+</table>
+</form></div></body>
+</html>

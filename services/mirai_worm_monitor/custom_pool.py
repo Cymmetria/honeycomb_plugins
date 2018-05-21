@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Mirai Worm Gevent Pool."""
 from __future__ import unicode_literals
 import gevent.pool
 
@@ -6,7 +7,7 @@ import gevent.pool
 class CustomPool(gevent.pool.Pool):
     """An extension of the gevent pool.
 
-    If this pool becomes full, it drops oldest connections instead of waiting their end.
+    If this pool becomes full, it drops the oldest connections instead of waiting for them to end.
     """
 
     def __init__(self, logger, size=0, greenlet_class=None):
@@ -16,10 +17,9 @@ class CustomPool(gevent.pool.Pool):
         self.logger = logger
         gevent.pool.Pool.__init__(self, size + 1, greenlet_class)  # +1 to avoid the semaphore
 
-    # Add the greenlet to the pool
     def add(self, greenlet):
+        """Add the greenlet to the pool."""
         source = greenlet.args[2][1][0] + ':' + str(greenlet.args[2][1][1])
-        socket = greenlet.args[2][0]
 
         # With 1, we avoid the wait caused by the semaphore
         if self.free_count() < 2:
@@ -27,7 +27,7 @@ class CustomPool(gevent.pool.Pool):
             oldest_source = self.open_connection[0]
             oldest_greenlet = self.open_connection_dico_ip[oldest_source]
 
-            # kill the greenlet, this also close its associated socket
+            # kill the greenlet, this also closes its associated socket
             self.killone(oldest_greenlet, block=False)
 
         # Add the connection to the dicos
@@ -48,10 +48,10 @@ class CustomPool(gevent.pool.Pool):
         self.open_connection.remove(to_del_source)
 
     def log_pool_info(self):
+        """Debug log pool info."""
         self.logger.debug("pool_size: %d", self.free_count() - 1)
 
     def remove_connection(self, to_del_source):
+        """Remove connection from pool."""
         to_del_greenlet = self.open_connection_dico_ip[to_del_source]
         self._discard(to_del_greenlet)
-
-

@@ -3,7 +3,7 @@
         {
             "name": "banner_port_access",
             "label": "Port Access on Banner Service",
-            "fields": ["event_description", "originating_ip", "originating_port"],
+            "fields": ["originating_ip", "originating_port"],
             "policy": "Mute"
         }
     ],
@@ -19,7 +19,7 @@
     "parameters": [
         {
             "type": "integer",
-            "value": "listening_port",
+            "value": "port",
             "label": "Listening Port",
             "required": true
         },
@@ -27,7 +27,8 @@
             "type": "text",
             "value": "banner",
             "label": "Banner",
-            "required": false
+            "required": false,
+            "default": "Connected to ACME Service"
         }
     ]
 }

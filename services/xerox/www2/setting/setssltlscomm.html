@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../common_xog.css" type="text/css">
+<title>Internet Services</title>
+<base  target="main">
+</head>
+<body><div id=frameR>
+<br><table border=0 cellspacing=0 cellpadding=0><tr><td></td><td nowrap><font class=s5>SSL</font><br>
+</td></tr></table><br><form method="post" action="http://%IPADDRESSPLACEHOLDER%/setting/setssltlscomm.htm"><table class=std_3>
+<tr><td class=std_nobold_1>Enable SSL:</td><td class=std_2>Disabled</td></tr>
+<tr><td class=std_nobold_1>Encryption Strength:</td><td class=std_2><select  class=s2 name=102504 ><option  class=s2 value="0" selected>*128 bit or Higher<option  class=s2 value="1"> 256 bit or Higher</select></td></tr>
+<tr><td class=std_nobold_1>Port Number:</td><td class=std_2><input  class=s2 name=102505 type=text value="443" size=6 maxlength=4 > (443, 8000 ~ 9999) </td></tr>
+<tr><td class=std_nobold_1>LDAP - SSL/TLS Communication:</td><td class=std_2><input  class=s2 name=102506 type=hidden value="0" ><input  class=s2 name=102506 type=checkbox value="1" checked >Enabled
+</td></tr>
+<tr><td class=std_nobold_1>SMTP - SSL/TLS Communication:</td><td class=std_2><select  class=s2 name=102507 ><option  class=s2 value="0"> Disabled<option  class=s2 value="2" selected>*STARTTLS (if Available)<option  class=s2 value="3"> STARTTLS<option  class=s2 value="1"> SSL/TLS</select></td></tr>
+<tr><td class=std_nobold_1>Verify Remote Server Certificate:</td><td class=std_2><input  class=s2 name=102508 type=checkbox value="1" >Enabled
+</td></tr>
+</table>
+<br><span class=tblcap>Machine Digital Certificate</span>
+<table class=std_3>
+<tr><td class=std_nobold_1>Create New Certificate:</td><td class=std_2>
+<script language="JavaScript">
+<!--
+document.write("<input type='button' onClick=window.location='setcertgenslf.htm' value='Create New Certificate' class=xeroxbutton>")
+//-->
+</script>
+
+<noscript>
+<font class=s2><a href="setcertgenslf.htm" target="_self">Create New Certificate</a></font>
+</noscript>
+</td></tr>
+</table>
+<br><table border=0 align=center class=btn>
+<tr><td class=btn_oside_1><input type="submit" value="Save Changes" class=xeroxbutton></td><td class=btn_oside_1><input type="reset"  value="Discard Changes" class=xeroxbutton></td></tr>
+</table>
+</form></div></body>
+</html>

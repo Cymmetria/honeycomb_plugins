@@ -2,8 +2,7 @@
 set -e
 
 rm -rf dist
-for type in `ls -d */`; do
-    type=${type%%/}
+for type in "services" "integrations"; do
     mkdir -p dist/${type}
     pushd ${type}
     for plugin in `ls -d */`; do

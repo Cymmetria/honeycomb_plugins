@@ -1,0 +1,30 @@
+{
+    "event_types": [
+        {
+            "name": "hp_officejet",
+            "label": "HP OfficeJet printer interaction",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Mute"
+        },
+        {
+            "name": "hp_path_traversal",
+            "label": "HP OfficeJet attempted attack",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "All",
+        "ports": [
+            {
+                "protocol": "TCP",
+                "port": 9100
+            }
+        ],
+        "name": "hp_officejet",
+        "label": "HP OfficeJet 8210",
+        "description": "Partial PJL server that receives @PJL commands and replies some of the time",
+        "conflicts_with": []
+    }
+}
