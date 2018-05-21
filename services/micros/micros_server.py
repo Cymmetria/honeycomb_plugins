@@ -8,6 +8,7 @@ import random
 import socket
 from binascii import hexlify, unhexlify
 
+from six import b
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 
 
@@ -94,11 +95,11 @@ class MicrosHandler(SimpleHTTPRequestHandler):
         data_len = int(self.headers.get("Content-length", 0))
         if self.headers.get("Content-type") == "application/dime":
             if data_len:
-                data = hexlify(self.rfile.read(data_len)) if data_len else ""
+                data = hexlify(self.rfile.read(data_len)).decode() if data_len else ""
 
                 exploit_data = [self.poc_suf_1_1, self.poc_suf_1_ses, self.poc_suf_1_2, self.poc_suf_1_3,
                                 self.poc_suf_1_4, self.poc_suf2]
-                if all(data.count(x.lower()) for x in exploit_data):
+                if all(e in data for e in exploit_data):
                     # request is asking for a specific file
                     filepath = data[data.find(self.poc_suf_1_4):data.find(self.poc_suf2)]
                     filepath = unhexlify(filepath).replace("\x00", "")[2:]
@@ -130,7 +131,8 @@ class MicrosHandler(SimpleHTTPRequestHandler):
         """Send a file from the mock filesystem."""
         self.alert_function(request=self, filepath=filepath)
         filename = os.path.basename(filepath.replace("\\", "/"))
-        rnd = hexlify("".join(random.choice(string.ascii_letters + string.digits) for _ in range(16)))
+        r = "".join(random.choice(string.ascii_letters + string.digits) for _ in range(16))
+        rnd = hexlify(b(r)).decode()
         head = "0c200000001000290000016d"
         soap = "687474703a2f2f736368656d61732e786d6c736f61702e6f72672f736f61702f656e76656c6f70652f0000003c3f786d6c207" \
                "6657273696f6e3d22312e302220656e636f64696e673d227574662d38223f3e3c736f61703a456e76656c6f706520786d6c6e" \
@@ -153,8 +155,8 @@ class MicrosHandler(SimpleHTTPRequestHandler):
                 data = fh.read()
 
         body = unhexlify(head + rnd + soap + rnd + si_sec) + data
-        body = body.replace("%%HOST%%", self.headers.get("Host").split(":")[0])
-        body = body.replace("%%PORT%%", str(self.listening_port))
+        body = body.replace(b"%%HOST%%", b(self.headers.get("Host").split(":")[0]))
+        body = body.replace(b"%%PORT%%", b(str(self.listening_port)))
 
         self.send_response(200)
         self.send_header("Content-Type", "application/dime")

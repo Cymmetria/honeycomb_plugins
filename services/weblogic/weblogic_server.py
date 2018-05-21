@@ -6,7 +6,6 @@ import os
 import socket
 from xml.etree import ElementTree
 
-
 from six import StringIO
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 
@@ -23,7 +22,7 @@ class WebLogicHandler(SimpleHTTPRequestHandler):
 
     protocol_version = "HTTP/1.1"
 
-    EXPLOIT_STRING = "</void>"
+    EXPLOIT_STRING = b"</void>"
     PATCHED_RESPONSE = """<?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soa""" \
                        """p/envelope/"><S:Body><S:Fault xmlns:ns4="http://www.w3.org/2003/05/soap-envelope"><faultc""" \
                        """ode>S:Server</faultcode><faultstring>Invalid attribute for element void:class</faultstrin""" \
