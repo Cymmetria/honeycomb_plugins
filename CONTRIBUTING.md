@@ -19,7 +19,7 @@ Follow instructions to init pyenv and add it to your bashrc/zshrc file
 
 ### Set up virtualenv and install tox
     $ virtualenv venv
-    $ source venv/bin/acticate
+    $ source venv/bin/activate
     $ pip install tox
 
 ### Make sure tests are working
