@@ -24,10 +24,10 @@ jobs:
       script: tox -e flake8
       deploy:
     - stage: deploy
+      install: skip
+      script: ./mkpkg.sh
       deploy:
         provider: pages
-        script: ./mkpkg.sh
-        install: skip
         skip_cleanup: true
         keep-history: true
         github-token: $GITHUB_TOKEN
