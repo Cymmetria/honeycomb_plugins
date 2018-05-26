@@ -33,5 +33,9 @@ class JsonIntegration(BaseIntegration):
         except Exception as exc:
             raise IntegrationSendEventError(exc)
 
+    def format_output_data(self, output_data):
+        """No special formatting needed."""
+        return output_data
+
 
 IntegrationActionsClass = JsonIntegration
