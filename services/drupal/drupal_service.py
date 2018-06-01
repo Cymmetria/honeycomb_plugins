@@ -12,6 +12,7 @@ ORIGINATING_PORT_FIELD_NAME = "originating_port"
 REQUEST_FIELD_NAME = "request"
 EXPLOIT_USING_POST = "user/register?element_parents=account/mail/%23value&ajax_form=1&_wrapper_format=drupal_ajax"
 EXPLOIT_USING_GET = "user/password?name[%23post_render][]=passthru&name[%23markup]=id&name[%23type]=markup"
+EXPLOIT_FORMAT = "{target}{exploit}"
 
 
 class DrupalService(ServerCustomService):
@@ -34,7 +35,7 @@ class DrupalService(ServerCustomService):
 
     def on_server_start(self):
         """Set up a drupal honeypot server."""
-        self.logger.info("{name} received start".format(name=str(self)))
+        self.logger.info("{name!s} received start".format(name=self))
         self.honeypot = DrupalServer(self.logger, self.alert)
         self.signal_ready()
         if not self.honeypot.start():
@@ -42,7 +43,7 @@ class DrupalService(ServerCustomService):
 
     def on_server_shutdown(self):
         """Stop the honeypot server."""
-        self.logger.debug("{name} received stop".format(name=str(self)))
+        self.logger.debug("{name!s} received stop".format(name=self))
         if self.honeypot:
             self.honeypot.stop()
 
@@ -52,7 +53,7 @@ class DrupalService(ServerCustomService):
 
         event_types = list()
 
-        self.logger.debug("executing service test")
+        self.logger.debug("Executing service test...")
 
         # Drupal CVE-2018-7600 test - once with POST, once with GET
         target = "http://127.0.0.1:{port}/".format(port=WEB_PORT)
@@ -60,11 +61,11 @@ class DrupalService(ServerCustomService):
                    "_drupal_ajax": "1",
                    "timezone[a][#lazy_builder][]": "exec",
                    "timezone[a][#lazy_builder][][]": "touch+/tmp/1"}
-        requests.post(target + EXPLOIT_USING_POST, data=payload)
+        requests.post(EXPLOIT_FORMAT.format(target=target, exploit=EXPLOIT_USING_POST), data=payload)
         event_types += ALERTS
 
         # Now it's GET's turn..
-        requests.get(target + EXPLOIT_USING_GET)
+        requests.get(EXPLOIT_FORMAT.format(target=target, exploit=EXPLOIT_USING_GET))
         event_types += ALERTS
 
         return event_types

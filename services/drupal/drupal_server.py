@@ -4,19 +4,13 @@ from __future__ import unicode_literals
 
 import os
 
-try:
-    from socketserver import ThreadingMixIn  # Python 3 exclusive
-    from http.server import HTTPServer, SimpleHTTPRequestHandler
-    from urllib.parse import unquote, urlparse
-except Exception:
-    from SocketServer import ThreadingMixIn  # Python 2 exclusive
-    from BaseHTTPServer import HTTPServer
-    from SimpleHTTPServer import SimpleHTTPRequestHandler
-    from urllib import unquote
-    from urlparse import urlparse
+from six.moves.socketserver import ThreadingMixIn
+from six.moves.BaseHTTPServer import HTTPServer
+from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
+from six.moves.urllib_parse import unquote, urlparse
 
 
-WEB_PORT = 80
+WEB_PORT = 8080
 WWW_FOLDER_NAME = "html"
 WEB_ALERT_TYPE_NAME = "drupal_rce"
 DEFAULT_SERVER_VERSION = "Apache 2"
@@ -25,8 +19,6 @@ ALERTS = [WEB_ALERT_TYPE_NAME]
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     """Extend both classes to have threading capabilities."""
-
-    pass
 
 
 class HoneyHTTPRequestHandler(SimpleHTTPRequestHandler, object):
@@ -38,7 +30,7 @@ class HoneyHTTPRequestHandler(SimpleHTTPRequestHandler, object):
 
     def verify(self, query):
         """Filter HTTP request to make sure it's not an exploit attempt."""
-        self.logger.debug("Query: " + query)
+        self.logger.debug("Query: %s", query)
         if query and query.find("&") != -1:
             query_components = {}
             for param in query.split("&"):
