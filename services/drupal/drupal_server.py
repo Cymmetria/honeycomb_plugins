@@ -61,15 +61,30 @@ class HoneyHTTPRequestHandler(SimpleHTTPRequestHandler, object):
         self.verify(post_data)
         super(HoneyHTTPRequestHandler, self).do_GET()
 
+    def log_error(self, message, *args):
+        """Log an error."""
+        self.log_message("error", message, *args)
+
     def log_request(self, code="-", size="-"):
         """Log an incoming request."""
-        self.logger.debug("debug: {request}, code: {code}, size: {size}".format(request=self.requestline,
-                                                                                code=code,
-                                                                                size=size))
+        # Due to hilarity involving HTTPServer using "%s"-style formatting to format strings,
+        # and the URLs sometimes having extra %'s in them, we have to escape them by making
+        # them into %%'s.
+        self.log_message("debug", '"{!s}" {!s} {!s}'.format(self.requestline.replace("%", "%%"), code, size))
 
-    def log_error(self, *args):
-        """Log an error."""
-        self.logger.debug("error: {message} ({args})".format(message=args[0], args=args))
+    def log_message(self, level, message, *args):
+        """Send message to logger with standard apache format."""
+        try:
+            getattr(self.logger, level)
+        except AttributeError:
+            self.logger.error("Invalid level of debug requested ({}), logging as debug".format(level))
+            level = "debug"
+
+        self.logger.debug(message)
+        self.logger.debug(str(args))
+        getattr(self.logger, level)("{!s} - - [{!s}] {!s}".format(self.client_address[0],
+                                                                  self.log_date_time_string(),
+                                                                  message % args))
 
 
 class DrupalServer(object):
