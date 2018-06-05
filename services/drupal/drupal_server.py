@@ -10,7 +10,7 @@ from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 from six.moves.urllib_parse import unquote, urlparse
 
 
-WEB_PORT = 8080
+WEB_PORT = 80
 WWW_FOLDER_NAME = "html"
 WEB_ALERT_TYPE_NAME = "drupal_rce"
 DEFAULT_SERVER_VERSION = "Apache 2"
