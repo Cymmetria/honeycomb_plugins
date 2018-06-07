@@ -1,4 +1,5 @@
 banner
+drupal
 hp_officejet
 intel_amt
 micros
