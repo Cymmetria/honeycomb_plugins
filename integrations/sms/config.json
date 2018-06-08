@@ -1,0 +1,47 @@
+{
+    "display_name": "SMS",
+    "description": "Send Service alerts via SMS.",
+    "integration_type": "event_output",
+    "supported_event_types": [],
+    "required_fields": [],
+    "max_send_retries": 5,
+    "polling_enabled": false,
+    "test_connection_enabled": true,
+    "parameters": [
+        {
+            "value": "to_phone",
+            "label": "TO (phone number)",
+            "type": "string",
+            "required": true,
+            "help_text": "A phone number that will receive the SMS"
+        },
+        {
+            "value": "from_phone",
+            "label": "FROM (phone number)",
+            "type": "string",
+            "required": true,
+            "help_text": "All SMS alerts will be from this phone number"
+        },
+        {
+            "value": "twilio_account_sid",
+            "label": "Twilio Account SID",
+            "type": "string",
+            "required": true,
+            "help_text": "The \"Twilio Account SID\" - get this from your Twilio account"
+        },
+        {
+            "value": "twilio_auth_token",
+            "label": "Twilio Auth Token",
+            "type": "string",
+            "required": true,
+            "help_text": "The \"Twilio Auth Token\" - get this from your Twilio account"
+        },
+        {
+            "value": "additional_message_data",
+            "label": "Additional Message Data",
+            "type": "string",
+            "required": false,
+            "help_text": "Additional text that will be appended to the SMS"
+        }
+    ]
+}
