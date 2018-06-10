@@ -1,0 +1,25 @@
+{
+    "event_types": [
+        {
+            "name": "ftp",
+            "label": "FTP Interaction",
+            "fields": ["event_description", "originating_ip", "originating_port", "username", "password", "additional_fields"],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "All",
+        "ports": [
+            {
+                "protocol": "TCP",
+                "port": 21
+            }
+        ],
+        "name": "ftp",
+        "label": "FTP Server",
+        "description": "An empty FTP server.",
+        "conflicts_with": []
+    }
+}
+
