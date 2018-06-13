@@ -44,7 +44,7 @@ def install_plugins(dir, plugins, target):
 
 venv = tempfile.mkdtemp()
 install_plugins('../services', services_list, venv)
-install_plugins('../integrations', integrations_list. venv)
+install_plugins('../integrations', integrations_list, venv)
 
 sys.path.append(venv)
 sys.path.append(os.path.dirname(honeycomb.__file__))
