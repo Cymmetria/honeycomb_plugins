@@ -15,7 +15,41 @@ http://www.sphinx-doc.org/en/stable/config
 
 # -- Project information -----------------------------------------------------
 
+import os
+import sys
+import importlib
+import subprocess
+
+sys.path.append(os.path.abspath('..'))
+
 import honeycomb
+import services
+import integrations
+
+from honeycomb.servicemanager import base_service
+from honeycomb.integrationmanager import integration_utils
+
+services_list = next(os.walk('../services'))[1]
+integrations_list = next(os.walk('../integrations'))[1]
+
+def install_plugins(dir, plugins):
+    for plugin in plugins:
+        reqs = os.path.join(dir, plugin, "requirements.txt")
+        if os.path.exists(reqs):
+            pipargs = ["install", "-r", reqs]
+            subprocess.check_call([sys.executable, "-m", "pip"] + pipargs)
+
+install_plugins('../services', services_list)
+install_plugins('../integrations', integrations_list)
+
+sys.path.append(os.path.dirname(honeycomb.__file__))
+sys.path.append(os.path.dirname(base_service.__file__))
+sys.path.append(os.path.dirname(integration_utils.__file__))
+
+for _ in services_list:
+    importlib.import_module('services.{}'.format(_))
+for _ in integrations_list:
+    importlib.import_module('integrations.{}'.format(_))
 
 project = u'Honeycomb Plugins'
 copyright = u'2018, Cymmetria'
