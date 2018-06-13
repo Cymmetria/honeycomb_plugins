@@ -36,10 +36,10 @@ integrations_list = next(os.walk('../integrations'))[1]
 
 def install_plugins(dir, plugins, target):
     for plugin in plugins:
-        reqs = os.path.join(dir, plugin, "requirements.txt")
+        reqs = os.path.join(dir, plugin, 'requirements.txt')
         if os.path.exists(reqs):
-            pipargs = ["install", "-r", reqs, "--target", target, "--ignore-installed"]
-            subprocess.check_call([sys.executable, "-m", "pip"] + pipargs)
+            pipargs = ['install', '-r', reqs, '--target', target, '--ignore-installed']
+            subprocess.check_call([sys.executable, '-m', 'pip'] + pipargs)
 
 
 venv = tempfile.mkdtemp()
