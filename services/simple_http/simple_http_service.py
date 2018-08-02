@@ -68,9 +68,10 @@ class SimpleHTTPService(ServerCustomService):
         }
         self.add_alert_to_queue(params)
 
-    def _on_server_start_with_handler(self, request_handler):
+    def on_server_start(self):
+        """Initialize Service."""
         os.chdir(os.path.join(os.path.dirname(__file__), "www"))
-        requestHandler = request_handler
+        requestHandler = HoneyHTTPRequestHandler
         requestHandler.alert = self.alert
         requestHandler.logger = self.logger
         requestHandler.server_version = self.service_args.get("version", DEFAULT_SERVER_VERSION)
@@ -85,10 +86,6 @@ class SimpleHTTPService(ServerCustomService):
         self.signal_ready()
         self.logger.info("Starting {}Simple HTTP service on port: {}".format("Threading " if threading else "", port))
         self.httpd.serve_forever()
-
-    def on_server_start(self):
-        """Initialize Service."""
-        self._on_server_start_with_handler(HoneyHTTPRequestHandler)
 
     def on_server_shutdown(self):
         """Shut down gracefully."""

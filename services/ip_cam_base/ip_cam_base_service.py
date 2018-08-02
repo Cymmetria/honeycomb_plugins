@@ -1,26 +1,31 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
+
+from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
+from six.moves.socketserver import ThreadingMixIn
 
 from honeycomb.servicemanager.base_service import ServerCustomService
-from services.simple_http.simple_http_service import SimpleHTTPService, HoneyHTTPRequestHandler
 
-
+DEFAULT_PORT = 8888
+DEFAULT_SERVER_VERSION = "webcam"
 DEFAULT_IMAGE_PATH = "/stream/current.cam0.jpeg"
 
 
-class IPCamBaseHTTPRequestHandler(HoneyHTTPRequestHandler):
+class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
+    """Threading HTTP Server stub class."""
 
-    def __init__(self, request, client_address, server):
-        self.default_image_path = DEFAULT_IMAGE_PATH
-        super(IPCamBaseHTTPRequestHandler, self).__init__(request, client_address, server)
+
+class IPCamBaseHTTPRequestHandler(SimpleHTTPRequestHandler, object):
+
+    default_image_path = DEFAULT_IMAGE_PATH
 
     def setup(self):
         super(IPCamBaseHTTPRequestHandler, self).setup()
 
     def do_GET(self):
-
         if self.path == self.default_image_path:
             self.send_response(200)
             self.end_headers()
@@ -28,9 +33,9 @@ class IPCamBaseHTTPRequestHandler(HoneyHTTPRequestHandler):
         else:
             super(IPCamBaseHTTPRequestHandler, self).do_GET()
 
-    def send_head(self, *args, **kwargs):
-        retrieved_page = super(HoneyHTTPRequestHandler, self).send_head(*args, **kwargs)
-        return retrieved_page
+    def version_string(self):
+        """HTTP Server version header."""
+        return self.server_version
 
     def log_error(self, msg, *args):
         """Log an error."""
@@ -46,17 +51,57 @@ class IPCamBaseHTTPRequestHandler(HoneyHTTPRequestHandler):
                                                                   msg % args))
 
 
-class IPCamBaseService(SimpleHTTPService):
-    def __init__(self, *args, **kwargs):
+class IPCamBaseService(ServerCustomService):
+    """Base IP Cam Service."""
 
+    httpd = None
+
+    def __init__(self, *args, **kwargs):
         super(IPCamBaseService, self).__init__(*args, **kwargs)
+
+    # TODO: several possible alerts
+    def alert(self, request):
+        """Raise an alert."""
+        params = {}
+        self.add_alert_to_queue(params)
 
     def on_server_start(self):
         """Initialize Service."""
-        self._on_server_start_with_handler(IPCamBaseHTTPRequestHandler)
+        os.chdir(os.path.join(os.path.dirname(__file__), "www-base"))
+        requestHandler = IPCamBaseHTTPRequestHandler
+        requestHandler.alert = self.alert
+        requestHandler.logger = self.logger
+        requestHandler.server_version = self.service_args.get("version", DEFAULT_SERVER_VERSION)
+
+        port = self.service_args.get("port", DEFAULT_PORT)
+        threading = self.service_args.get("threading", False)
+        if threading:
+            self.httpd = ThreadingHTTPServer(("", port), requestHandler)
+        else:
+            self.httpd = HTTPServer(("", port), requestHandler)
+
+        self.signal_ready()
+        self.logger.info("Starting {}IP Cam base service on port: {}".format("Threading " if threading else "", port))
+        self.httpd.serve_forever()
+
+    def on_server_shutdown(self):
+        """Shut down gracefully."""
+        if self.httpd:
+            self.httpd.shutdown()
+            self.logger.info("IP Cam base service stopped")
+            self.httpd = None
+
+    def test(self):
+        """Test service alerts and return a list of triggered event types."""
+        event_types = list()
+        # TODO: Write real test
+        # self.logger.debug("executing service test")
+        # requests.get("http://localhost:{}/".format(self.service_args.get("port", DEFAULT_PORT)))
+        # event_types.append(SIMPLE_HTTP_ALERT_TYPE_NAME)
+        return event_types
 
     def __str__(self):
-        return "IP Cam Base"
+        return "IP Cam Base Service"
 
 
 service_class = IPCamBaseService
