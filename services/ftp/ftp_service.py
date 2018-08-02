@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import tempfile
 import os
 import shutil
+import ftplib
 
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
@@ -171,6 +172,17 @@ class FTPService(ServerCustomService):
         if self.server:
             self.server.close_all()
         self.delete_temp_dir()
+
+    def test(self):
+        """Test service alerts and return a list of triggered event types."""
+        event_types = list()
+
+        self.logger.debug("executing service test")
+        f_con = ftplib.FTP(SERVER_IP)
+        f_con.login(DEFAULT_USER, DEFAULT_PASSWORD)
+        f_con.close()
+        event_types.append(USER_LOGIN_DESCRIPTION)
+        return event_types
 
     def __str__(self):
         return "FTP"
