@@ -25,6 +25,7 @@ USERNAME = "username"
 PASSWORD = "password"
 ADDITIONAL_FIELDS = "additional_fields"
 SERVER_IP = "0.0.0.0"
+SERVER_PORT = 21
 DEFAULT_USER = "admin"
 DEFAULT_PASSWORD = "Password1!"
 
@@ -88,37 +89,37 @@ class AlertingHandler(FTPHandler):
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_LIST(self, path)
-    
+
     def ftp_NLST(self, path):
         self.__send_alert(USER_LISTED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_NLST(self, path)
-    
+
     def ftp_MLST(self, path):
         self.__send_alert(USER_LISTED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_MLST(self, path)
-    
+
     def ftp_CWD(self, path):
         self.__send_alert(USER_NAVIGATED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_CWD(self, path)
-    
+
     def ftp_MKD(self, path):
         self.__send_alert(USER_CREATED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_MKD(self, path)
-    
+
     def ftp_RMD(self, path):
         self.__send_alert(USER_DELETED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_RMD(self, path)
-    
+
     def ftp_DELE(self, path):
         self.__send_alert(USER_DELETED_FILE_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
@@ -154,7 +155,7 @@ class FTPService(ServerCustomService):
         handler = AlertingHandler
         handler.authorizer = authorizer
         self.server = FTPAlertingServer(
-            (SERVER_IP, 21),
+            (SERVER_IP, SERVER_PORT),
             handler,
             alerting_function=self.add_alert_to_queue,
             base_dir=self.temp_dir)
