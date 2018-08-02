@@ -180,7 +180,7 @@ class FTPService(ServerCustomService):
         self.logger.debug("executing service test")
         f_con = ftplib.FTP(SERVER_IP)
         f_con.login(DEFAULT_USER, DEFAULT_PASSWORD)
-        f_con.close()
+        f_con.quit()
         event_types.append(USER_LOGIN_DESCRIPTION)
         return event_types
 
