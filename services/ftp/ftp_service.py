@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+"""Honeycomb FTP Service."""
 from __future__ import unicode_literals
+
 import tempfile
 import os
 import shutil
@@ -32,7 +34,7 @@ DEFAULT_PASSWORD = "Password1!"
 
 
 class AlertingHandler(FTPHandler):
-    """Request handler for the FTP Server"""
+    """Request handler for the FTP Server."""
 
     def __format_file_path(self, file_path):
         new_base_dir = file_path.replace(self.server.base_dir, "")
@@ -57,73 +59,87 @@ class AlertingHandler(FTPHandler):
         self.server.alerting_function(params)
 
     def on_connect(self):
+        """Send alert on connect."""
         self.__send_alert(CLIENT_CONNECTED_DESCRIPTION)
 
     def on_disconnect(self):
+        """Send alert on disconnect."""
         self.__send_alert(CLIENT_DISCONNECTED_DESCRIPTION)
 
     def on_login(self, username):
+        """Send alert on login."""
         self.__send_alert(USER_LOGIN_DESCRIPTION)
 
     def on_login_failed(self, username, password):
+        """Send alert on failed login."""
         self.__send_alert(USER_FAILED_LOGIN_DESCRIPTION, {
             USERNAME: username,
             PASSWORD: password,
         })
 
     def on_logout(self, username):
+        """Send alert on logout."""
         self.__send_alert(USER_LOGOUT_DESCRIPTION, {
             USERNAME: username,
         })
 
     def on_file_sent(self, file):
+        """Send alert on downloading file."""
         self.__send_alert(USER_DOWNLOADED_FILE_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(file),
         })
 
     def on_file_received(self, file):
+        """Send alert on uploading file."""
         self.__send_alert(USER_UPLOADED_FILE_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(file),
         })
 
     # On the next section we override actual handlers instead of callbacks for more alerts
     def ftp_LIST(self, path):
+        """Handle LIST."""
         self.__send_alert(USER_LISTED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_LIST(self, path)
 
     def ftp_NLST(self, path):
+        """Handle NLST."""
         self.__send_alert(USER_LISTED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_NLST(self, path)
 
     def ftp_MLST(self, path):
+        """Handle MLST."""
         self.__send_alert(USER_LISTED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_MLST(self, path)
 
     def ftp_CWD(self, path):
+        """Handle CWD."""
         self.__send_alert(USER_NAVIGATED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_CWD(self, path)
 
     def ftp_MKD(self, path):
+        """Handle MKD."""
         self.__send_alert(USER_CREATED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_MKD(self, path)
 
     def ftp_RMD(self, path):
+        """Handle RMD."""
         self.__send_alert(USER_DELETED_DIR_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
         FTPHandler.ftp_RMD(self, path)
 
     def ftp_DELE(self, path):
+        """Handle DELE."""
         self.__send_alert(USER_DELETED_FILE_DESCRIPTION, {
             ADDITIONAL_FIELDS: self.__format_file_path(path)
         })
@@ -131,6 +147,8 @@ class AlertingHandler(FTPHandler):
 
 
 class FTPAlertingServer(FTPServer):
+    """FTP Alerting server."""
+
     def __init__(self, *args, **kwargs):
         self.alerting_function = kwargs.pop("alerting_function")
         self.base_dir = kwargs.pop("base_dir")
@@ -138,20 +156,23 @@ class FTPAlertingServer(FTPServer):
 
 
 class FTPService(ServerCustomService):
-    """Simple FTP service"""
+    """Simple FTP service."""
+
     def __init__(self, *args, **kwargs):
         super(FTPService, self).__init__(*args, **kwargs)
         self.server = None
         self.temp_dir = None
 
     def prepare_temp_dir(self):
+        """Create a temp dir."""
         self.temp_dir = tempfile.mkdtemp()
 
     def delete_temp_dir(self):
+        """Delete the temp dir that we created."""
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def on_server_start(self):
-        """Start the FTP server"""
+        """Start the FTP server."""
         self.prepare_temp_dir()
         authorizer = DummyAuthorizer()
         authorizer.add_user(DEFAULT_USER, DEFAULT_PASSWORD, homedir=self.temp_dir, perm='elradfmw')  # All permissions
@@ -168,7 +189,7 @@ class FTPService(ServerCustomService):
         self.server.serve_forever()
 
     def on_server_shutdown(self):
-        """Stop the FTP server"""
+        """Stop the FTP server."""
         if self.server:
             self.server.close_all()
         self.delete_temp_dir()
@@ -185,6 +206,8 @@ class FTPService(ServerCustomService):
         return event_types
 
     def __str__(self):
+        """Str wrapper."""
         return "FTP"
+
 
 service_class = FTPService

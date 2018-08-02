@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""FTP Service strings."""
 from __future__ import unicode_literals
 
 CLIENT_CONNECTED_DESCRIPTION = "Client connected"
@@ -16,4 +17,3 @@ USER_LISTED_DIR_DESCRIPTION = "User listed directory content"
 USER_CREATED_DIR_DESCRIPTION = "User created a directory"
 USER_DELETED_DIR_DESCRIPTION = "User deleted a directory"
 USER_NAVIGATED_DIR_DESCRIPTION = "User navigated to directory"
-
