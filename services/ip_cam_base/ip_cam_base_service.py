@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 
+import requests
 from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 from six.moves.socketserver import ThreadingMixIn
@@ -13,6 +14,7 @@ DEFAULT_PORT = 8888
 DEFAULT_SERVER_VERSION = "webcam"
 DEFAULT_IMAGE_PATH = "/stream/current.cam0.jpeg"
 
+DEFAULT_IMAGE_TO_GET = "http://farm4.static.flickr.com/3559/3437934775_2e062b154c_o.jpg"
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     """Threading HTTP Server stub class."""
@@ -20,16 +22,23 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 class IPCamBaseHTTPRequestHandler(SimpleHTTPRequestHandler, object):
 
+    impage_src = DEFAULT_IMAGE_TO_GET
+
     default_image_path = DEFAULT_IMAGE_PATH
 
     def setup(self):
         super(IPCamBaseHTTPRequestHandler, self).setup()
 
+    def _get_fake_image(self):
+        return requests.get(self.impage_src)
+
     def do_GET(self):
         if self.path == self.default_image_path:
+            image_data = self._get_fake_image()
             self.send_response(200)
+            self.send_header('Content-Type', image_data.headers['Content-Type'])
             self.end_headers()
-            self.wfile.write("booooo")
+            self.wfile.write(image_data.content)
         else:
             super(IPCamBaseHTTPRequestHandler, self).do_GET()
 
@@ -72,6 +81,7 @@ class IPCamBaseService(ServerCustomService):
         requestHandler.alert = self.alert
         requestHandler.logger = self.logger
         requestHandler.server_version = self.service_args.get("version", DEFAULT_SERVER_VERSION)
+        requestHandler.impage_src = self.service_args.get("image_src", DEFAULT_SERVER_VERSION)
 
         port = self.service_args.get("port", DEFAULT_PORT)
         threading = self.service_args.get("threading", False)
