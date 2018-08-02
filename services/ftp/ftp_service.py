@@ -197,21 +197,15 @@ class FTPService(ServerCustomService):
 
     def test(self):
         """Test service alerts and return a list of triggered event types."""
-        event_types = list()
-
         self.logger.debug("executing service test")
+
+        event_types = list()
         f_con = ftplib.FTP()
-
         f_con.connect(SERVER_TEST_IP, SERVER_PORT)
-        event_types.append(CLIENT_CONNECTED_DESCRIPTION)
-
         f_con.login(DEFAULT_USER, DEFAULT_PASSWORD)
-        event_types.append(USER_LOGIN_DESCRIPTION)
-
         f_con.quit()
-        event_types.append(USER_LOGOUT_DESCRIPTION)
-        event_types.append(CLIENT_DISCONNECTED_DESCRIPTION)
 
+        event_types.append(FTP_ALERT_TYPE)
         return event_types
 
     def __str__(self):
