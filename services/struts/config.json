@@ -1,0 +1,25 @@
+{
+    "event_types": [
+        {
+            "name": "struts_exploit",
+            "label": "Struts CVE 2017-5638 Exploit",
+            "fields": [],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "All",
+        "ports": [
+            {
+                "protocol": "TCP",
+                "port": 80
+            }
+        ],
+        "name": "struts",
+        "label": "Struts Honeypot",
+        "description": "StrutsHoneypot is an Apache 2 based honeypot that includes a separate detection module (apache mod) for Apache 2 servers that detects and/or blocks the Struts CVE 2017-5638 exploit.",
+        "conflicts_with": []
+    },
+    "parameters": []
+}
