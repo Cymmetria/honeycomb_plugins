@@ -1,6 +1,6 @@
 {
     "display_name": "SMS",
-    "description": "Send Service alerts via SMS.",
+    "description": "Send service alerts via SMS.",
     "integration_type": "event_output",
     "supported_event_types": [],
     "required_fields": [],
@@ -10,17 +10,17 @@
     "parameters": [
         {
             "value": "to_phone",
-            "label": "TO (phone number)",
+            "label": "To (phone number)",
             "type": "string",
             "required": true,
-            "help_text": "A phone number that will receive the SMS"
+            "help_text": "A phone number that will receive the SMS. Format is +15551234567"
         },
         {
             "value": "from_phone",
-            "label": "FROM (phone number)",
+            "label": "From (phone number)",
             "type": "string",
             "required": true,
-            "help_text": "All SMS alerts will be from this phone number"
+            "help_text": "All SMS alerts will be from this phone number. Format is +15551234567"
         },
         {
             "value": "twilio_account_sid",

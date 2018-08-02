@@ -3,21 +3,21 @@
 
 from __future__ import unicode_literals
 
+import twilio
+import twilio.rest
+
 from integrationmanager.exceptions import IntegrationSendEventError
 from integrationmanager.error_messages import TEST_CONNECTION_REQUIRED
 from integrationmanager.integration_utils import BaseIntegration
-
-import twilio
-import twilio.rest
 
 MAX_SMS_LEN = 140
 
 
 class SMSIntegration(BaseIntegration):
-    """An integration to send SMS messages to a defined phone number on Honeycomb alerts"""
+    """An integration to send SMS messages to a defined phone number on Honeycomb alerts."""
 
     def test_connection(self, data):
-        """Verify that we are able to connect to the defined twilio account"""
+        """Verify that we are able to connect to the defined twilio account."""
         errors = {}
         fields = ["from_phone", "to_phone", "twilio_account_sid", "twilio_auth_token"]
         for field in fields:
@@ -36,7 +36,7 @@ class SMSIntegration(BaseIntegration):
             client = twilio.rest.Client(twilio_account_sid, twilio_auth_token)
             body = "Test Alert! Hello World!"
             if additional_message_data:
-                body = body + " " + additional_message_data
+                body = "{} {}".format(body,additional_message_data)
             client.messages.create(to=to_phone, from_=from_phone, body=body)
             return True, {}
         except Exception as exc:
@@ -44,7 +44,7 @@ class SMSIntegration(BaseIntegration):
             return False, response
 
     def send_event(self, alert_fields):
-        """Trigger sending an SMS via Twilio for the given event"""
+        """Trigger sending an SMS via Twilio for the given event."""
         from_phone = self.integration_data.get("from_phone")
         to_phone = self.integration_data.get("to_phone")
         twilio_account_sid = self.integration_data.get("twilio_account_sid")
@@ -54,11 +54,11 @@ class SMSIntegration(BaseIntegration):
         try:
             body = "{} alert".format(alert_fields.get("event_type"))
             if additional_message_data:
-                body = body + " " + additional_message_data
+                body = '{} {}'.format(body, additional_message_data)
             if alert_fields.get("originating_ip"):
-                body += " from {}".format(alert_fields.get("originating_ip"))
+                body = "{} from {}".format(body, alert_fields.get("originating_ip"))
             if alert_fields.get("cmd"):
-                body += " cmd: {}".format(alert_fields.get("cmd"))
+                body = "{} cmd: {}".format(body, alert_fields.get("cmd"))
             if len(body) > MAX_SMS_LEN:
                 body = body[:MAX_SMS_LEN]
 
@@ -71,7 +71,7 @@ class SMSIntegration(BaseIntegration):
             raise IntegrationSendEventError(exc)
 
     def format_output_data(self, output_data):
-        """No special formatting needed"""
+        """No special formatting needed."""
         return output_data
 
 
