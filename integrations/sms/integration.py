@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """SMS integration."""
-
 from __future__ import unicode_literals
 
 import twilio
@@ -30,13 +29,13 @@ class SMSIntegration(BaseIntegration):
         to_phone = data.get("to_phone")
         twilio_account_sid = data.get("twilio_account_sid")
         twilio_auth_token = data.get("twilio_auth_token")
-        additional_message_data = data.get("additional_message_data")
+        extra = data.get("extra")
 
         try:
             client = twilio.rest.Client(twilio_account_sid, twilio_auth_token)
             body = "Test Alert! Hello World!"
-            if additional_message_data:
-                body = "{} {}".format(body,additional_message_data)
+            if extra:
+                body = "{} {}".format(body, extra)
             client.messages.create(to=to_phone, from_=from_phone, body=body)
             return True, {}
         except Exception as exc:
@@ -49,12 +48,12 @@ class SMSIntegration(BaseIntegration):
         to_phone = self.integration_data.get("to_phone")
         twilio_account_sid = self.integration_data.get("twilio_account_sid")
         twilio_auth_token = self.integration_data.get("twilio_auth_token")
-        additional_message_data = self.integration_data.get("additional_message_data")
+        extra = self.integration_data.get("extra")
 
         try:
             body = "{} alert".format(alert_fields.get("event_type"))
-            if additional_message_data:
-                body = '{} {}'.format(body, additional_message_data)
+            if extra:
+                body = '{} {}'.format(body, extra)
             if alert_fields.get("originating_ip"):
                 body = "{} from {}".format(body, alert_fields.get("originating_ip"))
             if alert_fields.get("cmd"):

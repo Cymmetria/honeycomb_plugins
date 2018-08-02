@@ -37,7 +37,7 @@
             "help_text": "The \"Twilio Auth Token\" - get this from your Twilio account"
         },
         {
-            "value": "additional_message_data",
+            "value": "extra",
             "label": "Additional Message Data",
             "type": "string",
             "required": false,
