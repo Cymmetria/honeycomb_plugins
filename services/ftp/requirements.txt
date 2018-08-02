@@ -1,1 +1,1 @@
-pyftpdlib==1.5.2
+pyftpdlib==1.5.*
