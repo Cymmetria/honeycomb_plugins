@@ -1,0 +1,54 @@
+{
+    "event_types": [
+        {
+            "name": "ip_cam_base_camera_interaction",
+            "label": "IP Camera Interaction",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Alert"
+        },
+        {
+            "name": "ip_cam_base_admin_access",
+            "label": "Admin Access",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "All",
+        "ports": [
+        ],
+        "name": "ip_cam_base",
+        "label": "IP Camera",
+        "description": "Creates a fake website for ip based camera with an admin panel and fake images",
+        "conflicts_with": []
+    },
+    "parameters": [
+      {
+          "type": "integer",
+          "value": "port",
+          "label": "Listening port",
+          "required": true
+      },
+      {
+          "type": "text",
+          "value": "version",
+          "label": "Server version (header)",
+          "required": true,
+          "default": "nginx"
+      },
+      {
+          "type": "boolean",
+          "value": "threading",
+          "label": "Enable threading support",
+          "required": true,
+          "default": false
+      },
+      {
+          "type": "text",
+          "value": "image_src",
+          "label": "Source URL for the camera image to return",
+          "required": true
+      }
+    ]
+}
