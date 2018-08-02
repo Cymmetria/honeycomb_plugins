@@ -1,0 +1,26 @@
+{
+    "event_types": [
+        {
+            "name": "drupal_rce",
+            "label": "Remote code execution attempt (CVE-2018-7600)",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "All",
+        "ports": [
+            {
+                "protocol": "TCP",
+                "port": 80
+            }
+        ],
+        "name": "drupal",
+        "label": "Drupal Honeypot",
+        "description": "Drupal 8.50 honeypot, detecting CVE-2018-7600 exploit attempt",
+        "conflicts_with": ["http"]
+    },
+    "parameters": [
+    ]
+}
