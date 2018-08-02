@@ -29,7 +29,7 @@ PASSWORD = "password"
 ADDITIONAL_FIELDS = "additional_fields"
 SERVER_BIND_IP = "0.0.0.0"
 SERVER_TEST_IP = "127.0.0.1"
-SERVER_PORT = 2121
+SERVER_PORT = 21
 DEFAULT_USER = "admin"
 DEFAULT_PASSWORD = "Password1!"
 
