@@ -12,8 +12,17 @@
 </head>
 <body>
 <h1>Welcome to your webcam control panel!</h1>
-<p>If you see this page, the nginx web camera server is successfully installed and
+<p>If you see this page, the web camera server is successfully installed and
 working. Further configuration is required.</p>
+<form method="post">
+  <div class="container">
+    <label for="username"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="username" required>
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
 
+    <button type="submit">Login</button>
+  </div>
+</form>
 </body>
 </html>
