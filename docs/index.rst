@@ -1,12 +1,13 @@
 .. include:: ../README.rst
 
 .. toctree::
-    :maxdepth: 3
     :hidden:
 
     service_api
     integration_api
     honeycomb_commands
+    services/index
+    integrations/index
 
 
 Writing your first plugin
@@ -100,8 +101,8 @@ additional help. For example, it contains its own logger which is configured to 
 Entry and exit
 --------------
 
-Your entry point will be the :meth:`.on_server_start` method. If you need an exit and cleanup point,
-that's :meth:`.on_server_shutdown`.
+Your entry point will be the :meth:`~.base_service.ServerCustomService.on_server_start` method. If you need an exit and cleanup point,
+that's :meth:`~.base_service.ServerCustomService.on_server_shutdown`.
 
 .. literalinclude:: ../services/simple_http/simple_http_service.py
     :name: SimpleHTTPService.on_server_start
@@ -118,11 +119,11 @@ that's :meth:`.on_server_shutdown`.
 
 .. note::
 
-    :meth:`.on_server_start` **must** call :meth:`.signal_ready` to let the framework know it has successfully
+    :meth:`~.base_service.ServerCustomService.on_server_start` **must** call :meth:`~.base_service.ServerCustomService.signal_ready` to let the framework know it has successfully
     initialized and started working.
 
-In simple_http, once we call :meth:`.on_server_shutdown`, execution flows into an infinite loop and so we must call
-:meth:`.on_server_shutdown` beforehand.
+In simple_http, once we call :meth:`~.base_service.ServerCustomService.on_server_shutdown`, execution flows into an infinite loop and so we must call
+:meth:`~.base_service.ServerCustomService.on_server_shutdown` beforehand.
 
 Parameters
 ----------
@@ -155,7 +156,7 @@ Reporting alerts
 ----------------
 
 The last vital stage in writing a useful plugin for Honeycomb is making it actually trigger alerts in case something
-bad happens. For this, :meth:`.add_alert_to_queue` is your method of choice. Supply it with a single parameter,
+bad happens. For this, :meth:`~.base_service.ServerCustomService.add_alert_to_queue` is your method of choice. Supply it with a single parameter,
 a dictionary containing all the fields described in the alert as defined in your config.json, and *event_name*
 should contain the alert name. For example, simple_http defined one alert called *simple_http*, containing three fields:
 "originating_ip", "originating_port", and "request". A matching alert may look like this:
@@ -173,7 +174,7 @@ should contain the alert name. For example, simple_http defined one alert called
 Test your service
 -----------------
 
-It is recommended you override the :meth:`.test` method in your plugin class that returns triggers your alerts and
+It is recommended you override the :meth:`~.base_service.ServerCustomService.test` method in your plugin class that returns triggers your alerts and
 returns a list to verify. The framework will automatically execute your test method and make sure all the listed
 alerts have been triggered successfully.
 

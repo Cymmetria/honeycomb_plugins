@@ -1,2 +1,2 @@
-gevent==1.3.2.post0
+gevent==1.3.*
 git+https://github.com/Cymmetria/telnetsrvlib
