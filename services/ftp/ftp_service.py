@@ -31,6 +31,8 @@ DEFAULT_PASSWORD = "Password1!"
 
 
 class AlertingHandler(FTPHandler):
+    """Request handler for the FTP Server"""
+
     def __format_file_path(self, file_path):
         new_base_dir = file_path.replace(self.server.base_dir, "")
         if not new_base_dir:
@@ -135,6 +137,7 @@ class FTPAlertingServer(FTPServer):
 
 
 class FTPService(ServerCustomService):
+    """Simple FTP service"""
     def __init__(self, *args, **kwargs):
         super(FTPService, self).__init__(*args, **kwargs)
         self.server = None
@@ -147,6 +150,7 @@ class FTPService(ServerCustomService):
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def on_server_start(self):
+        """Start the FTP server"""
         self.prepare_temp_dir()
         authorizer = DummyAuthorizer()
         authorizer.add_user(DEFAULT_USER, DEFAULT_PASSWORD, homedir=self.temp_dir, perm='elradfmw')  # All permissions
@@ -163,6 +167,7 @@ class FTPService(ServerCustomService):
         self.server.serve_forever()
 
     def on_server_shutdown(self):
+        """Stop the FTP server"""
         if self.server:
             self.server.close_all()
         self.delete_temp_dir()
@@ -171,4 +176,3 @@ class FTPService(ServerCustomService):
         return "FTP"
 
 service_class = FTPService
-
