@@ -12,9 +12,12 @@ import twilio.rest
 
 MAX_SMS_LEN = 140
 
+
 class SMSIntegration(BaseIntegration):
+    """An integration to send SMS messages to a defined phone number on Honeycomb alerts"""
 
     def test_connection(self, data):
+        """Verify that we are able to connect to the defined twilio account"""
         errors = {}
         fields = ["from_phone", "to_phone", "twilio_account_sid", "twilio_auth_token"]
         for field in fields:
@@ -41,6 +44,7 @@ class SMSIntegration(BaseIntegration):
             return False, response
 
     def send_event(self, alert_fields):
+        """Trigger sending an SMS via Twilio for the given event"""
         from_phone = self.integration_data.get("from_phone")
         to_phone = self.integration_data.get("to_phone")
         twilio_account_sid = self.integration_data.get("twilio_account_sid")
@@ -67,7 +71,7 @@ class SMSIntegration(BaseIntegration):
             raise IntegrationSendEventError(exc)
 
     def format_output_data(self, output_data):
-        #No special formatting needed
+        """No special formatting needed"""
         return output_data
 
 
