@@ -27,8 +27,9 @@ ORIGINATING_PORT = "originating_port"
 USERNAME = "username"
 PASSWORD = "password"
 ADDITIONAL_FIELDS = "additional_fields"
-SERVER_IP = "0.0.0.0"
-SERVER_PORT = 21
+SERVER_BIND_IP = "0.0.0.0"
+SERVER_TEST_IP = "127.0.0.1"
+SERVER_PORT = 2121
 DEFAULT_USER = "admin"
 DEFAULT_PASSWORD = "Password1!"
 
@@ -181,12 +182,12 @@ class FTPService(ServerCustomService):
         handler = AlertingHandler
         handler.authorizer = authorizer
         self.server = FTPAlertingServer(
-            (SERVER_IP, SERVER_PORT),
+            (SERVER_BIND_IP, SERVER_PORT),
             handler,
             alerting_function=self.add_alert_to_queue,
             base_dir=self.temp_dir)
         self.signal_ready()
-        self.server.serve_forever()
+        self.server.serve_forever(1)
 
     def on_server_shutdown(self):
         """Stop the FTP server."""
@@ -199,10 +200,18 @@ class FTPService(ServerCustomService):
         event_types = list()
 
         self.logger.debug("executing service test")
-        f_con = ftplib.FTP(SERVER_IP)
+        f_con = ftplib.FTP()
+
+        f_con.connect(SERVER_TEST_IP, SERVER_PORT)
+        event_types.append(CLIENT_CONNECTED_DESCRIPTION)
+
         f_con.login(DEFAULT_USER, DEFAULT_PASSWORD)
-        f_con.quit()
         event_types.append(USER_LOGIN_DESCRIPTION)
+
+        f_con.quit()
+        event_types.append(USER_LOGOUT_DESCRIPTION)
+        event_types.append(CLIENT_DISCONNECTED_DESCRIPTION)
+
         return event_types
 
     def __str__(self):
