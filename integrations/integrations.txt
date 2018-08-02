@@ -2,4 +2,5 @@ cuckoo
 json_file
 misp
 s3
+sms
 syslog
