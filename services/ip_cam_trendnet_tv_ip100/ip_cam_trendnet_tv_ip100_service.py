@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 import os
 
 import requests
+
+import urlparse
 from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 from six.moves.socketserver import ThreadingMixIn
@@ -18,9 +20,6 @@ ORIGINATING_PORT_FIELD_NAME = "originating_port"
 REQUEST_FIELD_NAME = "request"
 DEFAULT_SERVER_VERSION = "Camera Web Server/1.0"
 DEFAULT_IMAGE_PATH = "/image.jpg"
-DEFAULT_SRC_IMAGE_PATH = "/tmp/IMAGE.jpg"
-
-DEFAULT_IMAGE_TO_GET = "http://farm4.static.flickr.com/3559/3437934775_2e062b154c_o.jpg"
 
 DEFAULT_CONTENT_TYPE = "image/jpeg"
 
@@ -31,8 +30,8 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
-    image_src_url = DEFAULT_IMAGE_TO_GET
-    image_src_path = DEFAULT_SRC_IMAGE_PATH
+    image_src_url = None
+    image_src_path = None
     default_image_path = DEFAULT_IMAGE_PATH
 
     def authenticate(self, data):
@@ -51,7 +50,7 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
     def _get_post_redirect_target():
         return "/Content.html"
 
-    def _send_response_with_content_type(self, code, message=None, content_type="text/html"):
+    def _send_response_with_content_type(self, code, message=None):
         """Send the response header and log the response code.
 
         Also send two standard headers with the server software
@@ -75,6 +74,57 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
         # self.send_header("Content-Type", content_type)
         self.send_header("MIME-version", "1.0")
         self.send_header("Server", self.version_string())
+
+    def send_head(self):
+        """Common code for GET and HEAD commands.
+
+        This sends the response code and MIME headers.
+
+        Return value is either a file object (which has to be copied
+        to the outputfile by the caller unless the command was HEAD,
+        and must be closed by the caller under all circumstances), or
+        None, in which case the caller has nothing further to do.
+
+        """
+        path = self.translate_path(self.path)
+        f = None
+        if os.path.isdir(path):
+            parts = urlparse.urlsplit(self.path)
+            if not parts.path.endswith('/'):
+                # redirect browser - doing basically what apache does
+                self.send_response(301)
+                new_parts = (parts[0], parts[1], parts[2] + '/',
+                             parts[3], parts[4])
+                new_url = urlparse.urlunsplit(new_parts)
+                self.send_header("Location", new_url)
+                self.end_headers()
+                return None
+            for index in "index.html", "index.htm":
+                index = os.path.join(path, index)
+                if os.path.exists(index):
+                    path = index
+                    break
+            else:
+                return self.list_directory(path)
+        ctype = self.guess_type(path)
+        try:
+            # Always read in binary mode. Opening files in text mode may cause
+            # newline translations, making the actual size of the content
+            # transmitted *less* than the content-length!
+            f = open(path, 'rb')
+        except IOError:
+            self.send_error(404, "File not found")
+            return None
+        try:
+            self.send_response(200)
+            self.send_header("Content-Type", ctype)
+            fs = os.fstat(f.fileno())
+            self.send_header("Content-Length", str(fs[6]))
+            self.end_headers()
+            return f
+        except:
+            f.close()
+            raise
 
     def send_response(self, code, message=None):
         self._send_response_with_content_type(code, message)
