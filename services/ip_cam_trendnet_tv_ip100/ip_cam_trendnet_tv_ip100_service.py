@@ -31,6 +31,7 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
     """Handler for Http requests to mimic the IP Cam TRENDnet TV-IP100 website."""
+
     image_src_url = None
     image_src_path = None
     default_image_path = DEFAULT_IMAGE_PATH
