@@ -30,10 +30,7 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 
 class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
-    """"
-        Handler for Http requests to mimic the IP Cam TRENDnet TV-IP100 website, including failed authorizations and
-        serving an image.
-    """
+    """Handler for Http requests to mimic the IP Cam TRENDnet TV-IP100 website."""
     image_src_url = None
     image_src_path = None
     default_image_path = DEFAULT_IMAGE_PATH
@@ -53,7 +50,7 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
         return "/Content.html"
 
     def send_response(self, code, message=None):
-        """Override SimpleHTTPRequestHandler to manipulate headers (otherwise no changes)"""
+        """Override SimpleHTTPRequestHandler to manipulate headers (otherwise no changes)."""
         self.log_request(code)
         if message is None:
             if code in self.responses:
@@ -72,7 +69,7 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
         self.send_header("Server", self.version_string())
 
     def send_head(self):
-        """Override SimpleHTTPRequestHandler to manipulate headers (otherwise no changes)"""
+        """Override SimpleHTTPRequestHandler to manipulate headers (otherwise no changes)."""
         path = self.translate_path(self.path)
         f = None
         if os.path.isdir(path):
@@ -109,12 +106,12 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
             self.send_header("Content-Length", str(fs[6]))
             self.end_headers()
             return f
-        except:
+        except Exception:
             f.close()
             raise
 
     def do_GET(self):
-        """Override SimpleHTTPRequestHandler to serve a fake image and alert on authentication attempts"""
+        """Override SimpleHTTPRequestHandler to serve a fake image and alert on authentication attempts."""
         if self.path.lower().startswith(self.default_image_path.lower()):
             image_data_content, image_data_headers = self._get_fake_image_and_content_type()
             self.send_response(200)
@@ -153,7 +150,8 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
     def log_request(self, code="-", size="-"):
         """Log a request."""
-        self.log_message("debug", "\"{:s}\" {:s} {:s}".format(self.requestline.replace("%", "%%"), str(code), str(size)))
+        self.log_message("debug",
+                         "\"{:s}\" {:s} {:s}".format(self.requestline.replace("%", "%%"), str(code), str(size)))
 
     def log_message(self, level, msg, *args):
         """Send message to logger with standard apache format."""
