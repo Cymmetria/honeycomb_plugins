@@ -1,0 +1,85 @@
+{
+  "root": [
+    {
+      "name": "dc=il",
+      "content": {
+        "objectClass": [
+          "dcObject",
+          "country"
+        ],
+        "dc": [
+          "il"
+        ],
+        "description": [
+          "Israel country 2 letters iso description"
+        ]
+      },
+      "children": [
+        {
+          "name": "dc=example",
+          "content": {
+            "objectClass": [
+              "dcObject",
+              "organization"
+            ],
+            "dc": [
+              "example"
+            ],
+            "description": [
+              "This organization is mine"
+            ],
+            "o": [
+              "CyberCyber Inc"
+            ]
+          },
+          "children": [
+            {
+              "name": "ou=people",
+              "content": {
+                "ou": [
+                  "people"
+                ],
+                "description": [
+                  "People from Company Name"
+                ],
+                "objectclass": [
+                  "organizationalunit"
+                ]
+              },
+              "children": [
+                {
+                  "name": "uid=yoen",
+                  "content": {
+                    "objectClass": [
+                      "people",
+                      "inetOrgPerson"
+                    ],
+                    "cn": [
+                      "Yoen Van der Weld"
+                    ],
+                    "sn": [
+                      "Van der Weld"
+                    ],
+                    "givenName": [
+                      "Yoen"
+                    ],
+                    "uid": [
+                      "yoen"
+                    ],
+                    "mail": [
+                      "/home/yoen/mailDir"
+                    ],
+                    "userPassword": [
+                      "secretpassword"
+                    ]
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

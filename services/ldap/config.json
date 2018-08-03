@@ -1,0 +1,74 @@
+{
+    "event_types": [
+		{
+            "name": "LDAP_BindAttempt",
+            "label": "User/pass authentication attempt",
+            "fields": ["event_description", "originating_ip", "originating_port", "username", "password"],
+            "policy": "Alert"
+        },
+		{
+            "name": "LDAP_AnonymousBind",
+            "label": "Anonymous authentication attempt",
+            "fields": ["event_description", "originating_ip", "originating_port"],
+            "policy": "Mute"
+        },
+		{
+            "name": "LDAP_SearchRoot",
+            "label": "Basic query attempt",
+            "fields": ["event_description", "originating_ip", "originating_port"],
+            "policy": "Mute"
+        },
+		{
+            "name": "LDAP_Search",
+            "label": "Detailed Query attempt",
+            "fields": ["event_description", "originating_ip", "originating_port"],
+            "policy": "Alert"
+        },
+		{
+            "name": "LDAP_RequestedTLSConnection",
+            "label": "TLS communication requested",
+            "fields": ["event_description", "originating_ip", "originating_port"],
+            "policy": "Mute"
+        },
+		{
+            "name": "LDAP_OperationRequested",
+            "label": "Misc LDAP operation requested",
+            "fields": ["event_description", "originating_ip", "originating_port"],
+            "policy": "Alert"
+        },
+		{
+            "name": "LDAP_Extended_Operation",
+            "label": "LDAP extended operation requested",
+            "fields": ["event_description", "originating_ip", "originating_port"],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": true,
+        "supported_os_families": "All",
+        "ports": [
+        ],
+        "name": "ldap",
+        "label": "LDAP",
+        "conflicts_with": []
+    },
+    "parameters": [
+        {
+            "type": "text",
+            "value": "username",
+            "label": "Authentication username",
+            "required": true
+        },
+		{
+			"type": "text",
+            "value": "password",
+            "label": "Authentication password",
+            "required": true
+		},
+		{
+			"type": "file",
+			"value": "dit",
+			"label": "DIT file (database for the LDAP server)"
+		}
+    ]
+}
