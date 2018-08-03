@@ -18,9 +18,9 @@
         "supported_os_families": "All",
         "ports": [
         ],
-        "name": "ip_cam_base",
-        "label": "IP Camera",
-        "description": "Creates a fake website for ip based camera with an admin panel and fake images",
+        "name": "ip_cam_trendnet_tv_ip100",
+        "label": "TRENDnet TV-IP100 Camera",
+        "description": "Creates a fake website for TRENDnet TV-IP100 camera with inaccessible admin panel and fake images",
         "conflicts_with": []
     },
     "parameters": [
@@ -29,13 +29,6 @@
           "value": "port",
           "label": "Listening port",
           "required": true
-      },
-      {
-          "type": "text",
-          "value": "version",
-          "label": "Server version (header)",
-          "required": true,
-          "default": "nginx"
       },
       {
           "type": "boolean",

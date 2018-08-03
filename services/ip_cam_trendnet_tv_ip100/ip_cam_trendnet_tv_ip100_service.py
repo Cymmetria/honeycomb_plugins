@@ -4,16 +4,15 @@ from __future__ import unicode_literals
 import os
 
 import requests
-from six.moves import urllib
 from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 from six.moves.socketserver import ThreadingMixIn
 
 from honeycomb.servicemanager.base_service import ServerCustomService
 
-DEFAULT_PORT = 8888
-DEFAULT_SERVER_VERSION = "webcam"
-DEFAULT_IMAGE_PATH = "/stream/current.cam0.jpeg"
+DEFAULT_PORT = 80
+DEFAULT_SERVER_VERSION = "Camera Web Server/1.0"
+DEFAULT_IMAGE_PATH = "/IMAGE.jpg"
 
 DEFAULT_IMAGE_TO_GET = "http://farm4.static.flickr.com/3559/3437934775_2e062b154c_o.jpg"
 
@@ -22,10 +21,9 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     """Threading HTTP Server stub class."""
 
 
-class IPCamBaseHTTPRequestHandler(SimpleHTTPRequestHandler, object):
+class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
     image_src = DEFAULT_IMAGE_TO_GET
-
     default_image_path = DEFAULT_IMAGE_PATH
 
     def authenticate(self, data):
@@ -38,15 +36,21 @@ class IPCamBaseHTTPRequestHandler(SimpleHTTPRequestHandler, object):
     def _get_post_redirect_target(self):
         return self.default_image_path
 
+    def send_response(self, code, message=None):
+        super(TrendnetTVIP100CamRequestHandler, self).send_response(code, message)
+
+        # Add some recognizable headers
+        self.send_header("Auther", "Steven Wu")
+
     def do_GET(self):
-        if self.path == self.default_image_path:
+        if self.path.startswith(self.default_image_path):
             image_data = self._get_fake_image()
             self.send_response(200)
             self.send_header("Content-Type", image_data.headers["Content-Type"])
             self.end_headers()
             self.wfile.write(image_data.content)
         else:
-            super(IPCamBaseHTTPRequestHandler, self).do_GET()
+            super(TrendnetTVIP100CamRequestHandler, self).do_GET()
 
     def do_POST(self):
         data_len = int(self.headers.get("Content-length", 0))
@@ -66,21 +70,23 @@ class IPCamBaseHTTPRequestHandler(SimpleHTTPRequestHandler, object):
 
     def log_request(self, code="-", size="-"):
         """Log a request."""
-        self.log_message("debug", '"{:s}" {:s} {:s}'.format(self.requestline, str(code), str(size)))
+        self.log_message("debug", '"{:s}" {:s} {:s}'.format(self.requestline.replace("%", "%%"), str(code), str(size)))
 
     def log_message(self, level, msg, *args):
         """Send message to logger with standard apache format."""
-        getattr(self.logger, level)("{:s} - - [{:s}] {:s}".format(self.client_address[0], self.log_date_time_string(),
-                                                                  msg % args))
+
+        getattr(self.logger, level)(
+            "{:s} - - [{:s}] {:s}".format(self.client_address[0], self.log_date_time_string(),
+                                          msg % args))
 
 
-class IPCamBaseService(ServerCustomService):
+class IPCamTrendnetTvIp100Service(ServerCustomService):
     """Base IP Cam Service."""
 
     httpd = None
 
     def __init__(self, *args, **kwargs):
-        super(IPCamBaseService, self).__init__(*args, **kwargs)
+        super(IPCamTrendnetTvIp100Service, self).__init__(*args, **kwargs)
 
     # TODO: several possible alerts
     def alert(self, request):
@@ -90,8 +96,8 @@ class IPCamBaseService(ServerCustomService):
 
     def on_server_start(self):
         """Initialize Service."""
-        os.chdir(os.path.join(os.path.dirname(__file__), "www-base"))
-        requestHandler = IPCamBaseHTTPRequestHandler
+        os.chdir(os.path.join(os.path.dirname(__file__), "www"))
+        requestHandler = TrendnetTVIP100CamRequestHandler
         requestHandler.alert = self.alert
         requestHandler.logger = self.logger
         requestHandler.server_version = self.service_args.get("version", DEFAULT_SERVER_VERSION)
@@ -128,5 +134,5 @@ class IPCamBaseService(ServerCustomService):
         return "IP Cam Base Service"
 
 
-service_class = IPCamBaseService
+service_class = IPCamTrendnetTvIp100Service
 
