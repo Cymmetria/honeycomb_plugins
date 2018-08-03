@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
+"""Honeycomb IP Cam TRENDnet TV-IP100 Service."""
 from __future__ import unicode_literals
 
 import os
-
-import requests
-
 import urlparse
+
 from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 from six.moves.socketserver import ThreadingMixIn
+
+import requests
 
 from honeycomb.servicemanager.base_service import ServerCustomService
 
@@ -29,13 +30,13 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 
 class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
-
+    """"
+        Handler for Http requests to mimic the IP Cam TRENDnet TV-IP100 website, including failed authorizations and
+        serving an image.
+    """
     image_src_url = None
     image_src_path = None
     default_image_path = DEFAULT_IMAGE_PATH
-
-    def authenticate(self, data):
-        pass
 
     def _get_fake_image_and_content_type(self):
         if self.image_src_url:
@@ -45,25 +46,21 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
             with open(self.image_src_path, "rb") as image_file_handle:
                 req_data = image_file_handle.read()
                 return req_data, DEFAULT_CONTENT_TYPE
+        return None
 
     @staticmethod
     def _get_post_redirect_target():
         return "/Content.html"
 
-    def _send_response_with_content_type(self, code, message=None):
-        """Send the response header and log the response code.
-
-        Also send two standard headers with the server software
-        version and the current date.
-
-        """
+    def send_response(self, code, message=None):
+        """Override SimpleHTTPRequestHandler to manipulate headers (otherwise no changes)"""
         self.log_request(code)
         if message is None:
             if code in self.responses:
                 message = self.responses[code][0]
             else:
-                message = ''
-        if self.request_version != 'HTTP/0.9':
+                message = ""
+        if self.request_version != "HTTP/0.9":
             self.wfile.write("%s %d %s\r\n" %
                              (self.protocol_version, code, message))
             # print (self.protocol_version, code, message)
@@ -71,29 +68,19 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
         # Add some recognizable headers
         self.send_header("Auther", "Steven Wu")
         self.send_header("Cache-Control", "no-cache")
-        # self.send_header("Content-Type", content_type)
         self.send_header("MIME-version", "1.0")
         self.send_header("Server", self.version_string())
 
     def send_head(self):
-        """Common code for GET and HEAD commands.
-
-        This sends the response code and MIME headers.
-
-        Return value is either a file object (which has to be copied
-        to the outputfile by the caller unless the command was HEAD,
-        and must be closed by the caller under all circumstances), or
-        None, in which case the caller has nothing further to do.
-
-        """
+        """Override SimpleHTTPRequestHandler to manipulate headers (otherwise no changes)"""
         path = self.translate_path(self.path)
         f = None
         if os.path.isdir(path):
             parts = urlparse.urlsplit(self.path)
-            if not parts.path.endswith('/'):
+            if not parts.path.endswith("/"):
                 # redirect browser - doing basically what apache does
                 self.send_response(301)
-                new_parts = (parts[0], parts[1], parts[2] + '/',
+                new_parts = (parts[0], parts[1], parts[2] + "/",
                              parts[3], parts[4])
                 new_url = urlparse.urlunsplit(new_parts)
                 self.send_header("Location", new_url)
@@ -111,7 +98,7 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
             # Always read in binary mode. Opening files in text mode may cause
             # newline translations, making the actual size of the content
             # transmitted *less* than the content-length!
-            f = open(path, 'rb')
+            f = open(path, "rb")
         except IOError:
             self.send_error(404, "File not found")
             return None
@@ -126,10 +113,8 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
             f.close()
             raise
 
-    def send_response(self, code, message=None):
-        self._send_response_with_content_type(code, message)
-
     def do_GET(self):
+        """Override SimpleHTTPRequestHandler to serve a fake image and alert on authentication attempts"""
         if self.path.lower().startswith(self.default_image_path.lower()):
             image_data_content, image_data_headers = self._get_fake_image_and_content_type()
             self.send_response(200)
@@ -138,27 +123,28 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
             self.wfile.write(image_data_content)
         elif self.path.lower().startswith("/content.htm"):
             authorization = self.headers.get("Authorization")
+            # Trying to connect to admin causes an alert
             if authorization:
                 self.alert(self)
-            self._send_response_with_content_type(401, None)
+            self.send_response(401)
             self.send_header("WWW-Authenticate", "BASIC realm=\"Administrator\"")
-            # self.send_header("Content-Type", image_data.headers["Content-Type"])
             self.end_headers()
             self.wfile.write("Password Error. ")
         else:
             super(TrendnetTVIP100CamRequestHandler, self).do_GET()
 
     def do_POST(self):
+        """Provide POST behavior to mimic an authentication failure and alert."""
+        # Any POST is an alert
         self.alert(self)
-        data_len = int(self.headers.get("Content-Length", 0))
-        data = self.rfile.read(data_len) if data_len else ""
-        self.authenticate(data)
+
+        # Redirect to failed login page
         self.send_response(303)
         self.send_header("Location", self._get_post_redirect_target())
         self.end_headers()
 
     def version_string(self):
-        """HTTP Server version header."""
+        """Camera Web Server header."""
         return self.server_version
 
     def log_error(self, msg, *args):
@@ -167,7 +153,7 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
     def log_request(self, code="-", size="-"):
         """Log a request."""
-        self.log_message("debug", '"{:s}" {:s} {:s}'.format(self.requestline.replace("%", "%%"), str(code), str(size)))
+        self.log_message("debug", "\"{:s}\" {:s} {:s}".format(self.requestline.replace("%", "%%"), str(code), str(size)))
 
     def log_message(self, level, msg, *args):
         """Send message to logger with standard apache format."""
@@ -177,12 +163,9 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
 
 class IPCamTrendnetTvIp100Service(ServerCustomService):
-    """Base IP Cam Service."""
+    """IP Cam TRENDnet TV-IP100 Service."""
 
     httpd = None
-
-    def __init__(self, *args, **kwargs):
-        super(IPCamTrendnetTvIp100Service, self).__init__(*args, **kwargs)
 
     def alert(self, request):
         """Raise an alert."""
@@ -218,14 +201,15 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
             self.httpd = HTTPServer(("", port), requestHandler)
 
         self.signal_ready()
-        self.logger.info("Starting {}IP Cam base service on port: {}".format("Threading " if threading else "", port))
+        self.logger.info(
+            "Starting {}IP Cam TRENDnet TV-IP100 service on port: {}".format("Threading " if threading else "", port))
         self.httpd.serve_forever()
 
     def on_server_shutdown(self):
         """Shut down gracefully."""
         if self.httpd:
             self.httpd.shutdown()
-            self.logger.info("IP Cam base service stopped")
+            self.logger.info("IP Cam TRENDnet TV-IP100 service stopped")
             self.httpd = None
 
     def test(self):
@@ -234,7 +218,7 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
         self.logger.debug("executing service test")
         # One alert for authorization attempt
         requests.get("http://localhost:{}/content.html".format(self.service_args.get("port", DEFAULT_PORT)),
-                     headers={"Authorization": 'username="test"'})
+                     headers={"Authorization": "username=\"test\""})
         event_types.append(TRENDNET_ADMIN_ACCESS_EVENT)
         # And one for POST
         requests.post("http://localhost:{}/content.html".format(self.service_args.get("port", DEFAULT_PORT)), data={})
@@ -246,4 +230,3 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
 
 
 service_class = IPCamTrendnetTvIp100Service
-

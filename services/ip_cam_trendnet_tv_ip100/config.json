@@ -2,7 +2,7 @@
     "event_types": [
         {
             "name": "trendnet_tv_ip100_admin_access",
-            "label": "TrendNET TV-IP100 admin access attempt",
+            "label": "IP Cam TrendNET TV-IP100 admin access attempt",
             "fields": ["originating_ip", "originating_port", "request"],
             "policy": "Alert"
         }
@@ -13,8 +13,8 @@
         "ports": [
         ],
         "name": "ip_cam_trendnet_tv_ip100",
-        "label": "TRENDnet TV-IP100 Camera",
-        "description": "Creates a fake website for TRENDnet TV-IP100 camera with inaccessible admin panel and fake images",
+        "label": "IP Cam TRENDnet TV-IP100",
+        "description": "Creates a fake website for IP Cam TRENDnet TV-IP100 with inaccessible admin panel and fake images",
         "conflicts_with": []
     },
     "parameters": [
