@@ -78,7 +78,6 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
     def send_response(self, code, message=None):
         self._send_response_with_content_type(code, message)
-        # super(TrendnetTVIP100CamRequestHandler, self).send_response(code, message)
 
     def do_GET(self):
         if self.path.lower().startswith(self.default_image_path.lower()):
@@ -182,10 +181,14 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
     def test(self):
         """Test service alerts and return a list of triggered event types."""
         event_types = list()
-        # TODO: Write real test
-        # self.logger.debug("executing service test")
-        # requests.get("http://localhost:{}/".format(self.service_args.get("port", DEFAULT_PORT)))
-        # event_types.append(SIMPLE_HTTP_ALERT_TYPE_NAME)
+        self.logger.debug("executing service test")
+        # One alert for authorization attempt
+        requests.get("http://localhost:{}/content.html".format(self.service_args.get("port", DEFAULT_PORT)),
+                     headers={"Authorization": 'username="test"'})
+        event_types.append(TRENDNET_ADMIN_ACCESS_EVENT)
+        # And one for POST
+        requests.post("http://localhost:{}/content.html".format(self.service_args.get("port", DEFAULT_PORT)), data={})
+        event_types.append(TRENDNET_ADMIN_ACCESS_EVENT)
         return event_types
 
     def __str__(self):
