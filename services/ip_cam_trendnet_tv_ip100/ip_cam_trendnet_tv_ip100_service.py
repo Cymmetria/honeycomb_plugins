@@ -20,7 +20,7 @@ ORIGINATING_IP_FIELD_NAME = "originating_ip"
 ORIGINATING_PORT_FIELD_NAME = "originating_port"
 REQUEST_FIELD_NAME = "request"
 DEFAULT_SERVER_VERSION = "Camera Web Server/1.0"
-DEFAULT_IMAGE_PATH = "/image.jpg"
+CAMERA_IMAGE_PATH = "/image.jpg"
 
 DEFAULT_CONTENT_TYPE = "image/jpeg"
 
@@ -34,7 +34,7 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
     image_src_url = None
     image_src_path = None
-    default_image_path = DEFAULT_IMAGE_PATH
+    camera_image_path = CAMERA_IMAGE_PATH
 
     def _get_fake_image_and_content_type(self):
         if self.image_src_url:
@@ -113,7 +113,7 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
     def do_GET(self):
         """Override SimpleHTTPRequestHandler to serve a fake image and alert on authentication attempts."""
-        if self.path.lower().startswith(self.default_image_path.lower()):
+        if self.path.lower().startswith(self.camera_image_path.lower()):
             image_data_content, image_data_headers = self._get_fake_image_and_content_type()
             self.send_response(200)
             self.send_header("Content-Type", image_data_headers)
