@@ -1,14 +1,8 @@
 {
     "event_types": [
         {
-            "name": "ip_cam_base_camera_interaction",
-            "label": "IP Camera Interaction",
-            "fields": ["originating_ip", "originating_port", "request"],
-            "policy": "Alert"
-        },
-        {
-            "name": "ip_cam_base_admin_access",
-            "label": "Admin Access",
+            "name": "trendnet_tv_ip100_admin_access",
+            "label": "TrendNET TV-IP100 admin access attempt",
             "fields": ["originating_ip", "originating_port", "request"],
             "policy": "Alert"
         }

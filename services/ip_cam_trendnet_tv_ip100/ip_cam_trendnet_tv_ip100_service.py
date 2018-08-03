@@ -10,7 +10,12 @@ from six.moves.socketserver import ThreadingMixIn
 
 from honeycomb.servicemanager.base_service import ServerCustomService
 
-DEFAULT_PORT = 80
+DEFAULT_PORT = 8080
+EVENT_TYPE_FIELD_NAME = "event_type"
+TRENDNET_ADMIN_ACCESS_EVENT = "trendnet_tv_ip100_admin_access"
+ORIGINATING_IP_FIELD_NAME = "originating_ip"
+ORIGINATING_PORT_FIELD_NAME = "originating_port"
+REQUEST_FIELD_NAME = "request"
 DEFAULT_SERVER_VERSION = "Camera Web Server/1.0"
 DEFAULT_IMAGE_PATH = "/IMAGE.jpg"
 
@@ -27,25 +32,48 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
     default_image_path = DEFAULT_IMAGE_PATH
 
     def authenticate(self, data):
-        """Implement in sub classes to authenticate POST data"""
         pass
 
     def _get_fake_image(self):
         return requests.get(self.image_src)
 
-    def _get_post_redirect_target(self):
-        return self.default_image_path
+    @staticmethod
+    def _get_post_redirect_target():
+        return "/Content.html"
 
-    def send_response(self, code, message=None):
-        super(TrendnetTVIP100CamRequestHandler, self).send_response(code, message)
+    def _send_response_with_content_type(self, code, message=None, content_type="text/html"):
+        """Send the response header and log the response code.
+
+        Also send two standard headers with the server software
+        version and the current date.
+
+        """
+        self.log_request(code)
+        if message is None:
+            if code in self.responses:
+                message = self.responses[code][0]
+            else:
+                message = ''
+        if self.request_version != 'HTTP/0.9':
+            self.wfile.write("%s %d %s\r\n" %
+                             (self.protocol_version, code, message))
+            # print (self.protocol_version, code, message)
 
         # Add some recognizable headers
         self.send_header("Auther", "Steven Wu")
+        self.send_header("Cache-Control", "no-cache")
+        # self.send_header("Content-Type", content_type)
+        self.send_header("MIME-version", "1.0")
+        self.send_header("Server", self.version_string())
+
+    def send_response(self, code, message=None):
+        self._send_response_with_content_type(code, message)
+        # super(TrendnetTVIP100CamRequestHandler, self).send_response(code, message)
 
     def do_GET(self):
         if self.path.startswith(self.default_image_path):
             image_data = self._get_fake_image()
-            self.send_response(200)
+            self._send_response_with_content_type(200, None, image_data.headers["Content-Type"])
             self.send_header("Content-Type", image_data.headers["Content-Type"])
             self.end_headers()
             self.wfile.write(image_data.content)
@@ -53,7 +81,8 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
             super(TrendnetTVIP100CamRequestHandler, self).do_GET()
 
     def do_POST(self):
-        data_len = int(self.headers.get("Content-length", 0))
+        self.alert(self)
+        data_len = int(self.headers.get("Content-Length", 0))
         data = self.rfile.read(data_len) if data_len else ""
         self.authenticate(data)
         self.send_response(303)
@@ -88,10 +117,14 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
     def __init__(self, *args, **kwargs):
         super(IPCamTrendnetTvIp100Service, self).__init__(*args, **kwargs)
 
-    # TODO: several possible alerts
     def alert(self, request):
         """Raise an alert."""
-        params = {}
+        params = {
+            EVENT_TYPE_FIELD_NAME: TRENDNET_ADMIN_ACCESS_EVENT,
+            ORIGINATING_IP_FIELD_NAME: request.client_address[0],
+            ORIGINATING_PORT_FIELD_NAME: request.client_address[1],
+            REQUEST_FIELD_NAME: " ".join([request.command, request.path]),
+        }
         self.add_alert_to_queue(params)
 
     def on_server_start(self):
@@ -125,13 +158,13 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
         """Test service alerts and return a list of triggered event types."""
         event_types = list()
         # TODO: Write real test
-        # self.logger.debug("executing service test")
-        # requests.get("http://localhost:{}/".format(self.service_args.get("port", DEFAULT_PORT)))
-        # event_types.append(SIMPLE_HTTP_ALERT_TYPE_NAME)
+        self.logger.debug("executing service test")
+        requests.post("http://localhost:{}/Content.html".format(self.service_args.get("port", DEFAULT_PORT)), data={})
+        event_types.append(TRENDNET_ADMIN_ACCESS_EVENT)
         return event_types
 
     def __str__(self):
-        return "IP Cam Base Service"
+        return "IP Cam TRENDnet TV-IP100"
 
 
 service_class = IPCamTrendnetTvIp100Service
