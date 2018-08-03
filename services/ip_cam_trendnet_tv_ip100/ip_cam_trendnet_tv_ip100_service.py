@@ -17,7 +17,7 @@ ORIGINATING_IP_FIELD_NAME = "originating_ip"
 ORIGINATING_PORT_FIELD_NAME = "originating_port"
 REQUEST_FIELD_NAME = "request"
 DEFAULT_SERVER_VERSION = "Camera Web Server/1.0"
-DEFAULT_IMAGE_PATH = "/IMAGE.jpg"
+DEFAULT_IMAGE_PATH = "/image.jpg"
 
 DEFAULT_IMAGE_TO_GET = "http://farm4.static.flickr.com/3559/3437934775_2e062b154c_o.jpg"
 
@@ -71,12 +71,21 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
         # super(TrendnetTVIP100CamRequestHandler, self).send_response(code, message)
 
     def do_GET(self):
-        if self.path.startswith(self.default_image_path):
+        if self.path.lower().startswith(self.default_image_path.lower()):
             image_data = self._get_fake_image()
-            self._send_response_with_content_type(200, None, image_data.headers["Content-Type"])
-            self.send_header("Content-Type", image_data.headers["Content-Type"])
+            self._send_response_with_content_type(200, None)
+            # self.send_header("Content-Type", image_data.headers["Content-Type"])
             self.end_headers()
             self.wfile.write(image_data.content)
+        elif self.path.lower().startswith("/content.htm"):
+            authorization = self.headers.get("Authorization")
+            if authorization:
+                self.alert(self)
+            self._send_response_with_content_type(401, None)
+            self.send_header("WWW-Authenticate", "BASIC realm=\"Administrator\"")
+            # self.send_header("Content-Type", image_data.headers["Content-Type"])
+            self.end_headers()
+            self.wfile.write("Password Error. ")
         else:
             super(TrendnetTVIP100CamRequestHandler, self).do_GET()
 
@@ -103,7 +112,6 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
     def log_message(self, level, msg, *args):
         """Send message to logger with standard apache format."""
-
         getattr(self.logger, level)(
             "{:s} - - [{:s}] {:s}".format(self.client_address[0], self.log_date_time_string(),
                                           msg % args))
