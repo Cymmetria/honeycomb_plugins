@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-"""Honeycomb Xerox service."""
+"""Honeycomb Struts Docker Service."""
 from __future__ import unicode_literals
