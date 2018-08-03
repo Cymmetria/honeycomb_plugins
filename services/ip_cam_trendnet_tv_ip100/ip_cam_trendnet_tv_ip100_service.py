@@ -59,8 +59,8 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
             else:
                 message = ""
         if self.request_version != "HTTP/0.9":
-            self.wfile.write("%s %d %s\r\n" %
-                             (self.protocol_version, code, message))
+            data = "%s %d %s\r\n" % (self.protocol_version, code, message)
+            self.wfile.write(data.encode())
             # print (self.protocol_version, code, message)
 
         # Add some recognizable headers
