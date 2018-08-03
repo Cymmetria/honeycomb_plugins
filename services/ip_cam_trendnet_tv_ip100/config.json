@@ -39,9 +39,15 @@
       },
       {
           "type": "text",
-          "value": "image_src",
-          "label": "Source URL for the camera image to return",
-          "required": true
+          "value": "image_src_url",
+          "label": "Source URL for the camera image to return. cannot be used with image_src_path",
+          "required": false
+      },
+      {
+          "type": "text",
+          "value": "image_src_path",
+          "label": "Filepath for the camera image to return. cannot be used with image_src_url",
+          "required": false
       }
     ]
 }

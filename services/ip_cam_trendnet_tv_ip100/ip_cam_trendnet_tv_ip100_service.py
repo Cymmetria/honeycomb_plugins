@@ -13,8 +13,11 @@ from honeycomb.servicemanager.base_service import ServerCustomService
 DEFAULT_PORT = 80
 DEFAULT_SERVER_VERSION = "Camera Web Server/1.0"
 DEFAULT_IMAGE_PATH = "/IMAGE.jpg"
+DEFAULT_SRC_IMAGE_PATH = "/tmp/IMAGE.jpg"
 
 DEFAULT_IMAGE_TO_GET = "http://farm4.static.flickr.com/3559/3437934775_2e062b154c_o.jpg"
+
+DEFAULT_CONTENT_TYPE = "image/jpeg"
 
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
@@ -23,15 +26,22 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
-    image_src = DEFAULT_IMAGE_TO_GET
+    image_src_url = DEFAULT_IMAGE_TO_GET
+    image_src_path = DEFAULT_SRC_IMAGE_PATH
     default_image_path = DEFAULT_IMAGE_PATH
 
     def authenticate(self, data):
         """Implement in sub classes to authenticate POST data"""
         pass
 
-    def _get_fake_image(self):
-        return requests.get(self.image_src)
+    def _get_fake_image_and_content_type(self):
+        if self.image_src_url:
+            req_data = requests.get(self.image_src_url)
+            return req_data.content, req_data.headers["Content-Type"]
+        if self.image_src_path:
+            with open(self.image_src_path, "rb") as image_file_handle:
+                req_data = image_file_handle.read()
+                return req_data, DEFAULT_CONTENT_TYPE
 
     def _get_post_redirect_target(self):
         return self.default_image_path
@@ -44,11 +54,11 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
     def do_GET(self):
         if self.path.startswith(self.default_image_path):
-            image_data = self._get_fake_image()
+            image_data_content, image_data_headers = self._get_fake_image_and_content_type()
             self.send_response(200)
-            self.send_header("Content-Type", image_data.headers["Content-Type"])
+            self.send_header("Content-Type", image_data_headers)
             self.end_headers()
-            self.wfile.write(image_data.content)
+            self.wfile.write(image_data_content)
         else:
             super(TrendnetTVIP100CamRequestHandler, self).do_GET()
 
@@ -101,7 +111,14 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
         requestHandler.alert = self.alert
         requestHandler.logger = self.logger
         requestHandler.server_version = self.service_args.get("version", DEFAULT_SERVER_VERSION)
-        requestHandler.image_src = self.service_args.get("image_src", DEFAULT_SERVER_VERSION)
+        requestHandler.image_src_url = self.service_args.get("image_src_url", None)
+        requestHandler.image_src_path = self.service_args.get("image_src_path", None)
+
+        if requestHandler.image_src_path and requestHandler.image_src_url:
+            raise ValueError("cannot process both image_src_path and image_src_url")
+
+        if not requestHandler.image_src_path and not requestHandler.image_src_url:
+            raise ValueError("image_src_path or image_src_url must be provided")
 
         port = self.service_args.get("port", DEFAULT_PORT)
         threading = self.service_args.get("threading", False)
