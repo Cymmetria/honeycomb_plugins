@@ -3,8 +3,8 @@
 from __future__ import unicode_literals
 
 import os
-import urlparse
 
+from six.moves.urllib import parse as urlparse
 from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 from six.moves.socketserver import ThreadingMixIn
