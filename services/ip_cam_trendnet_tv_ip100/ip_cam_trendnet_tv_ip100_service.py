@@ -77,6 +77,8 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
         event_types = list()
         self.logger.debug("executing service test")
         # One alert for authorization attempt
+        requests.get("http://localhost:{}".format(self.service_args.get("port")))
+
         requests.get("http://localhost:{}/content.html".format(self.service_args.get("port")),
                      headers={"Authorization": "username=\"test\""})
         event_types.append(TRENDNET_ADMIN_ACCESS_EVENT)
