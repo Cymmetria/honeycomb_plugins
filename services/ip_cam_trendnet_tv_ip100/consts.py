@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""Honeycomb IP Cam TRENDnet TV-IP100 Consts."""
+from __future__ import unicode_literals
+
+
 EVENT_TYPE_FIELD_NAME = "event_type"
 TRENDNET_ADMIN_ACCESS_EVENT = "trendnet_tv_ip100_admin_access"
 TRENDNET_ADMIN_POST_ATTEMPT = "trendnet_tv_ip100_post_attempt"

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Honeycomb IP Cam TRENDnet TV-IP100 Service."""
+"""Honeycomb IP Cam TRENDnet TV-IP100 Handler."""
 from __future__ import unicode_literals
 
 import os
