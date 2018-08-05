@@ -80,7 +80,13 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
         requests.get("http://localhost:{}".format(self.service_args.get("port")))
 
         # camera shot
-        requests.get("http://localhost:{}/content.html{}".format(self.service_args.get("port"), CAMERA_IMAGE_PATH))
+        requests.get("http://localhost:{}{}".format(self.service_args.get("port"), CAMERA_IMAGE_PATH))
+
+        # Invalid url
+        requests.get("http://localhost:{}/asdasdad.html".format(self.service_args.get("port")))
+
+        # / redirect
+        requests.get("http://localhost:{}/".format(self.service_args.get("port")))
 
         # One alert for authorization attempt
         requests.get("http://localhost:{}/content.html".format(self.service_args.get("port")),
