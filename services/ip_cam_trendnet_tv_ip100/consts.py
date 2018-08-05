@@ -1,4 +1,3 @@
-DEFAULT_PORT = 80
 EVENT_TYPE_FIELD_NAME = "event_type"
 TRENDNET_ADMIN_ACCESS_EVENT = "trendnet_tv_ip100_admin_access"
 TRENDNET_ADMIN_POST_ATTEMPT = "trendnet_tv_ip100_post_attempt"

@@ -13,7 +13,7 @@ import requests
 from honeycomb.servicemanager.base_service import ServerCustomService
 
 from ip_cam_trendnet_tv_ip100_handler import TrendnetTVIP100CamRequestHandler
-from consts import DEFAULT_PORT, EVENT_TYPE_FIELD_NAME, TRENDNET_ADMIN_ACCESS_EVENT, \
+from consts import EVENT_TYPE_FIELD_NAME, TRENDNET_ADMIN_ACCESS_EVENT, \
     TRENDNET_ADMIN_POST_ATTEMPT, ORIGINATING_IP_FIELD_NAME, ORIGINATING_PORT_FIELD_NAME, REQUEST_FIELD_NAME, \
     DEFAULT_SERVER_VERSION
 
@@ -53,7 +53,7 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
         if not requestHandler.image_src_path and not requestHandler.image_src_url:
             raise ValueError("image_src_path or image_src_url must be provided")
 
-        port = self.service_args.get("port", DEFAULT_PORT)
+        port = self.service_args.get("port")
         threading = self.service_args.get("threading", False)
         if threading:
             self.httpd = ThreadingHTTPServer(("", port), requestHandler)
