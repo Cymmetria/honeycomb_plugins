@@ -15,7 +15,7 @@ from honeycomb.servicemanager.base_service import ServerCustomService
 from ip_cam_trendnet_tv_ip100_handler import TrendnetTVIP100CamRequestHandler
 from consts import EVENT_TYPE_FIELD_NAME, TRENDNET_ADMIN_ACCESS_EVENT, \
     TRENDNET_ADMIN_POST_ATTEMPT, ORIGINATING_IP_FIELD_NAME, ORIGINATING_PORT_FIELD_NAME, REQUEST_FIELD_NAME, \
-    DEFAULT_SERVER_VERSION
+    DEFAULT_SERVER_VERSION, CAMERA_IMAGE_PATH
 
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
@@ -76,13 +76,18 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
         """Test service alerts and return a list of triggered event types."""
         event_types = list()
         self.logger.debug("executing service test")
-        # One alert for authorization attempt
+        # basic screen
         requests.get("http://localhost:{}".format(self.service_args.get("port")))
 
+        # camera shot
+        requests.get("http://localhost:{}/content.html{}".format(self.service_args.get("port"), CAMERA_IMAGE_PATH))
+
+        # One alert for authorization attempt
         requests.get("http://localhost:{}/content.html".format(self.service_args.get("port")),
                      headers={"Authorization": "username=\"test\""})
         event_types.append(TRENDNET_ADMIN_ACCESS_EVENT)
-        # And one for POST
+
+        # And for POST
         requests.post("http://localhost:{}/content.html".format(self.service_args.get("port")), data={})
         event_types.append(TRENDNET_ADMIN_POST_ATTEMPT)
         return event_types
