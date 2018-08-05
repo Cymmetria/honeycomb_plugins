@@ -8,7 +8,7 @@
    :target: http://honeycomb.cymmetria.com/projects/honeycomb-plugins/
 .. |Travis| image:: https://img.shields.io/travis/Cymmetria/honeycomb_plugins.svg
    :alt: Travis
-   :target: https://travis-ci.org/Cymmetria/honeycomb_plugins
+   :target: https://travis-ci.com/Cymmetria/honeycomb_plugins
 .. |Updates| image:: https://pyup.io/repos/github/Cymmetria/honeycomb/shield.svg
     :target: https://pyup.io/repos/github/Cymmetria/honeycomb_plugins/
     :alt: Updates
