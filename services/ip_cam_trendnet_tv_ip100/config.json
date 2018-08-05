@@ -20,7 +20,7 @@
         ],
         "name": "ip_cam_trendnet_tv_ip100",
         "label": "IP Cam TRENDnet TV-IP100",
-        "description": "Creates a fake website for IP Cam TRENDnet TV-IP100 with inaccessible admin panel and fake images",
+        "description": "Creates a fake IP Cam TRENDnet TV-IP100 website with inaccessible admin panel and fake images",
         "conflicts_with": []
     },
     "parameters": [
