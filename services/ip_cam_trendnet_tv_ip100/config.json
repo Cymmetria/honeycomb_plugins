@@ -5,6 +5,12 @@
             "label": "IP Cam TrendNET TV-IP100 admin access attempt",
             "fields": ["originating_ip", "originating_port", "request"],
             "policy": "Alert"
+        },
+        {
+            "name": "trendnet_tv_ip100_post_attempt",
+            "label": "IP Cam TrendNET TV-IP100 POST request attempt",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Alert"
         }
     ],
     "service": {

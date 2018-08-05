@@ -12,10 +12,10 @@ from six.moves.socketserver import ThreadingMixIn
 import requests
 
 from honeycomb.servicemanager.base_service import ServerCustomService
-
 DEFAULT_PORT = 80
 EVENT_TYPE_FIELD_NAME = "event_type"
 TRENDNET_ADMIN_ACCESS_EVENT = "trendnet_tv_ip100_admin_access"
+TRENDNET_ADMIN_POST_ATTEMPT = "trendnet_tv_ip100_post_attempt"
 ORIGINATING_IP_FIELD_NAME = "originating_ip"
 ORIGINATING_PORT_FIELD_NAME = "originating_port"
 REQUEST_FIELD_NAME = "request"
@@ -46,8 +46,8 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
                 return req_data, DEFAULT_CONTENT_TYPE
         return None
 
-    @staticmethod
-    def _get_post_redirect_target():
+    @property
+    def post_redirect_target(self):
         return "/Content.html"
 
     def send_response(self, code, message=None):
@@ -123,7 +123,7 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
             authorization = self.headers.get("Authorization")
             # Trying to connect to admin causes an alert
             if authorization:
-                self.alert(self)
+                self.alert(self, TRENDNET_ADMIN_ACCESS_EVENT)
             self.send_response(401)
             self.send_header("WWW-Authenticate", "BASIC realm=\"Administrator\"")
             self.end_headers()
@@ -134,11 +134,11 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
     def do_POST(self):
         """Provide POST behavior to mimic an authentication failure and alert."""
         # Any POST is an alert
-        self.alert(self)
+        self.alert(self, TRENDNET_ADMIN_POST_ATTEMPT)
 
         # Redirect to failed login page
         self.send_response(303)
-        self.send_header("Location", self._get_post_redirect_target())
+        self.send_header("Location", self.post_redirect_target)
         self.end_headers()
 
     def version_string(self):
@@ -166,10 +166,10 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
 
     httpd = None
 
-    def alert(self, request):
+    def alert(self, request, event):
         """Raise an alert."""
         params = {
-            EVENT_TYPE_FIELD_NAME: TRENDNET_ADMIN_ACCESS_EVENT,
+            EVENT_TYPE_FIELD_NAME: event,
             ORIGINATING_IP_FIELD_NAME: request.client_address[0],
             ORIGINATING_PORT_FIELD_NAME: request.client_address[1],
             REQUEST_FIELD_NAME: " ".join([request.command, request.path]),
