@@ -222,7 +222,7 @@ class IPCamTrendnetTvIp100Service(ServerCustomService):
         event_types.append(TRENDNET_ADMIN_ACCESS_EVENT)
         # And one for POST
         requests.post("http://localhost:{}/content.html".format(self.service_args.get("port", DEFAULT_PORT)), data={})
-        event_types.append(TRENDNET_ADMIN_ACCESS_EVENT)
+        event_types.append(TRENDNET_ADMIN_POST_ATTEMPT)
         return event_types
 
     def __str__(self):
