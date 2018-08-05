@@ -48,7 +48,7 @@ class TrendnetTVIP100CamRequestHandler(SimpleHTTPRequestHandler, object):
 
     @property
     def post_redirect_target(self):
-        """where post requests go."""
+        """Where post requests go."""
         return "/Content.html"
 
     def send_response(self, code, message=None):
