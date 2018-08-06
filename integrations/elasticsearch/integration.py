@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import logging
 import json
 import requests
 
 from integrationmanager.exceptions import IntegrationSendEventError
 from integrationmanager.integration_utils import BaseIntegration
 
-logger = logging.getLogger(__name__)
-
+session = requests.Session()
 
 class ElasticsearchIntegration(BaseIntegration):
 
@@ -22,7 +20,7 @@ class ElasticsearchIntegration(BaseIntegration):
         url = "{}/{}".format(self.integration_data.get("url"), index)
         auth = (user, password) if (user or passwd) else None
 
-        response = requests.post(url=url, auth=auth, json=alert_fields, verify=verify)
+        response = session.post(url=url, auth=auth, json=alert_fields, verify=verify)
         if response.status_code == 201:
             return {}, None
 
