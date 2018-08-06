@@ -8,17 +8,17 @@
     "test_connection_enabled": false,
     "parameters": [
          {
-            "value": "url_address",
+            "value": "url",
             "label": "URL address",
             "type": "string",
             "required": true,
             "help_text": "The URL address of your elasticsearch instance, i.e. http[s]://1.2.3.4 or http[s]://elastic.local."
         },
         {
-            "value": "skip_cert_validation",
-            "label": "Skip SSL certificate verification",
+            "value": "verify",
+            "label": "Verify SSL server certificate",
             "type": "boolean",
-            "default": false
+            "default": true
         },
         {
             "value": "username",
@@ -31,16 +31,6 @@
             "label": "Password",
             "type": "string",
             "required": false
-        },
-        {
-            "value": "port",
-            "label": "Port",
-            "type": "integer",
-            "default": 9200,
-            "min": 1,
-            "max": 65535,
-            "required": true,
-            "validator": "port"
         },
         {
             "value": "index",
