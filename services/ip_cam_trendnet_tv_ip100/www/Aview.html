@@ -1,0 +1,106 @@
+<html>
+<head>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<style type=text/css>
+A:link {FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: ff6600; FONT-FAMILY: arial,geneva,sans-serif}
+A:visited {FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: ff6600; FONT-FAMILY: arial,geneva,sans-serif}
+.org-news {FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: ff6600; FONT-FAMILY: arial,geneva,sans-serif}
+</style>
+</head>
+
+<SCRIPT LANGUAGE="JavaScript">
+function Init() {
+    cvcs.RemoteHost = "127.0.0.1"
+    cvcs.RemoteWeb = 80
+    cvcs.RemotePort = 8481
+    cvcs.Timeout = 5
+    cvcs.AuthType = 1
+    cvcs.PreviewFrameRate = 1
+    cvcs.PreviewWidth = 640
+    cvcs.PreviewHeight = 480
+    cvcs.DeviceSerialNo = ""
+    window.setInterval("ShowFrameRate()", 1000)
+}
+
+function ShowFrameRate() {
+    if (0)
+    {
+       var fFrameRate = cvcs.FrameRate
+       window.status = "Frame:" + fFrameRate.toString() + " fps"
+    }
+    cvcs.Play()
+    CurrentTime.innerHTML = cvcs.TimeString
+    GetTrigger()
+}
+
+function GetTrigger() {
+    if (cvcs.ImageUpload == 1) {
+       ImageUpload.innerHTML = "[ON]"
+    }
+    else {
+       ImageUpload.innerHTML = "[OFF]"
+    }
+
+    if (cvcs.EmailImage == 1) {
+       EmailImage.innerHTML = "[ON]"
+    }
+    else {
+       EmailImage.innerHTML = "[OFF]"
+    }
+}
+</SCRIPT>
+
+<body bgcolor=white onload="Init()" onunload="cvcs.Stop()">
+    <table border=0 bgcolor=white cellspacing=0 width=745>
+    <tr>
+     <td bgcolor=4f9d9d width=450>
+     <FONT FACE="Times New Roman,Times"><FONT COLOR=black><FONT SIZE=+1>
+     <B>&nbsp;&nbsp;View Video - ActiveX Mode</B></font></font></font>
+     </td>
+     <td bgcolor=4f9d9d width=235>&nbsp;</td>
+     <td bgcolor=black align=center width=60><a href="Home.html" TARGET="_top">Home</a>
+     </td>
+    </tr>
+    <tr><td bgcolor=e4ebf1 colspan=3><hr></td></tr>
+    <tr>
+     <td bgcolor=e4ebf1>
+         &nbsp;&nbsp;Internet Camera<br>
+         &nbsp;&nbsp;<br>
+         &nbsp;&nbsp;<SPAN ID="CurrentTime"></SPAN>
+     </td>
+     <td bgcolor=e4ebf1 colspan=2 valign=top><ul>
+     <li><font class=org-news><SPAN style="width:90px">Upload Video</SPAN></font>
+         &nbsp;&nbsp;<INPUT type=button value=' ON ' onClick="cvcs.ImageUpload=1">
+         &nbsp;&nbsp;<INPUT type=button value='OFF' onClick="cvcs.ImageUpload=0">
+         <SPAN ID="ImageUpload"></SPAN>
+     <li><font class=org-news><SPAN style="width:90px">E-mail Video</SPAN></font>
+         &nbsp;&nbsp;<INPUT type=button value=' ON ' onClick="cvcs.EmailImage=1">
+         &nbsp;&nbsp;<INPUT type=button value='OFF' onClick="cvcs.EmailImage=0">
+         <SPAN ID="EmailImage"></SPAN>
+    </td>
+    </tr>
+    <tr><td bgcolor=e4ebf1 colspan=3><hr></td></tr>
+    <tr><td bgcolor=e4ebf1 colspan=3>&nbsp;&nbsp;Zoom :
+      <INPUT type=button style="width:25px" value='x1' onClick="cvcs.Zoom(1)">
+      <INPUT type=button style="width:25px" value='x2' onClick="cvcs.Zoom(2)">
+      <INPUT type=button style="width:25px" value='x3' onClick="cvcs.Zoom(3)">
+      <INPUT type=button style="width:25px" value='x4' onClick="cvcs.Zoom(4)">
+    </td></tr>
+    <tr>
+     <td bgcolor=e4ebf1 align=center colspan=3>
+       <TABLE>
+       <tr>
+        <td>
+          <OBJECT ID="cvcs" WIDTH=640 HEIGHT=480
+          CLASSID="CLSID:CCA0B877-CB5E-4adc-AD30-457C379512DD"
+          CODEBASE="xplugLite.cab#version=2,3,2,0">
+          </OBJECT>
+        </td>
+       </tr>
+       </TABLE>
+     </td>
+    </tr>
+    <tr><td bgcolor=e4ebf1 colspan=3><hr></td></tr>
+    </table>
+</body>
+</html>

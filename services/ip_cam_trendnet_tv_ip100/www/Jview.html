@@ -1,0 +1,106 @@
+<html>
+<head>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<style type=text/css>
+A:link {FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: ff6600; FONT-FAMILY: arial,geneva,sans-serif}
+A:visited {FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: ff6600; FONT-FAMILY: arial,geneva,sans-serif}
+.org-news {FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: ff6600; FONT-FAMILY: arial,geneva,sans-serif}
+</style>
+</head>
+
+<SCRIPT LANGUAGE="JavaScript">
+function Init() {
+    if ((navigator.appName != "Netscape") &&
+        (navigator.userAgent.indexOf('Opera') == "-1"))
+    {
+       window.setInterval("ShowFrameRate()", 1000)
+    }
+}
+
+function ShowFrameRate() {
+    if (0)
+    {
+       var fFrameRate = cvcs.GetFrameRate()
+       window.status = "Frame:" + fFrameRate.toString() + " fps"
+    }
+    cvcs.GetRealTimeData() 
+    CurrentTime.innerHTML = cvcs.GetTimeString()
+    GetTrigger()
+}
+
+function GetTrigger() {
+    if (cvcs.GetImageUpload() == 1) {
+       ImageUpload.innerHTML = "[ON]"
+    }
+    else {
+       ImageUpload.innerHTML = "[OFF]"
+    }
+    if (cvcs.GetImageEmail() == 1) {
+       EmailImage.innerHTML = "[ON]"
+    }
+    else {
+       EmailImage.innerHTML = "[OFF]"
+    }
+}
+</SCRIPT>
+
+<body bgcolor=white onload="Init()">
+<form action="http://127.0.0.1/Jview.htm" method="POST">
+    <table border=0 bgcolor=white cellspacing=0 width=745>
+    <tr>
+     <td bgcolor=4f9d9d width=450>
+     <FONT FACE="Times New Roman,Times"><FONT COLOR=black><FONT SIZE=+1>
+     <B>&nbsp;&nbsp;View Video - Java Mode</B></font></font></font>
+     </td>
+     <td bgcolor=4f9d9d width=235>&nbsp;
+     </td>
+     <td bgcolor=black align=center width=60><a href="Home.html" TARGET="_top">Home</a>
+     </td>
+    </tr>
+    <tr><td bgcolor=e4ebf1 colspan=3><hr></td></tr>
+    <tr>
+     <td bgcolor=e4ebf1>
+         &nbsp;&nbsp;Internet Camera<br>
+         &nbsp;&nbsp;<br>
+         &nbsp;&nbsp;<SPAN ID="CurrentTime"></SPAN>
+     </td>
+     <td bgcolor=e4ebf1 colspan=2 valign=top><ul>
+     <li><font class=org-news><SPAN style="width:90px">Upload Video</SPAN></font>
+         &nbsp;&nbsp;<INPUT type=button value=' ON ' onClick="cvcs.SetImageUpload(1)">
+         &nbsp;&nbsp;<INPUT type=button value='OFF' onClick="cvcs.SetImageUpload(0)">
+         <SPAN ID="ImageUpload"></SPAN>
+     <li><font class=org-news><SPAN style="width:90px">E-mail Video</SPAN></font>
+         &nbsp;&nbsp;<INPUT type=button value=' ON ' onClick="cvcs.SetImageEmail(1)">
+         &nbsp;&nbsp;<INPUT type=button value='OFF' onClick="cvcs.SetImageEmail(0)">
+         <SPAN ID="EmailImage"></SPAN>
+    </td>
+    </tr>
+    <tr><td bgcolor=e4ebf1 colspan=3><hr></td></tr>
+    <tr><td bgcolor=e4ebf1 colspan=3>&nbsp;&nbsp;Zoom :
+      <INPUT type=button style="width:25px" value='x1' onClick="cvcs.Zoom(1)">
+      <INPUT type=button style="width:25px" value='x2' onClick="cvcs.Zoom(2)">
+      <INPUT type=button style="width:25px" value='x3' onClick="cvcs.Zoom(3)">
+      <INPUT type=button style="width:25px" value='x4' onClick="cvcs.Zoom(4)">
+    </td></tr>
+    <tr>
+     <td bgcolor=e4ebf1 align=center colspan=3>
+       <TABLE>
+          <tr>
+           <td>
+            <APPLET name="cvcs"  CODE="xplug.class" WIDTH=640 HEIGHT=480>
+            <param name="RemotePort" value=80>
+            <param name="Timeout" value=5000>
+            <param name="RotateAngle" value=0>
+            <param name="PreviewFrameRate" value=2>
+            <param name="DeviceSerialNo" value="">
+            </APPLET>
+           </td>
+          </tr>
+       </TABLE>
+     </td>
+    </tr>
+    <tr><td bgcolor=e4ebf1 colspan=3><hr></td></tr>
+    </table>
+</form>
+</body>
+</html>
