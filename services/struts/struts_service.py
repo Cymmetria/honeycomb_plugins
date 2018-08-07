@@ -2,12 +2,12 @@
 """Struts Honeycomb Service."""
 from __future__ import unicode_literals
 
-import json
 import os
 import re
+import time
+import json
 import shutil
 import tempfile
-import time
 
 from base_service import DockerService
 
@@ -21,8 +21,8 @@ class StrutsService(DockerService):
 
     def on_server_start(self):
         """Start server."""
-        self.folder_files = tempfile.mkdtemp()
-        os.chmod(self.folder_files, 0777)
+        self.folder_files = tempfile.mkdtemp(dir=os.path.expanduser("~"))
+        os.chmod(self.folder_files, 0o777)
         super(StrutsService, self).on_server_start()
 
     def on_server_shutdown(self):
