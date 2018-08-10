@@ -1,5 +1,8 @@
 |GitHub license| |Read the Docs| |Travis| |Updates| |Codecov| |Gitter|
 
+.. |honeycomb_logo| image:: honeycomb.png
+   :alt: Honeycomb
+   :target: https://github.com/Cymmetria/honeycomb_plugins
 .. |GitHub license| image:: https://img.shields.io/github/license/Cymmetria/honeycomb_plugins.svg
    :alt: GitHub license
    :target: https://github.com/Cymmetria/honeycomb_plugins/blob/master/LICENSE
@@ -18,6 +21,8 @@
 .. |Gitter| image:: https://badges.gitter.im/cymmetria/honeycomb.svg
    :alt: Join the chat at https://gitter.im/cymmetria/honeycomb
    :target: https://gitter.im/cymmetria/honeycomb
+
+|honeycomb_logo|
 
 =================
 Honeycomb Plugins
