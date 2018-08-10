@@ -1,4 +1,4 @@
-|GitHub license| |Read the Docs| |Travis| |Updates| |Codecov| |Gitter|
+|GitHub license| |Read the Docs| |Travis| |Codecov| |Gitter|
 
 .. |honeycomb_logo| image:: honeycomb.png
    :alt: Honeycomb
@@ -12,9 +12,6 @@
 .. |Travis| image:: https://img.shields.io/travis/Cymmetria/honeycomb_plugins.svg
    :alt: Travis
    :target: https://travis-ci.com/Cymmetria/honeycomb_plugins
-.. |Updates| image:: https://pyup.io/repos/github/Cymmetria/honeycomb/shield.svg
-    :target: https://pyup.io/repos/github/Cymmetria/honeycomb_plugins/
-    :alt: Updates
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/Cymmetria/honeycomb_plugins.svg
    :alt: Codecov
    :target: https://codecov.io/gh/Cymmetria/honeycomb_plugins
