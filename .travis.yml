@@ -6,7 +6,7 @@ python:
   - 2.7
 env:
   global:
-    - DOCKER_HOST=127.0.0.1:2375
+    - DOCKER_HOST=tcp://127.0.0.1:2375
 
 install: |
   shopt -s expand_aliases
