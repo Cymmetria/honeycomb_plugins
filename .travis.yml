@@ -11,8 +11,7 @@ env:
 install: |
   shopt -s expand_aliases
   docker pull omercnet/tox:alpine
-  alias tox='docker run --rm -it --env-file <(env | egrep "TRAVIS|CI") -v `pwd`:/app --net=host omercnet/tox:alpine tox'
-  export
+  alias tox='docker run --rm -it --env-file <(env | egrep "TRAVIS|CI|DOCKER") -v `pwd`:/app --net=host omercnet/tox:alpine tox'
 
 script: tox
 
