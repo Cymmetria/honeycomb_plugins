@@ -69,7 +69,7 @@ def running_daemon(tmpdir, request):
         cmdargs = args.COMMON_ARGS + [home, defs.SERVICE, commands.RUN, args.EDITABLE, service_path] + service_args
         p = subprocess.Popen(RUN_HONEYCOMB + cmdargs, env=venv_env)
 
-        assert wait_until(search_json_log, filepath=os.path.join(home, defs.DEBUG_LOG_FILE), total_timeout=3,
+        assert wait_until(search_json_log, filepath=os.path.join(home, defs.DEBUG_LOG_FILE), total_timeout=300,
                           key="message", value="service is ready")
         return p
 
