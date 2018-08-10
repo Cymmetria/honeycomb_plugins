@@ -1,4 +1,5 @@
 cuckoo
+elasticsearch
 json_file
 misp
 s3
