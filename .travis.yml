@@ -8,7 +8,7 @@ python:
 install: |
   shopt -s expand_aliases
   docker pull omercnet/tox:alpine
-  alias tox='docker run --rm -it --env-file <(env | egrep "TRAVIS|CI") -e DOCKER_HOST=127.0.0.1 -v `pwd`:/app --net=host omercnet/tox:alpine tox'
+  alias tox='docker run --rm -it --env-file <(env | egrep "TRAVIS|CI") -e DOCKER_HOST=127.0.0.1:2375 -v `pwd`:/app --net=host omercnet/tox:alpine tox'
 
 script: tox
 
