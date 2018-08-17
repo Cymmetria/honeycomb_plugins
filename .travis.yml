@@ -4,11 +4,14 @@ language: python
 python:
   - 3.6
   - 2.7
+env:
+  global:
+    - DOCKER_HOST=tcp://127.0.0.1:2375
 
 install: |
   shopt -s expand_aliases
   docker pull omercnet/tox:alpine
-  alias tox='docker run --rm -it --env-file <(env | egrep "TRAVIS|CI") -v `pwd`:/app omercnet/tox:alpine tox'
+  alias tox='docker run --rm -it --env-file <(env | egrep "TRAVIS|CI|DOCKER") -v `pwd`:/app --net=host omercnet/tox:alpine tox'
 
 script: tox
 
