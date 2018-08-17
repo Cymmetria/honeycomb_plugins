@@ -1,0 +1,43 @@
+{
+    "display_name": "Elasticsearch",
+    "integration_type": "event_output",
+    "supported_event_types": [],
+    "required_fields": [],
+    "max_send_retries": 5,
+    "polling_enabled": false,
+    "test_connection_enabled": false,
+    "parameters": [
+         {
+            "value": "url",
+            "label": "URL address",
+            "type": "string",
+            "required": true,
+            "help_text": "The URL address of your elasticsearch instance, i.e. http[s]://1.2.3.4 or http[s]://elastic.local."
+        },
+        {
+            "value": "verify",
+            "label": "Verify SSL server certificate",
+            "type": "boolean",
+            "default": true
+        },
+        {
+            "value": "username",
+            "label": "Username",
+            "type": "string",
+            "required": false
+        },
+        {
+            "value": "password",
+            "label": "Password",
+            "type": "string",
+            "required": false
+        },
+        {
+            "value": "index",
+            "label": "Index/Type",
+            "type": "string",
+            "required": true,
+            "help_text": "Put here the 'index/type' where the alerts will be saved inside the elasticsearch, i.e. siemdata/event."
+        }
+    ]
+}
