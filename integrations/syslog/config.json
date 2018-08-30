@@ -47,6 +47,14 @@
             "type": "boolean",
             "default": false,
             "help_text": "Events sent to syslog will be encrypted with SSL. This can be enabled if Cymmetria has configured your MazeRunner™ with the relevant certificates and keys. Relevant only for TCP."
+        },
+        {
+            "value": "facility",
+            "label": "set facility that is used to log syslog events to",
+            "type": "integer",
+            "min": 1,
+            "max": 23,
+            "default": 1
         }
     ]
 }
