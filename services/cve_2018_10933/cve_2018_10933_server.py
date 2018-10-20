@@ -36,6 +36,7 @@ SERVER_SIG = "SSH-2.0-libssh_0.7.4"
 
 
 class CVETransport(paramiko.Transport):
+    alert = None
     def __init__(self, *args, **kwargs):
         super(CVETransport, self).__init__(*args, **kwargs)
         self.local_version = SERVER_SIG
@@ -275,47 +276,47 @@ def run_server():
         traceback.print_exc()
         sys.exit(1)
 
-        print("Got a connection!")
+    print("Got a connection!")
 
+    try:
+        t = CVETransport(client, gss_kex=DoGSSAPIKeyExchange)
+        t.set_gss_host(socket.getfqdn(""))
         try:
-            t = CVETransport(client, gss_kex=DoGSSAPIKeyExchange)
-            t.set_gss_host(socket.getfqdn(""))
-            try:
-                t.load_server_moduli()
-            except:
-                print("(Failed to load moduli -- gex will be unsupported.)")
-                raise
-            t.add_server_key(host_key)
-            server = SSHServer()
-            try:
-                t.start_server(server=server)
-            except SSHException:
-                print("*** SSH negotiation failed.")
-                sys.exit(1)
-
-
-            # wait for auth
-            chan = t.accept(20)
-            if chan is None:
-                print("*** No channel.")
-                sys.exit(1)
-            print("Authenticated!")
-
-            server.event.wait(10)
-            if not server.event.is_set():
-                print("*** Client never asked for a shell.")
-                sys.exit(1)
-
-            chan.close()
-
-        except Exception as e:
-            print("*** Caught exception: " + str(e.__class__) + ": " + str(e))
-            traceback.print_exc()
-            try:
-                t.close()
-            except:
-                pass
+            t.load_server_moduli()
+        except:
+            print("(Failed to load moduli -- gex will be unsupported.)")
+            raise
+        t.add_server_key(host_key)
+        server = SSHServer()
+        try:
+            t.start_server(server=server)
+        except SSHException:
+            print("*** SSH negotiation failed.")
             sys.exit(1)
+
+
+        # wait for auth
+        chan = t.accept(20)
+        if chan is None:
+            print("*** No channel.")
+            sys.exit(1)
+        print("Authenticated!")
+
+        server.event.wait(10)
+        if not server.event.is_set():
+            print("*** Client never asked for a shell.")
+            sys.exit(1)
+
+        chan.close()
+
+    except Exception as e:
+        print("*** Caught exception: " + str(e.__class__) + ": " + str(e))
+        traceback.print_exc()
+        try:
+            t.close()
+        except:
+            pass
+        sys.exit(1)
 
 
 def main():
