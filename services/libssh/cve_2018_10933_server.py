@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
+#!/usr/bin/env python # noqa: E265
 """libssh Honeycomb Service with CVE-2018-10933 support."""
 from __future__ import unicode_literals
 
@@ -41,7 +41,8 @@ host_key = paramiko.RSAKey(filename=os.path.join(os.path.dirname(__file__), "tes
 
 
 class CVETransport(paramiko.Transport):
-    """ Implementation of the ssh transport server with the detection of the CVE-2018-10933 vulnerability """
+    """Implementation of the ssh transport server with the detection of the CVE-2018-10933 vulnerability."""
+
     alert = None
 
     def __init__(self, *args, **kwargs):
@@ -50,8 +51,10 @@ class CVETransport(paramiko.Transport):
 
     def run(self):
         """
+        Run function from paramiko.Transport.
+
         This function was copied from Paramiko (paramiko.Transport) in order to implement the CVE-2018-10933
-        vulnerability. The only change in this function is where we added if ptype == MSG_USERAUTH_SUCCESS
+        vulnerability. The only change in this function is where we added if ptype == MSG_USERAUTH_SUCCESS.
         """
         # noqa: W503, E722
         # (use the exposed "run" method, because if we specify a thread target
@@ -210,7 +213,7 @@ class CVETransport(paramiko.Transport):
                 finally:
                     self.lock.release()
             self.sock.close()
-        except:
+        except:  # noqa: E722
             # Don't raise spurious 'NoneType has no attribute X' errors when we
             # wake up during interpreter shutdown. Or rather -- raise
             # everything *if* sys.modules (used as a convenient sentinel)
@@ -219,17 +222,16 @@ class CVETransport(paramiko.Transport):
                 raise
 
 
-class ParamikoSSHServer(paramiko.ServerInterface):
-    # noqa: D101, D102
+class ParamikoSSHServer(paramiko.ServerInterface):  # noqa: D101
     def __init__(self):
         self.event = threading.Event()
 
-    def check_channel_request(self, kind, chanid):
+    def check_channel_request(self, kind, chanid):  # noqa: D102
         if kind == "session":
             return paramiko.OPEN_SUCCEEDED
         return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
 
-    def check_auth_password(self, username, password):
+    def check_auth_password(self, username, password):  # noqa: D102
         data = {
             EVENT_TYPE_FIELD_NAME: SSH_ALERT_TYPE,
             USERNAME_FIELD_NAME: username,
@@ -238,7 +240,7 @@ class ParamikoSSHServer(paramiko.ServerInterface):
         self.alert(self.socket, **data)
         return paramiko.AUTH_FAILED
 
-    def check_auth_publickey(self, username, key):
+    def check_auth_publickey(self, username, key):  # noqa: D102
         data = {
             EVENT_TYPE_FIELD_NAME: SSH_ALERT_TYPE,
             USERNAME_FIELD_NAME: username,
@@ -251,38 +253,38 @@ class ParamikoSSHServer(paramiko.ServerInterface):
 
     def check_auth_gssapi_with_mic(
         self, username, gss_authenticated=paramiko.AUTH_FAILED, cc_file=None
-    ):
+    ):  # noqa: D102
         return paramiko.AUTH_FAILED
 
     def check_auth_gssapi_keyex(
         self, username, gss_authenticated=paramiko.AUTH_FAILED, cc_file=None
-    ):
+    ):  # noqa: D102
         return paramiko.AUTH_FAILED
 
-    def enable_auth_gssapi(self):
+    def enable_auth_gssapi(self):  # noqa: D102
         return True
 
-    def get_allowed_auths(self, username):
+    def get_allowed_auths(self, username):  # noqa: D102
         return "gssapi-keyex,gssapi-with-mic,password,publickey"
 
-    def check_channel_shell_request(self, channel):
+    def check_channel_shell_request(self, channel):  # noqa: D102
         self.event.set()
         return True
 
     def check_channel_pty_request(
         self, channel, term, width, height, pixelwidth, pixelheight, modes
-    ):
+    ):  # noqa: D102
         return True
 
 
-class SSHRequestHandler(StreamRequestHandler):
-    # noqa: D101, D102
+class SSHRequestHandler(StreamRequestHandler):  # noqa: D101
+
     alert = None
     chan = None
     transport = None
     paramiko_server = None
 
-    def handle(self):
+    def handle(self):  # noqa: D102
         self.transport = CVETransport(self.connection, gss_kex=True)
         self.transport.alert = self.alert
         self.transport.set_gss_host(socket.getfqdn(""))
@@ -303,8 +305,9 @@ class SSHRequestHandler(StreamRequestHandler):
 
 
 class SSHServer(object):
-    # noqa: D101, D102
-    def run(self, port):
+    """SSHServer object."""
+
+    def run(self, port):  # noqa: D102
         requestHandler = SSHRequestHandler
         requestHandler.alert = self.alert
 
@@ -316,14 +319,14 @@ class SSHServer(object):
 
         self.server.serve_forever()
 
-    def shutdown(self):
+    def shutdown(self):  # noqa: D102
         if not self.server:
             return
         self.server.shutdown()
 
 
 def main():
-    """ Run the server directly """
+    """Run the server directly."""
     s = SSHServer()
     s.run(CVE_SSH_PORT)
 

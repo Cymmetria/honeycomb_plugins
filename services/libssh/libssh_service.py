@@ -10,7 +10,7 @@ from consts import CVE_ALERT_TYPE, EVENT_TYPE_FIELD_NAME, ORIGINATING_IP_FIELD_N
 
 
 class LibSSHService(ServerCustomService):
-    """LIBSSH Honeycomb Service with CVE-2018-10933 support"""
+    """libssh Honeycomb Service with CVE-2018-10933 support."""
 
     def __init__(self, *args, **kwargs):
         super(LibSSHService, self).__init__(*args, **kwargs)
