@@ -1,0 +1,28 @@
+{
+    "event_types": [
+        {
+            "name": "cve_2018_10933_ssh_bypass",
+            "label": "CVE-2018-10933 SSH Bypass",
+            "fields": ["originating_ip", "originating_port"],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "Linux",
+        "ports": [
+        ],
+        "name": "cve_2018_10933",
+        "label": "CVE-2018-10933",
+        "conflicts_with": []
+    },
+    "parameters": [
+        {
+            "type": "integer",
+            "value": "port",
+            "label": "Listening Port",
+            "required": true,
+            "default": 2222
+        }
+    ]
+}
