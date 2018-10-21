@@ -18,8 +18,9 @@
         "supported_os_families": "Linux",
         "ports": [
         ],
-        "name": "cve_2018_10933",
-        "label": "CVE-2018-10933",
+        "name": "libssh",
+        "label": "LibSSH",
+        "description": "A low-interaction honeypot for libssh, capable of detecting CVE-2018-10933 (ssh authentication bypass)",
         "conflicts_with": []
     },
     "parameters": [

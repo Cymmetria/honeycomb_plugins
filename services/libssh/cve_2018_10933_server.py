@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
+"""libssh Honeycomb Service with CVE-2018-10933 support."""
 from __future__ import unicode_literals
 
 import socket
 import sys
 import os
 import threading
-import traceback
 import struct
 from six.moves.socketserver import ThreadingTCPServer, StreamRequestHandler
 
@@ -41,12 +41,19 @@ host_key = paramiko.RSAKey(filename=os.path.join(os.path.dirname(__file__), "tes
 
 
 class CVETransport(paramiko.Transport):
+    """ Implementation of the ssh transport server with the detection of the CVE-2018-10933 vulnerability """
     alert = None
+
     def __init__(self, *args, **kwargs):
         super(CVETransport, self).__init__(*args, **kwargs)
         self.local_version = SERVER_SIG
 
     def run(self):
+        """
+        This function was copied from Paramiko (paramiko.Transport) in order to implement the CVE-2018-10933
+        vulnerability. The only change in this function is where we added if ptype == MSG_USERAUTH_SUCCESS
+        """
+        # noqa: W503, E722
         # (use the exposed "run" method, because if we specify a thread target
         # of a private method, threading.Thread will keep a reference to it
         # indefinitely, creating a GC cycle and not letting Transport ever be
@@ -89,9 +96,11 @@ class CVETransport(paramiko.Transport):
                         ptype, m = self.packetizer.read_message()
                     except NeedRekeyException:
                         continue
+                    # START - This is the part the implements the detection of CVE-2018-10933
                     if ptype == MSG_USERAUTH_SUCCESS:
                         self.alert(self.sock)
                         continue
+                    # END - This is the part the implements the detection of CVE-2018-10933
                     if ptype == MSG_IGNORE:
                         continue
                     elif ptype == MSG_DISCONNECT:
@@ -139,8 +148,8 @@ class CVETransport(paramiko.Transport):
                             )
                             break
                     elif (
-                        self.auth_handler is not None
-                        and ptype in self.auth_handler._handler_table
+                        self.auth_handler is not None and
+                        ptype in self.auth_handler._handler_table
                     ):
                         handler = self.auth_handler._handler_table[ptype]
                         handler(self.auth_handler, m)
@@ -211,7 +220,7 @@ class CVETransport(paramiko.Transport):
 
 
 class ParamikoSSHServer(paramiko.ServerInterface):
-
+    # noqa: D101, D102
     def __init__(self):
         self.event = threading.Event()
 
@@ -267,6 +276,7 @@ class ParamikoSSHServer(paramiko.ServerInterface):
 
 
 class SSHRequestHandler(StreamRequestHandler):
+    # noqa: D101, D102
     alert = None
     chan = None
     transport = None
@@ -276,10 +286,7 @@ class SSHRequestHandler(StreamRequestHandler):
         self.transport = CVETransport(self.connection, gss_kex=True)
         self.transport.alert = self.alert
         self.transport.set_gss_host(socket.getfqdn(""))
-        try:
-            self.transport.load_server_moduli()
-        except:
-            raise
+        self.transport.load_server_moduli()
         self.transport.add_server_key(host_key)
         self.paramiko_server = ParamikoSSHServer()
         self.paramiko_server.socket = self.connection
@@ -296,15 +303,16 @@ class SSHRequestHandler(StreamRequestHandler):
 
 
 class SSHServer(object):
+    # noqa: D101, D102
     def run(self, port):
         requestHandler = SSHRequestHandler
         requestHandler.alert = self.alert
 
         self.server = ThreadingTCPServer(("", port), requestHandler)
-        self.server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # This prevents the timewait on the socket that prevents us from restarting the honeypot right
+        # away after closing
         self.server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
-
 
         self.server.serve_forever()
 
@@ -315,6 +323,7 @@ class SSHServer(object):
 
 
 def main():
+    """ Run the server directly """
     s = SSHServer()
     s.run(CVE_SSH_PORT)
 

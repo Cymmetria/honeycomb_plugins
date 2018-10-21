@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-"""LIBSSH CVE-2018-10933 Honeycomb Service."""
+"""libssh Honeycomb Service with CVE-2018-10933 support."""
 from __future__ import unicode_literals
 
 from base_service import ServerCustomService
 
 from cve_2018_10933_server import SSHServer
 from consts import CVE_ALERT_TYPE, EVENT_TYPE_FIELD_NAME, ORIGINATING_IP_FIELD_NAME, ORIGINATING_PORT_FIELD_NAME,\
-    SOCK_IP_POSITION, SOCK_PORT_POSITION, CVE_PORT_FIELD
+    CVE_PORT_FIELD
 
 
-class CVEService(ServerCustomService):
-    """LIBSSH CVE-2018-10933 Honeycomb Service."""
+class LibSSHService(ServerCustomService):
+    """LIBSSH Honeycomb Service with CVE-2018-10933 support"""
 
     def __init__(self, *args, **kwargs):
         super(CVEService, self).__init__(*args, **kwargs)
@@ -20,10 +20,11 @@ class CVEService(ServerCustomService):
 
     def alert(self, sock, event_type=CVE_ALERT_TYPE, *args, **kwargs):
         """Send alert."""
+        ip, port = sock.getpeername()
         params = {
             EVENT_TYPE_FIELD_NAME: event_type,
-            ORIGINATING_IP_FIELD_NAME: sock.getpeername()[SOCK_IP_POSITION],
-            ORIGINATING_PORT_FIELD_NAME: sock.getpeername()[SOCK_PORT_POSITION]
+            ORIGINATING_IP_FIELD_NAME: ip,
+            ORIGINATING_PORT_FIELD_NAME: port
         }
         if kwargs:
             params.update(kwargs)
@@ -41,7 +42,7 @@ class CVEService(ServerCustomService):
         self.server.run(port)
 
     def __str__(self):
-        return "CVE-2018-10933"
+        return "LIBSSH"
 
 
-service_class = CVEService
+service_class = LibSSHService
