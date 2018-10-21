@@ -5,6 +5,12 @@
             "label": "CVE-2018-10933 SSH Bypass",
             "fields": ["originating_ip", "originating_port"],
             "policy": "Alert"
+        },
+        {
+            "name": "ssh",
+            "label": "SSH Interaction",
+            "fields": ["originating_ip", "originating_port", "username", "password", "additional_fields"],
+            "policy": "Alert"
         }
     ],
     "service": {
