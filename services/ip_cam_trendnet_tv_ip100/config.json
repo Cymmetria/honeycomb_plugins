@@ -1,0 +1,53 @@
+{
+    "event_types": [
+        {
+            "name": "trendnet_tv_ip100_admin_access",
+            "label": "IP Cam TrendNET TV-IP100 admin access attempt",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Alert"
+        },
+        {
+            "name": "trendnet_tv_ip100_post_attempt",
+            "label": "IP Cam TrendNET TV-IP100 POST request attempt",
+            "fields": ["originating_ip", "originating_port", "request"],
+            "policy": "Alert"
+        }
+    ],
+    "service": {
+        "allow_many": false,
+        "supported_os_families": "All",
+        "ports": [
+        ],
+        "name": "ip_cam_trendnet_tv_ip100",
+        "label": "IP Cam TRENDnet TV-IP100",
+        "description": "Creates a fake IP Cam TRENDnet TV-IP100 website with inaccessible admin panel and fake images",
+        "conflicts_with": []
+    },
+    "parameters": [
+      {
+          "type": "integer",
+          "value": "port",
+          "label": "Listening port",
+          "required": true
+      },
+      {
+          "type": "boolean",
+          "value": "threading",
+          "label": "Enable threading support",
+          "required": true,
+          "default": false
+      },
+      {
+          "type": "text",
+          "value": "image_src_url",
+          "label": "Source URL for the camera image to return. cannot be used with image_src_path",
+          "required": false
+      },
+      {
+          "type": "text",
+          "value": "image_src_path",
+          "label": "Filepath for the camera image to return. cannot be used with image_src_url",
+          "required": false
+      }
+    ]
+}

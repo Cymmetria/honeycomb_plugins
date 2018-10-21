@@ -118,26 +118,22 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#
+html_theme = 'alabaster'
+html_sidebars = {
+    "**": [
+        "about.html",
+        "navigation.html",
+        "relations.html",
+        "searchbox.html",
+        "donate.html",
+    ]
+}
 html_theme_options = {
-    # 'canonical_url': '',
-    # 'analytics_id': '',
-    'logo_only': False,
-    'display_version': True,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
-    # 'vcs_pageview_mode': '',
-    # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': True,
-    'titles_only': False
+    "logo": "honeycomb.png",
+    "description": "An extensible honeypot framework",
+    "github_user": "Cymmetria",
+    "github_repo": "honeycomb",
+    "fixed_sidebar": True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
