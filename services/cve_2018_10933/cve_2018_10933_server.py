@@ -1,14 +1,18 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
 
 import socket
 import sys
+import os
 import threading
 import traceback
+import struct
+from six.moves.socketserver import ThreadingTCPServer, StreamRequestHandler
 
 import paramiko
 from paramiko import util
 from paramiko import Message
-from paramiko.py3compat import b, decodebytes, long
+from paramiko.py3compat import b, long
 from paramiko.transport import _active_threads
 from paramiko.common import (
     xffffffff,
@@ -27,12 +31,12 @@ from paramiko.common import (
 from paramiko.ssh_exception import SSHException
 from paramiko.packet import NeedRekeyException
 
+from consts import SERVER_SIG, EVENT_TYPE_FIELD_NAME, SSH_ALERT_TYPE, USERNAME_FIELD_NAME, PASSWORD_FIELD_NAME,\
+    ADDITIONAL_FIELDS_FIELD_NAME, KEY_FIELD_NAME, CVE_SSH_PORT
+
 # setup logging
 paramiko.util.log_to_file("demo_server.log")
-
-host_key = paramiko.RSAKey(filename="./test_rsa.key")
-
-SERVER_SIG = "SSH-2.0-libssh_0.7.4"
+host_key = paramiko.RSAKey(filename=os.path.join(os.path.dirname(__file__), "test_rsa.key"))
 
 
 class CVETransport(paramiko.Transport):
@@ -205,14 +209,7 @@ class CVETransport(paramiko.Transport):
                 raise
 
 
-class SSHServer(paramiko.ServerInterface):
-    data = (
-        b"AAAAB3NzaC1yc2EAAAABIwAAAIEAyO4it3fHlmGZWJaGrfeHOVY7RWO3P9M7hp"
-        b"fAu7jJ2d7eothvfeuoRFtJwhUmZDluRdFyhFY/hFAh76PJKGAusIqIQKlkJxMC"
-        b"KDqIexkgHAfID/6mqvmnSJf0b5W8v5h2pI/stOSwTQ+pxVhwJ9ctYDhRSlF0iT"
-        b"UWT10hcuO4Ks8="
-    )
-    good_pub_key = paramiko.RSAKey(data=decodebytes(data))
+class ParamikoSSHServer(paramiko.ServerInterface):
 
     def __init__(self):
         self.event = threading.Event()
@@ -223,9 +220,23 @@ class SSHServer(paramiko.ServerInterface):
         return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
 
     def check_auth_password(self, username, password):
+        data = {
+            EVENT_TYPE_FIELD_NAME: SSH_ALERT_TYPE,
+            USERNAME_FIELD_NAME: username,
+            PASSWORD_FIELD_NAME: password
+        }
+        self.alert(self.socket, **data)
         return paramiko.AUTH_FAILED
 
     def check_auth_publickey(self, username, key):
+        data = {
+            EVENT_TYPE_FIELD_NAME: SSH_ALERT_TYPE,
+            USERNAME_FIELD_NAME: username,
+            ADDITIONAL_FIELDS_FIELD_NAME: {
+                KEY_FIELD_NAME: key.get_base64()
+            }
+        }
+        self.alert(self.socket, **data)
         return paramiko.AUTH_FAILED
 
     def check_auth_gssapi_with_mic(
@@ -254,73 +265,57 @@ class SSHServer(paramiko.ServerInterface):
         return True
 
 
-def run_server():
-    DoGSSAPIKeyExchange = True
+class SSHRequestHandler(StreamRequestHandler):
+    alert = None
+    chan = None
+    transport = None
+    paramiko_server = None
 
-    # now connect
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind(("", 2200))
-    except Exception as e:
-        print("*** Bind failed: " + str(e))
-        traceback.print_exc()
-        sys.exit(1)
-
-    try:
-        sock.listen(100)
-        print("Listening for connection ...")
-        client, addr = sock.accept()
-    except Exception as e:
-        print("*** Listen/accept failed: " + str(e))
-        traceback.print_exc()
-        sys.exit(1)
-
-    print("Got a connection!")
-
-    try:
-        t = CVETransport(client, gss_kex=DoGSSAPIKeyExchange)
-        t.set_gss_host(socket.getfqdn(""))
+    def handle(self):
+        self.transport = CVETransport(self.connection, gss_kex=True)
+        self.transport.alert = self.alert
+        self.transport.set_gss_host(socket.getfqdn(""))
         try:
-            t.load_server_moduli()
+            self.transport.load_server_moduli()
         except:
-            print("(Failed to load moduli -- gex will be unsupported.)")
             raise
-        t.add_server_key(host_key)
-        server = SSHServer()
+        self.transport.add_server_key(host_key)
+        self.paramiko_server = ParamikoSSHServer()
+        self.paramiko_server.socket = self.connection
+        self.paramiko_server.alert = self.alert
         try:
-            t.start_server(server=server)
+            self.transport.start_server(server=self.paramiko_server)
         except SSHException:
-            print("*** SSH negotiation failed.")
-            sys.exit(1)
+            return
+
+        self.chan = self.transport.accept(20)
+        if not self.chan:
+            return
+        self.chan.close()
 
 
-        # wait for auth
-        chan = t.accept(20)
-        if chan is None:
-            print("*** No channel.")
-            sys.exit(1)
-        print("Authenticated!")
+class SSHServer(object):
+    def run(self, port):
+        requestHandler = SSHRequestHandler
+        requestHandler.alert = self.alert
 
-        server.event.wait(10)
-        if not server.event.is_set():
-            print("*** Client never asked for a shell.")
-            sys.exit(1)
+        self.server = ThreadingTCPServer(("", port), requestHandler)
+        self.server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
 
-        chan.close()
 
-    except Exception as e:
-        print("*** Caught exception: " + str(e.__class__) + ": " + str(e))
-        traceback.print_exc()
-        try:
-            t.close()
-        except:
-            pass
-        sys.exit(1)
+        self.server.serve_forever()
+
+    def shutdown(self):
+        if not self.server:
+            return
+        self.server.shutdown()
 
 
 def main():
-    run_server()
+    s = SSHServer()
+    s.run(CVE_SSH_PORT)
 
 
 if __name__ == "__main__":
