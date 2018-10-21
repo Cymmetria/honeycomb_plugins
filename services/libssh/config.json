@@ -1,7 +1,7 @@
 {
     "event_types": [
         {
-            "name": "cve_2018_10933_ssh_bypass",
+            "name": "cve_2018_10933_ssh_auth_bypass",
             "label": "CVE-2018-10933 SSH Bypass",
             "fields": ["originating_ip", "originating_port"],
             "policy": "Alert"
