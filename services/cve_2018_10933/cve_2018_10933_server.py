@@ -30,7 +30,7 @@ from paramiko.packet import NeedRekeyException
 # setup logging
 paramiko.util.log_to_file("demo_server.log")
 
-host_key = paramiko.RSAKey(filename="test_rsa.key")
+host_key = paramiko.RSAKey(filename="./test_rsa.key")
 
 SERVER_SIG = "SSH-2.0-libssh_0.7.4"
 
@@ -85,7 +85,7 @@ class CVETransport(paramiko.Transport):
                     except NeedRekeyException:
                         continue
                     if ptype == MSG_USERAUTH_SUCCESS:
-                        print("MSG_USERAUTH_SUCCESS")
+                        self.alert(self.sock)
                         continue
                     if ptype == MSG_IGNORE:
                         continue
