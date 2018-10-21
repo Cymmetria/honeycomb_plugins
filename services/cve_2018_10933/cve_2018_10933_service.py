@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Intel AMT Honeycomb Service."""
+"""LIBSSH CVE-2018-10933 Honeycomb Service."""
 from __future__ import unicode_literals
 
 from base_service import ServerCustomService
@@ -11,7 +11,7 @@ from consts import CVE_ALERT_TYPE, EVENT_TYPE_FIELD_NAME, ORIGINATING_IP_FIELD_N
 
 
 class CVEService(ServerCustomService):
-    """Intel AMT Honeycomb Service."""
+    """LIBSSH CVE-2018-10933 Honeycomb Service."""
 
     def __init__(self, *args, **kwargs):
         super(CVEService, self).__init__(*args, **kwargs)
@@ -42,7 +42,7 @@ class CVEService(ServerCustomService):
         self.server.run(port)
 
     def __str__(self):
-        return "CVE 2018 10933"
+        return "CVE-2018-10933"
 
 
 service_class = CVEService
