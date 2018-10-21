@@ -9,7 +9,6 @@ from consts import CVE_ALERT_TYPE, EVENT_TYPE_FIELD_NAME, ORIGINATING_IP_FIELD_N
     SOCK_IP_POSITION, SOCK_PORT_POSITION, CVE_PORT_FIELD
 
 
-
 class CVEService(ServerCustomService):
     """LIBSSH CVE-2018-10933 Honeycomb Service."""
 
