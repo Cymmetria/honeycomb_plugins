@@ -37,7 +37,17 @@ from consts import SERVER_SIG, EVENT_TYPE_FIELD_NAME, SSH_ALERT_TYPE, USERNAME_F
 
 # setup logging
 paramiko.util.log_to_file("demo_server.log")
-host_key = paramiko.RSAKey(filename=os.path.join(os.path.dirname(__file__), "test_rsa.key"))
+
+# Get current rsa key, or generate new one if needed
+key_file_path = os.path.join(os.path.dirname(__file__), "libssh_server_rsa.key")
+if not os.path.exists(key_file_path):
+    host_key = paramiko.RSAKey.generate(1024)
+    try:
+        host_key.write_private_key_file(key_file_path)
+    except:  # noqa: E722
+        pass
+else:
+    host_key = paramiko.RSAKey(filename=key_file_path)
 
 
 class CVETransport(paramiko.Transport):
