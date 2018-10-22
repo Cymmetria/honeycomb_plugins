@@ -261,21 +261,8 @@ class ParamikoSSHServer(paramiko.ServerInterface):  # noqa: D101
         self.alert(self.socket, **data)
         return paramiko.AUTH_FAILED
 
-    def check_auth_gssapi_with_mic(
-        self, username, gss_authenticated=paramiko.AUTH_FAILED, cc_file=None
-    ):  # noqa: D102
-        return paramiko.AUTH_FAILED
-
-    def check_auth_gssapi_keyex(
-        self, username, gss_authenticated=paramiko.AUTH_FAILED, cc_file=None
-    ):  # noqa: D102
-        return paramiko.AUTH_FAILED
-
-    def enable_auth_gssapi(self):  # noqa: D102
-        return True
-
     def get_allowed_auths(self, username):  # noqa: D102
-        return "gssapi-keyex,gssapi-with-mic,password,publickey"
+        return "password,publickey"
 
     def check_channel_shell_request(self, channel):  # noqa: D102
         self.event.set()
@@ -295,9 +282,8 @@ class SSHRequestHandler(StreamRequestHandler):  # noqa: D101
     paramiko_server = None
 
     def handle(self):  # noqa: D102
-        self.transport = CVETransport(self.connection, gss_kex=True)
+        self.transport = CVETransport(self.connection)
         self.transport.alert = self.alert
-        self.transport.set_gss_host(socket.getfqdn(""))
         self.transport.load_server_moduli()
         self.transport.add_server_key(host_key)
         self.paramiko_server = ParamikoSSHServer()
@@ -316,6 +302,8 @@ class SSHRequestHandler(StreamRequestHandler):  # noqa: D101
 
 class SSHServer(object):
     """SSHServer object."""
+
+    server = None
 
     def run(self, port):  # noqa: D102
         requestHandler = SSHRequestHandler
