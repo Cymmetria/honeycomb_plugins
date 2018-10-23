@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 import paramiko
 from paramiko.ssh_exception import ChannelException
 import socket
-import time
 from base_service import ServerCustomService
 
 from cve_2018_10933_server import SSHServer
