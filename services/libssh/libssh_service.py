@@ -2,11 +2,15 @@
 """libssh Honeycomb Service with CVE-2018-10933 support."""
 from __future__ import unicode_literals
 
+import paramiko
+from paramiko.ssh_exception import ChannelException
+import socket
+import time
 from base_service import ServerCustomService
 
 from cve_2018_10933_server import SSHServer
 from consts import CVE_ALERT_TYPE, EVENT_TYPE_FIELD_NAME, ORIGINATING_IP_FIELD_NAME, ORIGINATING_PORT_FIELD_NAME,\
-    CVE_PORT_FIELD
+    CVE_PORT_FIELD, CVE_SSH_PORT
 
 
 class LibSSHService(ServerCustomService):
@@ -39,11 +43,25 @@ class LibSSHService(ServerCustomService):
         port = int(self.service_args.get(CVE_PORT_FIELD))
         self.server = SSHServer()
         self.server.alert = self.alert
+        self.signal_ready()
         self.server.run(port)
 
     def test(self):
         """Test function, still need to implement this."""
-        return []
+        time.sleep(10)
+        s = socket.socket()
+        s.connect(('127.0.0.1', CVE_SSH_PORT))
+        m = paramiko.message.Message()
+        t = paramiko.transport.Transport(s)
+        t.start_client()
+        m.add_byte(paramiko.common.cMSG_USERAUTH_SUCCESS)
+        t._send_message(m)
+        try:
+            c = t.open_session(timeout=100)
+        except ChannelException:
+            pass
+
+        return [CVE_ALERT_TYPE]
 
     def __str__(self):
         return "LIBSSH"
