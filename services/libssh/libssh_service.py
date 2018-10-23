@@ -41,6 +41,10 @@ class LibSSHService(ServerCustomService):
         self.server.alert = self.alert
         self.server.run(port)
 
+    def test(self):
+        """Test function, still need to implement this."""
+        return []
+
     def __str__(self):
         return "LIBSSH"
 
