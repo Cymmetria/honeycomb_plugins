@@ -48,7 +48,6 @@ class LibSSHService(ServerCustomService):
 
     def test(self):
         """Test the service by connecting and passing the USERAUTH_SUCCESS msg."""
-        time.sleep(10)
         s = socket.socket()
         s.connect(('127.0.0.1', CVE_SSH_PORT))
         m = paramiko.message.Message()
