@@ -47,7 +47,7 @@ class LibSSHService(ServerCustomService):
         self.server.run(port)
 
     def test(self):
-        """Test function, still need to implement this."""
+        """Test the service by connecting and passing the USERAUTH_SUCCESS msg."""
         time.sleep(10)
         s = socket.socket()
         s.connect(('127.0.0.1', CVE_SSH_PORT))
@@ -57,7 +57,7 @@ class LibSSHService(ServerCustomService):
         m.add_byte(paramiko.common.cMSG_USERAUTH_SUCCESS)
         t._send_message(m)
         try:
-            c = t.open_session(timeout=100)
+            t.open_session(timeout=100)
         except ChannelException:
             pass
 

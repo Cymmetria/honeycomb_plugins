@@ -274,7 +274,8 @@ class ParamikoSSHServer(paramiko.ServerInterface):  # noqa: D101
         return True
 
 
-class SSHRequestHandler(StreamRequestHandler):  # noqa: D101
+class SSHRequestHandler(StreamRequestHandler):
+    """SSH Request Handler."""
 
     alert = None
     chan = None
