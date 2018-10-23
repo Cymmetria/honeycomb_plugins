@@ -59,6 +59,10 @@ class CVETransport(paramiko.Transport):
         super(CVETransport, self).__init__(*args, **kwargs)
         self.local_version = SERVER_SIG
 
+    def _log(self, level, msg, *args):
+        """Override the _log method of the Transport class due to errors in Travis."""
+        pass
+
     def run(self):
         """
         Run function from paramiko.Transport.
