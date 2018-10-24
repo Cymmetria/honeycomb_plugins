@@ -8,8 +8,8 @@ import socket
 from base_service import ServerCustomService
 
 from cve_2018_10933_server import SSHServer
-from libssh_consts import CVE_ALERT_TYPE, EVENT_TYPE_FIELD_NAME, ORIGINATING_IP_FIELD_NAME, ORIGINATING_PORT_FIELD_NAME,\
-    CVE_PORT_FIELD, CVE_SSH_PORT
+from libssh_consts import CVE_ALERT_TYPE, EVENT_TYPE_FIELD_NAME, ORIGINATING_IP_FIELD_NAME,\
+    ORIGINATING_PORT_FIELD_NAME, CVE_PORT_FIELD, CVE_SSH_PORT
 
 
 class LibSSHService(ServerCustomService):
