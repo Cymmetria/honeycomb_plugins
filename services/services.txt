@@ -4,6 +4,7 @@ ftp
 hp_officejet
 intel_amt
 ip_cam_trendnet_tv_ip100
+libssh
 micros
 mirai_worm_monitor
 simple_http
