@@ -32,11 +32,8 @@ from paramiko.common import (
 from paramiko.ssh_exception import SSHException
 from paramiko.packet import NeedRekeyException
 
-from consts import SERVER_SIG, EVENT_TYPE_FIELD_NAME, SSH_ALERT_TYPE, USERNAME_FIELD_NAME, PASSWORD_FIELD_NAME,\
+from libssh_consts import SERVER_SIG, EVENT_TYPE_FIELD_NAME, SSH_ALERT_TYPE, USERNAME_FIELD_NAME, PASSWORD_FIELD_NAME,\
     ADDITIONAL_FIELDS_FIELD_NAME, KEY_FIELD_NAME, CVE_SSH_PORT
-
-# setup logging
-paramiko.util.log_to_file("demo_server.log")
 
 # Get current rsa key, or generate new one if needed
 key_file_path = os.path.join(os.path.dirname(__file__), "libssh_server_rsa.key")
