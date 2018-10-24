@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """libssh Honeycomb Service consts file."""
+from __future__ import unicode_literals
 
 SERVER_SIG = "SSH-2.0-libssh_0.7.4"
 

@@ -165,7 +165,7 @@ class CVETransport(paramiko.Transport):
                             )
                             break
                     elif (
-                        self.auth_handler is not None and
+                        self.auth_handler is not None and  # noqa: W504
                         ptype in self.auth_handler._handler_table
                     ):
                         handler = self.auth_handler._handler_table[ptype]

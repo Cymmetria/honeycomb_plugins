@@ -62,7 +62,8 @@ class LibSSHService(ServerCustomService):
         return [CVE_ALERT_TYPE]
 
     def __str__(self):
-        return "LIBSSH"
+        """Service name."""
+        return "libssh"
 
 
 service_class = LibSSHService
