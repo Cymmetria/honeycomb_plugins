@@ -16,15 +16,15 @@ class ElasticsearchIntegration(BaseIntegration):
 
     def send_event(self, alert_fields):
         """Send alert to Elasticsearch."""
-        user = self.integration_data.get("username", "").encode('utf-8')
+        user = self.integration_data.get("username", "").encode("utf-8")
         index = self.integration_data.get("index")
-        verify = self.integration_data.get('verify', False)
-        password = self.integration_data.get("password", "").encode('utf-8')
+        verify = self.integration_data.get("verify", False)
+        password = self.integration_data.get("password", "").encode("utf-8")
 
         url = "{}/{}".format(self.integration_data.get("url"), index)
         auth = (user, password) if (user or password) else None
 
-        headers = {'content-type': 'application/json'}
+        headers = {"content-type": "application/json"}
         data = json.dumps(alert_fields, default=str)
         response = session.post(url=url, auth=auth, data=data, headers=headers, verify=verify)
         if response.status_code == 201:
