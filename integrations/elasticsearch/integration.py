@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import requests
+import json
 
 from integrationmanager.exceptions import IntegrationSendEventError
 from integrationmanager.integration_utils import BaseIntegration
@@ -23,7 +24,9 @@ class ElasticsearchIntegration(BaseIntegration):
         url = "{}/{}".format(self.integration_data.get("url"), index)
         auth = (user, password) if (user or password) else None
 
-        response = session.post(url=url, auth=auth, json=alert_fields, verify=verify)
+        headers = {'content-type': 'application/json'}
+        data = json.dumps(alert_fields, default=str)
+        response = session.post(url=url, auth=auth, data=data, headers=headers, verify=verify)
         if response.status_code == 201:
             return {}, None
 
