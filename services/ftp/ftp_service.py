@@ -6,6 +6,9 @@ import tempfile
 import os
 import shutil
 import ftplib
+import base64
+import StringIO
+import zipfile
 
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
@@ -167,6 +170,11 @@ class FTPService(ServerCustomService):
     def prepare_temp_dir(self):
         """Create a temp dir."""
         self.temp_dir = tempfile.mkdtemp()
+        content = self.service_args.get("ftp_content")
+        if content:
+            file_obj = StringIO.StringIO(base64.b64decode(content))
+            z = zipfile.ZipFile(file_obj, "r")
+            z.extractall(self.temp_dir)
 
     def delete_temp_dir(self):
         """Delete the temp dir that we created."""

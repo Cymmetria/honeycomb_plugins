@@ -20,5 +20,13 @@
         "label": "FTP Server",
         "description": "An empty FTP server.",
         "conflicts_with": []
-    }
+    },
+    "parameters": [
+        {
+            "type": "file",
+            "value": "ftp_content",
+            "label": "FTP Content",
+            "required": false
+        }
+    ]
 }
