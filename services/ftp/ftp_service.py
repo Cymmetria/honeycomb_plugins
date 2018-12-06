@@ -172,7 +172,10 @@ class FTPService(ServerCustomService):
         self.temp_dir = tempfile.mkdtemp()
         content = self.service_args.get("ftp_content")
         if content:
-            file_obj = StringIO.StringIO(base64.b64decode(content))
+            if os.path.exists(content):
+                file_obj = open(content, "r")
+            else:
+                file_obj = StringIO.StringIO(base64.b64decode(content))
             z = zipfile.ZipFile(file_obj, "r")
             z.extractall(self.temp_dir)
 
