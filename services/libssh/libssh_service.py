@@ -9,7 +9,8 @@ from base_service import ServerCustomService
 
 from cve_2018_10933_server import SSHServer
 from libssh_consts import CVE_ALERT_TYPE, EVENT_TYPE_FIELD_NAME, ORIGINATING_IP_FIELD_NAME,\
-    ORIGINATING_PORT_FIELD_NAME, CVE_PORT_FIELD, CVE_SSH_PORT
+    ORIGINATING_PORT_FIELD_NAME, DESTINATION_IP_FIELD_NAME, DESTINATION_PORT_FIELD_NAME,\
+    CVE_PORT_FIELD, CVE_SSH_PORT
 
 
 class LibSSHService(ServerCustomService):
@@ -24,10 +25,13 @@ class LibSSHService(ServerCustomService):
     def alert(self, sock, event_type=CVE_ALERT_TYPE, *args, **kwargs):
         """Send alert."""
         ip, port = sock.getpeername()
+        dest_ip, dest_port = sock.getsockname()
         params = {
             EVENT_TYPE_FIELD_NAME: event_type,
             ORIGINATING_IP_FIELD_NAME: ip,
-            ORIGINATING_PORT_FIELD_NAME: port
+            ORIGINATING_PORT_FIELD_NAME: port,
+            DESTINATION_IP_FIELD_NAME: dest_ip,
+            DESTINATION_PORT_FIELD_NAME: dest_port,
         }
         if kwargs:
             params.update(kwargs)
