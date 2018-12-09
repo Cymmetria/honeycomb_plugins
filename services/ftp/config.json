@@ -25,7 +25,7 @@
         {
             "type": "file",
             "value": "ftp_content",
-            "label": "FTP Content - optional zip file containing the content for the ftp service",
+            "label": "FTP Content - Optional path or a base64 encoded string of a zip file containing the content for the ftp service",
             "required": false
         }
     ]
