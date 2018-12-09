@@ -7,8 +7,11 @@ import os
 import shutil
 import ftplib
 import base64
-import StringIO
 import zipfile
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
@@ -175,7 +178,7 @@ class FTPService(ServerCustomService):
             if os.path.exists(content):
                 file_obj = open(content, "r")
             else:
-                file_obj = StringIO.StringIO(base64.b64decode(content))
+                file_obj = StringIO(base64.b64decode(content))
             z = zipfile.ZipFile(file_obj, "r")
             z.extractall(self.temp_dir)
 
