@@ -1,2 +1,2 @@
-certifi~=2018.4.16
+certifi==2018.11.29
 cefevent~=0.4.8
