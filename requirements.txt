@@ -1,4 +1,4 @@
 tox==3.5.3
 sphinx==1.8.2
-sphinx-click==1.4.1
+sphinx-click==2.0.0
 honeycomb-framework==0.1.1
