@@ -25,10 +25,10 @@ def json_log_is_valid(path):
     """
     with open(os.path.join(str(path), DEBUG_LOG_FILE), "r") as fh:
         for line in fh.readlines():
-                try:
-                    json.loads(line)
-                except json.decoder.JSONDecodeError:
-                    return False
+            try:
+                json.loads(line)
+            except json.decoder.JSONDecodeError:
+                return False
     return True
 
 
@@ -42,7 +42,7 @@ def search_file_log(filepath, method, args):
     """
     with open(filepath, "r") as fh:
         for line in fh.readlines():
-                cmd = getattr(line, method)
-                if cmd(args):
-                    return line
+            cmd = getattr(line, method)
+            if cmd(args):
+                return line
         return False
