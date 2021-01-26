@@ -139,13 +139,15 @@ class SyslogIntegration(BaseIntegration):
         address = self.integration_data['address']
         port = self.integration_data['port']
         cef_output_format = self.integration_data['cef_output_format']
+        facility = self.integration_data['facility']
         syslog_ssl_enabled = self.integration_data['syslog_ssl_enabled']
         is_tcp = protocol == 'tcp'
 
         syslog_handler = MySysLogHandler(
             address=(address, port),
             socktype=socket.SOCK_STREAM if is_tcp else socket.SOCK_DGRAM,
-            ssl_enabled=(is_tcp and syslog_ssl_enabled)
+            ssl_enabled=(is_tcp and syslog_ssl_enabled),
+            facility=facility
         )
         logger_to_external.addHandler(syslog_handler)
 
