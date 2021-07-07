@@ -1,5 +1,8 @@
-|GitHub license| |Read the Docs| |Travis| |Updates| |Codecov| |Gitter|
+|GitHub license| |Read the Docs| |Travis| |Codecov| |Gitter|
 
+.. |honeycomb_logo| image:: honeycomb.png
+   :alt: Honeycomb
+   :target: https://github.com/Cymmetria/honeycomb_plugins
 .. |GitHub license| image:: https://img.shields.io/github/license/Cymmetria/honeycomb_plugins.svg
    :alt: GitHub license
    :target: https://github.com/Cymmetria/honeycomb_plugins/blob/master/LICENSE
@@ -9,15 +12,14 @@
 .. |Travis| image:: https://img.shields.io/travis/Cymmetria/honeycomb_plugins.svg
    :alt: Travis
    :target: https://travis-ci.com/Cymmetria/honeycomb_plugins
-.. |Updates| image:: https://pyup.io/repos/github/Cymmetria/honeycomb/shield.svg
-    :target: https://pyup.io/repos/github/Cymmetria/honeycomb_plugins/
-    :alt: Updates
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/Cymmetria/honeycomb_plugins.svg
    :alt: Codecov
    :target: https://codecov.io/gh/Cymmetria/honeycomb_plugins
 .. |Gitter| image:: https://badges.gitter.im/cymmetria/honeycomb.svg
    :alt: Join the chat at https://gitter.im/cymmetria/honeycomb
    :target: https://gitter.im/cymmetria/honeycomb
+
+|honeycomb_logo|
 
 =================
 Honeycomb Plugins
